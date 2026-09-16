@@ -381,7 +381,7 @@ body {
 /* ==========================================================================
    Glassmorphism Cards & Panels
    ========================================================================== */
-.glass-card, .glass-panel {
+.glass-card, .glass-panel, .section-card {
   background: var(--bg-card);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
@@ -389,6 +389,8 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .glass-card:hover, .glass-panel:hover {
@@ -852,6 +854,21 @@ body {
 
 .data-table tr:hover td {
   background: rgba(56, 189, 248, 0.04);
+}
+
+@keyframes tableRowFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.data-table tbody tr {
+  animation: tableRowFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Toast Notification Container */

@@ -380,6 +380,21 @@ const SEONexus = (() => {
       } catch (e) {}
     }
 
+    // Check URL query parameters (?url=...) for immediate cross-tool deep linking
+    try {
+      const urlQueryParam = new URLSearchParams(window.location.search).get('url');
+      if (urlQueryParam) {
+        let cleanQueryUrl = urlQueryParam.trim();
+        if (!/^https?:\/\//i.test(cleanQueryUrl)) cleanQueryUrl = 'https://' + cleanQueryUrl;
+        if (!activeProjectState) activeProjectState = { ...blankState };
+        activeProjectState.targetUrl = cleanQueryUrl;
+        activeProjectState.url = cleanQueryUrl;
+        if (typeof sessionStorage !== 'undefined') {
+          sessionStorage.setItem('index_matrix_active_state', JSON.stringify(activeProjectState));
+        }
+      }
+    } catch (e) {}
+
     if (initPromise) return initPromise;
     initPromise = (async () => {
       try {
@@ -828,6 +843,32 @@ const SEONexus = (() => {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
+      }
+    });
+
+    // Cross-Tool Flow & Context Continuity:
+    // When navigating between tools, carry forward active URL if available
+    document.addEventListener('click', (e) => {
+      const anchor = e.target.closest('a');
+      if (!anchor) return;
+      const href = anchor.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('http')) return;
+
+      const targetTools = ['indexer.html', 'console.html', 'keywords.html', 'audit.html', 'reports.html'];
+      const destPage = href.split('?')[0].split('/').pop();
+      if (targetTools.includes(destPage) && !href.includes('url=')) {
+        let activeUrl = '';
+        const heroInput = document.getElementById('hero-url-input');
+        if (heroInput && heroInput.value.trim()) {
+          activeUrl = heroInput.value.trim();
+        } else if (activeProjectState && (activeProjectState.targetUrl || activeProjectState.url)) {
+          activeUrl = activeProjectState.targetUrl || activeProjectState.url;
+        }
+        if (activeUrl) {
+          e.preventDefault();
+          const separator = href.includes('?') ? '&' : '?';
+          window.location.href = `${href}${separator}url=${encodeURIComponent(activeUrl)}`;
+        }
       }
     });
 

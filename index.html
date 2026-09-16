@@ -801,8 +801,22 @@
       await SEONexus.init();
       const state = SEONexus.getState();
       const heroInput = document.getElementById('hero-url-input');
-      if (heroInput && !heroInput.value && state.targetUrl) {
-        heroInput.value = state.targetUrl;
+      if (heroInput) {
+        if (!heroInput.value && state.targetUrl) {
+          heroInput.value = state.targetUrl;
+        }
+        // Cross-tool continuity: immediately sync typed URL to session state
+        heroInput.addEventListener('input', () => {
+          const val = heroInput.value.trim();
+          if (val) {
+            try {
+              const cur = SEONexus.getState() || {};
+              cur.targetUrl = val;
+              cur.url = val;
+              sessionStorage.setItem('index_matrix_active_state', JSON.stringify(cur));
+            } catch (e) {}
+          }
+        });
       }
       renderDashboard();
       loadUserCrawlHistory();

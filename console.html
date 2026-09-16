@@ -765,18 +765,20 @@
     document.addEventListener('DOMContentLoaded', async () => {
       await SEONexus.init();
 
-      // Auto-fill from URL query parameter if passed from Dashboard or other pages
+      // Auto-fill from URL query parameter or active project state
       const params = new URLSearchParams(window.location.search);
       const urlParam = params.get('url');
-      if (urlParam) {
-        let cleanParam = urlParam.trim();
+      const curState = SEONexus.getState();
+      const effectiveUrl = urlParam || curState.targetUrl || '';
+
+      if (effectiveUrl) {
+        let cleanParam = effectiveUrl.trim();
         if (!/^https?:\/\//i.test(cleanParam)) {
           cleanParam = 'https://' + cleanParam;
         }
         const urlInput = document.getElementById('console-url-input');
-        if (urlInput) urlInput.value = cleanParam;
+        if (urlInput && !urlInput.value) urlInput.value = cleanParam;
 
-        const curState = SEONexus.getState();
         if (!curState.targetUrl || curState.targetUrl !== cleanParam) {
           let siteHost = cleanParam;
           try { siteHost = new URL(cleanParam).hostname; } catch (e) {}
