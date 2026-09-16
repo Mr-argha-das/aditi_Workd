@@ -531,6 +531,10 @@ app.get(['/admin', '/admin/', '/admin/admin.html'], (req, res) => {
   if (!isAdminAccessAllowed(req)) {
     return res.status(404).type('text/plain').send('Not Found');
   }
+  const host = (req.headers.host || '').toLowerCase();
+  if (host.includes('admin') || process.env.ADMIN_PORTAL_ONLY === 'true') {
+    return res.redirect('/');
+  }
   return renderHtmlFile(path.join(__dirname, 'admin', 'admin.html'), res);
 });
 
@@ -838,10 +842,19 @@ app.use((req, res, next) => {
     }
   }
 
-  // 1c. Admin portal redirect: When accessing dedicated admin portal host, root redirects to /admin
+  // 1c. Admin portal: When accessing dedicated admin portal host, root serves admin directly!
   const host = (req.headers.host || '').toLowerCase();
-  if ((host.includes('admin') || process.env.ADMIN_PORTAL_ONLY === 'true') && (reqPath === '/' || reqPath === '/index.html')) {
-    return res.redirect('/admin');
+  const isAdminHost = host.includes('admin') || process.env.ADMIN_PORTAL_ONLY === 'true';
+  if (isAdminHost) {
+    if (reqPath === '/' || reqPath === '/index.html') {
+      if (!isAdminAccessAllowed(req)) {
+        return res.status(404).type('text/plain').send('Not Found');
+      }
+      return renderHtmlFile(path.join(__dirname, 'admin', 'admin.html'), res);
+    }
+    if (reqPath === '/admin' || reqPath === '/admin/' || reqPath === '/admin/admin.html') {
+      return res.redirect('/');
+    }
   }
 
   // 2. Check authentication
