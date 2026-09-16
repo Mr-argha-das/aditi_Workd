@@ -19,3 +19,5 @@ Thumbs.db
 
 .env*
 WhatsApp Image*
+.vercel
+generate_logo*.js
