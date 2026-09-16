@@ -466,9 +466,28 @@ function requireAdmin(req, res, next) {
 /* ==========================================================================
    Dynamic Template Renderer
    ========================================================================== */
+let cachedFooterHtml = null;
+function getGlobalFooterHtml() {
+  if (!cachedFooterHtml || process.env.NODE_ENV !== 'production') {
+    try {
+      const footerPath = path.join(__dirname, 'partials', 'footer.html');
+      if (fs.existsSync(footerPath)) {
+        cachedFooterHtml = fs.readFileSync(footerPath, 'utf8');
+      }
+    } catch (err) {
+      console.error('Failed to load partials/footer.html:', err.message);
+      return '';
+    }
+  }
+  return cachedFooterHtml || '';
+}
+
 function renderHtmlFile(filePath, res) {
   try {
     let content = fs.readFileSync(filePath, 'utf8');
+    const footer = getGlobalFooterHtml();
+    content = content.replace(/<!-- GLOBAL_FOOTER -->/g, footer);
+    content = content.replace(/\{\{GLOBAL_FOOTER\}\}/g, footer);
     content = content.replace(/\{\{APP_NAME\}\}/g, APP_NAME);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.send(content);
@@ -476,6 +495,7 @@ function renderHtmlFile(filePath, res) {
     return res.status(500).send('Error rendering page: ' + err.message);
   }
 }
+
 
 /* ==========================================================================
    Public Auth & System Endpoints
