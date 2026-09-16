@@ -128,7 +128,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Local computer verification for Admin Control Center (Never exposed online)
+// Mobile Device Detection (Server-Side)
+function isMobileUserAgent(req) {
+  const ua = req.headers['user-agent'] || '';
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
+}
+
+// Local computer verification for Admin Control Center
 function isLocalhostRequest(req) {
   if (process.env.DISABLE_ADMIN_PAGE === 'true') {
     return false;
@@ -144,28 +150,68 @@ function isLocalhostRequest(req) {
   return remoteIp === '127.0.0.1' || remoteIp === '::1' || remoteIp === '::ffff:127.0.0.1';
 }
 
-function requireLocalComputer(req, res, next) {
-  if (!isLocalhostRequest(req)) {
-    // Admin interface is completely hidden and inaccessible from the public internet
+function getAdminAuthToken() {
+  const secret = process.env.ADMIN_PASSWORD || 'indexmatrix_default_admin_sec_2026';
+  return crypto.createHash('sha256').update(`admin_master_secret:${secret}`).digest('hex');
+}
+
+function verifyAdminSession(req) {
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) return false;
+
+  const expectedToken = getAdminAuthToken();
+  const cookies = parseCookies(req);
+  const cookieToken = cookies['admin_auth_token'];
+  const headerToken = req.headers['x-admin-token'] || (req.headers['authorization'] || '').replace(/^Bearer\s+/i, '');
+
+  if (cookieToken && cookieToken === expectedToken) return true;
+  if (headerToken && headerToken === expectedToken) return true;
+
+  // Localhost fallback if authenticated user is admin
+  if (isLocalhostRequest(req)) {
+    const user = getAuthenticatedUser(req);
+    if (user?.role === 'admin') return true;
+  }
+
+  return false;
+}
+
+// Admin Access Controller: Checks host isolation and environment password
+function isAdminAccessAllowed(req) {
+  if (process.env.DISABLE_ADMIN_PAGE === 'true') return false;
+
+  // Localhost is always allowed
+  if (isLocalhostRequest(req)) return true;
+
+  // On the public internet, must have ADMIN_PASSWORD configured
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) return false;
+
+  const host = (req.headers.host || '').toLowerCase();
+
+  // STRICT ISOLATION:
+  // Main custom domains and Render NEVER expose admin (strictly 404)
+  if (
+    host.includes('indexmetrix.com') ||
+    host.includes('onrender.com') ||
+    host === 'index-metrix.vercel.app' ||
+    host.startsWith('index-metrix-aditichandelkar')
+  ) {
+    return false;
+  }
+
+  // Allowed on dedicated admin hosts (e.g. index-metrix-admin*.vercel.app or when ALLOW_PUBLIC_ADMIN='true')
+  if (process.env.ALLOW_PUBLIC_ADMIN === 'true' || host.includes('admin')) {
+    return true;
+  }
+
+  return false;
+}
+
+function requireAdminAccess(req, res, next) {
+  if (!isAdminAccessAllowed(req)) {
     return res.status(404).type('text/plain').send('Not Found');
   }
-
-  // Anti-CSRF / Cross-Site Attack Blocker: Disallow foreign web pages from calling local admin
-  const origin = req.headers['origin'];
-  if (origin) {
-    try {
-      const originHost = new URL(origin).host;
-      if (originHost !== req.headers.host) {
-        return res.status(403).type('text/plain').send('Cross-origin request blocked');
-      }
-    } catch (e) {
-      return res.status(403).type('text/plain').send('Invalid origin');
-    }
-  }
-  if (req.headers['sec-fetch-site'] === 'cross-site') {
-    return res.status(403).type('text/plain').send('Cross-site request blocked');
-  }
-
   next();
 }
 
@@ -404,11 +450,17 @@ function isUserOnline(username) {
 }
 
 function requireAdmin(req, res, next) {
-  const user = req.user || getAuthenticatedUser(req);
-  if (!user || user.role !== 'admin') {
-    return res.status(403).json({ error: 'Admin access required.' });
+  if (!isAdminAccessAllowed(req)) {
+    return res.status(404).json({ error: 'Not Found' });
   }
-  return next();
+  if (verifyAdminSession(req)) {
+    return next();
+  }
+  const user = req.user || getAuthenticatedUser(req);
+  if (user && user.role === 'admin') {
+    return next();
+  }
+  return res.status(401).json({ error: 'Admin authentication required.' });
 }
 
 /* ==========================================================================
@@ -447,18 +499,37 @@ app.post('/api/presence/ping', (req, res) => {
 });
 
 /* ==========================================================================
-   Admin Panel Routes (Local computer only, never hosted online)
+   Admin Panel Routes (Protected by ADMIN_PASSWORD & Host Isolation)
    ========================================================================== */
 
-// Restrict all /admin routes strictly to the local computer
-app.use('/admin', requireLocalComputer);
+// Restrict all /admin routes according to isolation rules
+app.use('/admin', requireAdminAccess);
+
+// Admin Auth endpoint (Validates environment variable ADMIN_PASSWORD)
+app.post('/admin/api/auth', (req, res) => {
+  if (!isAdminAccessAllowed(req)) {
+    return res.status(404).json({ error: 'Not Found' });
+  }
+  const { password } = req.body || {};
+  const expectedPassword = process.env.ADMIN_PASSWORD;
+  if (!expectedPassword || password !== expectedPassword) {
+    return res.status(401).json({ success: false, error: 'Invalid admin master password' });
+  }
+  const token = getAdminAuthToken();
+  res.setHeader('Set-Cookie', `admin_auth_token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200`);
+  return res.json({ success: true, token });
+});
+
+// Admin Logout endpoint
+app.post('/admin/api/logout', (req, res) => {
+  res.setHeader('Set-Cookie', `admin_auth_token=; Path=/; HttpOnly; Max-Age=0`);
+  return res.json({ success: true });
+});
 
 // Serve admin.html
 app.get(['/admin', '/admin/', '/admin/admin.html'], (req, res) => {
-  const user = getAuthenticatedUser(req);
-  if (!user || user.role !== 'admin') {
-    const dest = encodeURIComponent('/admin/admin.html');
-    return res.redirect(`/login.html?redirect=${dest}`);
+  if (!isAdminAccessAllowed(req)) {
+    return res.status(404).type('text/plain').send('Not Found');
   }
   return renderHtmlFile(path.join(__dirname, 'admin', 'admin.html'), res);
 });
@@ -743,6 +814,11 @@ const ALLOWED_PROTECTED_PAGES = new Set([
 app.use((req, res, next) => {
   const reqPath = decodeURIComponent(req.path);
 
+  // 0. Allow public About page for all devices
+  if (reqPath === '/about' || reqPath === '/about.html') {
+    return next();
+  }
+
   // 1. Allow public static assets
   if (
     reqPath.startsWith('/css/') ||
@@ -751,6 +827,21 @@ app.use((req, res, next) => {
     reqPath === '/favicon.ico'
   ) {
     return next();
+  }
+
+  // 1b. Mobile Device Restriction:
+  // Mobile devices (phones & tablets) are strictly restricted to the /about.html overview.
+  // Interactive tools, dashboards, and login pages are not accessible on mobile.
+  if (isMobileUserAgent(req)) {
+    if (!reqPath.startsWith('/api/') && !reqPath.startsWith('/admin/api/')) {
+      return res.redirect('/about.html');
+    }
+  }
+
+  // 1c. Admin portal redirect: When accessing dedicated admin portal host, root redirects to /admin
+  const host = (req.headers.host || '').toLowerCase();
+  if ((host.includes('admin') || process.env.ADMIN_PORTAL_ONLY === 'true') && (reqPath === '/' || reqPath === '/index.html')) {
+    return res.redirect('/admin');
   }
 
   // 2. Check authentication
@@ -765,13 +856,12 @@ app.use((req, res, next) => {
     return res.status(401).json({ error: 'Authentication required. Please log in.' });
   }
 
-  // 4. Admin interface: Only accessible from local computer (never hosted online)
+  // 4. Admin interface
   if (reqPath.startsWith('/admin')) {
-    if (!isLocalhostRequest(req)) {
+    if (!isAdminAccessAllowed(req)) {
       return res.status(404).type('text/plain').send('Not Found');
     }
-    const dest = encodeURIComponent(req.originalUrl || '/admin/admin.html');
-    return res.redirect(`/login.html?redirect=${dest}`);
+    return next();
   }
 
   // 5. Allowed protected application pages: redirect unauthenticated user to login
@@ -2223,6 +2313,10 @@ app.post('/api/logs/clear', async (req, res) => {
 /* ==========================================================================
    Consolidated Application Page Routes (Protected by Gatekeeper)
    ========================================================================== */
+app.get(['/about', '/about.html'], (req, res) => {
+  return renderHtmlFile(path.join(__dirname, 'about.html'), res);
+});
+
 app.get(['/', '/index.html'], (req, res) => {
   return renderHtmlFile(path.join(__dirname, 'index.html'), res);
 });

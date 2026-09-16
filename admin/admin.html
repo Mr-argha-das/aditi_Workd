@@ -127,6 +127,16 @@
     .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
     @media(max-width:900px){.detail-grid{grid-template-columns:1fr}}
     @media(max-width:768px){.sidebar{transform:translateX(-100%)}.main-content{margin-left:0}}
+    .admin-gatekeeper-overlay{position:fixed;inset:0;z-index:99999;background:rgba(2,6,23,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:center;justify-content:center;padding:1.5rem}
+    .admin-gatekeeper-card{background:rgba(15,23,42,.96);border:1px solid rgba(167,139,250,.35);border-radius:22px;box-shadow:0 30px 70px rgba(0,0,0,.85),0 0 40px rgba(124,58,237,.25);max-width:440px;width:100%;padding:2.5rem 2rem;text-align:center}
+    .admin-gatekeeper-icon{width:62px;height:62px;border-radius:18px;margin:0 auto 1.25rem;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:1.85rem;color:#fff;box-shadow:0 0 30px rgba(124,58,237,.45)}
+    .admin-gatekeeper-title{font-size:1.35rem;font-weight:800;color:#fff;margin-bottom:.4rem}
+    .admin-gatekeeper-sub{font-size:.84rem;color:var(--text-muted);margin-bottom:1.75rem;line-height:1.5}
+    .admin-pass-input{width:100%;background:rgba(3,7,18,.92);border:1px solid rgba(167,139,250,.35);border-radius:12px;padding:.85rem 1rem;color:#fff;font-size:.95rem;outline:none;margin-bottom:1rem;font-family:inherit}
+    .admin-pass-input:focus{border-color:var(--accent-violet);box-shadow:0 0 16px rgba(167,139,250,.35)}
+    .admin-unlock-btn{width:100%;padding:.85rem 1rem;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;font-size:.95rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 10px 25px rgba(124,58,237,.4);transition:all .2s}
+    .admin-unlock-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(124,58,237,.5)}
+    .admin-pass-error{margin-top:.85rem;font-size:.82rem;color:#f87171;display:none;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.25);border-radius:8px;padding:.6rem}
   </style>
 </head>
 <body>
@@ -260,26 +270,76 @@
   </main>
 </div>
 
+<!-- Admin Password Gatekeeper Modal -->
+<div id="admin-gatekeeper" class="admin-gatekeeper-overlay" style="display: none;">
+  <div class="admin-gatekeeper-card">
+    <div class="admin-gatekeeper-icon"><i class="ri-shield-keyhole-fill"></i></div>
+    <h2 class="admin-gatekeeper-title">Admin Master Gatekeeper</h2>
+    <p class="admin-gatekeeper-sub">This control center is restricted. Enter your environment security password to access telemetry and database audit archives.</p>
+    <form id="admin-auth-form" onsubmit="handleAdminAuth(event)">
+      <input type="password" id="admin-password-input" class="admin-pass-input" placeholder="Enter ADMIN_PASSWORD" autocomplete="current-password" required />
+      <button type="submit" id="admin-unlock-button" class="admin-unlock-btn">Unlock Admin Center</button>
+    </form>
+    <div id="admin-auth-err" class="admin-pass-error"></div>
+  </div>
+</div>
+
 <div class="toast-container" id="toast-container"></div>
 
 <script>
 let allUsers=[],allActivity=[],allDispatches=[],allScans=[];
 
 function getAuthToken(){
-  try{return localStorage.getItem('index_matrix_token')||'';}catch{return'';}
+  try{return localStorage.getItem('admin_access_token') || localStorage.getItem('index_matrix_token')||'';}catch{return'';}
 }
 function authHeaders(){
   const t=getAuthToken();
-  return t?{'Authorization':`Bearer ${t}`}:{};
+  return t?{'Authorization':`Bearer ${t}`,'x-admin-token':t}:{};
 }
 async function adminLogout(){
   try{
+    await fetch('/admin/api/logout',{method:'POST'});
     const t=getAuthToken();
     await fetch('/api/auth/logout',{method:'POST',headers:t?{'Authorization':`Bearer ${t}`}:{}});
   }catch(e){}
+  localStorage.removeItem('admin_access_token');
   localStorage.removeItem('index_matrix_token');
   localStorage.removeItem('index_matrix_user');
-  window.location.href='/login.html';
+  window.location.reload();
+}
+
+async function handleAdminAuth(e) {
+  if (e) e.preventDefault();
+  const pass = document.getElementById('admin-password-input').value.trim();
+  const errEl = document.getElementById('admin-auth-err');
+  const btn = document.getElementById('admin-unlock-button');
+  if (!pass) return;
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+  errEl.style.display = 'none';
+  try {
+    const res = await fetch('/admin/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pass })
+    });
+    const data = await res.json();
+    if (data.success && data.token) {
+      localStorage.setItem('admin_access_token', data.token);
+      document.getElementById('admin-gatekeeper').style.display = 'none';
+      showToast('Admin master session verified', 'success');
+      await loadAll();
+    } else {
+      errEl.textContent = data.error || 'Invalid admin password';
+      errEl.style.display = 'block';
+    }
+  } catch (err) {
+    errEl.textContent = 'Verification error: ' + err.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Unlock Admin Center';
+  }
 }
 
 function switchSection(s){
@@ -493,23 +553,26 @@ function renderScans(){
 }
 function filterScans(){renderScans();}
 
-document.addEventListener('DOMContentLoaded',async()=>{
+document.addEventListener('DOMContentLoaded', async () => {
+  const gatekeeper = document.getElementById('admin-gatekeeper');
+  const passInput = document.getElementById('admin-password-input');
+
+  // Verify if current admin session or token is valid
   try {
-    const r = await fetch('/api/auth/me', { headers: authHeaders() });
-    if (r.ok) {
-      const d = await r.json();
-      if (!d.authenticated || d.user?.role !== 'admin') {
-        window.location.href = '/login.html?redirect=/admin/admin.html';
-        return;
-      }
-    } else {
-      window.location.href = '/login.html?redirect=/admin/admin.html';
+    const r = await fetch('/admin/api/users', { headers: authHeaders() });
+    if (!r.ok) {
+      if (gatekeeper) gatekeeper.style.display = 'flex';
+      if (passInput) setTimeout(() => passInput.focus(), 150);
       return;
     }
   } catch (e) {
-    window.location.href = '/login.html?redirect=/admin/admin.html';
+    if (gatekeeper) gatekeeper.style.display = 'flex';
+    if (passInput) setTimeout(() => passInput.focus(), 150);
     return;
   }
+
+  // Session is valid -> hide gatekeeper and run live updates
+  if (gatekeeper) gatekeeper.style.display = 'none';
 
   // Maintain online presence tick for admin
   const pingPresence = () => fetch('/api/presence/ping', { method: 'POST', headers: authHeaders() }).catch(() => {});
