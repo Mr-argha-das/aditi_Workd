@@ -606,8 +606,33 @@
   document.addEventListener('DOMContentLoaded', () => {
     loadConfig();
     const targetInput = document.getElementById('target-url-input');
-    if (targetInput) targetInput.value = '';
     const sitemapInput = document.getElementById('sitemap-url-input');
-    if (sitemapInput) sitemapInput.value = '';
+
+    // Check URL query param first (?url=...)
+    const params = new URLSearchParams(window.location.search);
+    let autoUrl = params.get('url');
+
+    // If not in query, check active project state from sessionStorage
+    if (!autoUrl && typeof sessionStorage !== 'undefined') {
+      try {
+        const stored = sessionStorage.getItem('index_matrix_active_state');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && (parsed.targetUrl || parsed.url)) {
+            autoUrl = parsed.targetUrl || parsed.url;
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (autoUrl && targetInput && !targetInput.value) {
+      targetInput.value = autoUrl;
+      if (sitemapInput && !sitemapInput.value) {
+        try {
+          const origin = new URL(autoUrl.startsWith('http') ? autoUrl : `https://${autoUrl}`).origin;
+          sitemapInput.value = `${origin}/sitemap.xml`;
+        } catch (e) {}
+      }
+    }
   });
 })();

@@ -572,10 +572,15 @@
 
     let inspectedLinks = [];
     let currentLinkFilter = 'all';
+    let isInspectingLinks = false;
 
     async function runLiveLinkInspection(forceFresh = false) {
+      if (isInspectingLinks) return;
+      isInspectingLinks = true;
+
       const state = SEONexus.getState();
       if (!state.targetUrl) {
+        isInspectingLinks = false;
         SEONexus.showToast('Please crawl a website on Dashboard first to inspect links.', 'warning');
         return;
       }
@@ -636,6 +641,7 @@
       } catch (err) {
         console.error('Link inspection error:', err);
       } finally {
+        isInspectingLinks = false;
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = `<i class="ri-radar-line"></i> Re-Check Links`;

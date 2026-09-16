@@ -799,16 +799,32 @@ const SEONexus = (() => {
     const mobileToggle = document.getElementById('mobile-toggle-btn') || document.querySelector('.mobile-menu-toggle');
     const navMenu = document.getElementById('nav-menu') || document.querySelector('.nav-menu');
     if (mobileToggle && navMenu) {
-      mobileToggle.addEventListener('click', () => {
+      mobileToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
         navMenu.classList.toggle('open');
+      });
+
+      // Close mobile menu on outside click
+      document.addEventListener('click', (e) => {
+        if (navMenu.classList.contains('open') && !navMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+          navMenu.classList.remove('open');
+        }
+      });
+
+      // Close mobile menu on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navMenu.classList.contains('open')) {
+          navMenu.classList.remove('open');
+        }
       });
     }
 
-    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    // Clean URL & standard path normalization for active navigation links
+    const rawPath = (window.location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '');
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
-      const href = link.getAttribute('href');
-      if (href === currentPath || (currentPath === '' && href === 'index.html')) {
+      const href = (link.getAttribute('href') || '').split('/').pop().replace(/\.html$/, '');
+      if (href === rawPath || (rawPath === '' && href === 'index') || (rawPath === 'index' && href === 'index')) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
