@@ -325,7 +325,7 @@
           </p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <button class="btn btn-sm btn-glass" id="btn-toggle-payload" type="button">
+          <button class="btn btn-sm btn-glass" id="btn-toggle-payload" type="button" onclick="togglePayloadAccordion()">
             <i class="ri-arrow-down-s-line" id="payload-arrow-icon"></i> <span id="payload-toggle-text">Show Raw JSON</span>
           </button>
         </div>
@@ -711,24 +711,25 @@
     }
 
     function copyCurrentPayload() {
-      const state = SEONexus.getState();
-      if (!state.targetUrl) {
-        SEONexus.showToast('Please scan a website on the Dashboard first!', 'warning');
+      const code = document.getElementById('indexing-payload-code')?.textContent || '';
+      if (!code || code.startsWith('//')) {
+        SEONexus.showToast('Please enter a website URL above first to generate payload!', 'warning');
         return;
       }
-      const code = document.getElementById('indexing-payload-code').textContent;
       SEONexus.copyToClipboard(code, 'Indexing API payload copied to clipboard!');
     }
 
     async function dispatchDirectPayload() {
+      const inputVal = (document.getElementById('console-url-input')?.value || '').trim();
       const state = SEONexus.getState();
-      if (!state.targetUrl) {
-        SEONexus.showToast('Please scan a website on the Dashboard first!', 'warning');
+      const targetUrl = inputVal || state.targetUrl;
+      if (!targetUrl) {
+        SEONexus.showToast('Please enter a target website URL above first!', 'warning');
         return;
       }
 
       SEONexus.showToast('Dispatching payload to Google Indexing API endpoint...', 'info');
-      const result = await GoogleConsoleFeeder.publishToGoogleIndexingApi(state.targetUrl, 'URL_UPDATED', SEONexus.getCredentials());
+      const result = await GoogleConsoleFeeder.publishToGoogleIndexingApi(targetUrl, 'URL_UPDATED', SEONexus.getCredentials());
       if (result.success) {
         SEONexus.showToast('Google Indexing API accepted notification (HTTP 200 OK).', 'success');
         addTerminalLog('API_DISPATCH', `POST https://indexing.googleapis.com/v3/urlNotifications:publish -> HTTP ${result.status} OK`, 'tag-ok');
@@ -749,15 +750,17 @@
       const body = document.getElementById('payload-accordion-body');
       const icon = document.getElementById('payload-arrow-icon');
       const text = document.getElementById('payload-toggle-text');
+      if (!body) return;
       
-      if (body.style.display === 'none') {
+      const isClosed = body.style.display === 'none' || getComputedStyle(body).display === 'none';
+      if (isClosed) {
         body.style.display = 'block';
-        icon.className = 'ri-arrow-up-s-line';
-        text.textContent = 'Hide Raw JSON';
+        if (icon) icon.className = 'ri-arrow-up-s-line';
+        if (text) text.textContent = 'Hide Raw JSON';
       } else {
         body.style.display = 'none';
-        icon.className = 'ri-arrow-down-s-line';
-        text.textContent = 'Show Raw JSON';
+        if (icon) icon.className = 'ri-arrow-down-s-line';
+        if (text) text.textContent = 'Show Raw JSON';
       }
     }
 
@@ -779,14 +782,23 @@
         const urlInput = document.getElementById('console-url-input');
         if (urlInput && !urlInput.value) urlInput.value = cleanParam;
 
-        if (!curState.targetUrl || curState.targetUrl !== cleanParam) {
+        // If user passed a brand-new URL (?url=...) that differs from current state,
+        // initialize clean state for this URL without polluting old project metadata
+        if (urlParam && (!curState.targetUrl || curState.targetUrl !== cleanParam)) {
           let siteHost = cleanParam;
           try { siteHost = new URL(cleanParam).hostname; } catch (e) {}
           SEONexus.saveState({
-            ...curState,
             targetUrl: cleanParam,
-            siteName: siteHost
+            url: cleanParam,
+            siteName: siteHost,
+            scores: { overall: 0, onPage: 0, performance: 0, crawlability: 0 },
+            auditDetails: {},
+            extractedKeywords: [],
+            metaTitle: '',
+            metaDescription: '',
+            scanTimestamp: Date.now()
           });
+          return; // saveState dispatches statechange which triggers renderConsoleView()
         }
       }
 
