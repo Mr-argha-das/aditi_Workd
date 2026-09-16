@@ -2086,22 +2086,23 @@ app.post('/api/crawler/ping', async (req, res) => {
    Tool 3.1: Real IndexNow Protocol Dispatcher (Bing, Yandex, Seznam, Naver)
    ========================================================================== */
 app.post('/api/indexnow/publish', async (req, res) => {
-  const { url, key, keyLocation } = req.body;
-  if (!url) return res.status(400).json({ error: 'Target URL is required' });
+  const { url, urls, key, keyLocation } = req.body;
+  const targetUrl = url || (Array.isArray(urls) && urls[0]);
+  if (!targetUrl) return res.status(400).json({ error: 'Target URL is required' });
 
-  const urlCheck = validateSafeUrl(url);
+  const urlCheck = validateSafeUrl(targetUrl);
   if (!urlCheck.safe) return res.status(400).json({ error: urlCheck.error });
 
   let host = '';
   try {
-    host = new URL(url).hostname;
+    host = new URL(targetUrl).hostname;
   } catch (e) {
     return res.status(400).json({ error: 'Invalid URL format' });
   }
 
-  const isPlatformHost = host === 'indexmetrix.com' || host === 'www.indexmetrix.com';
+  const isPlatformHost = host === 'indexmetrix.com' || host === 'www.indexmetrix.com' || host.includes('index-metrix');
   const effectiveKey = key || (isPlatformHost ? PLATFORM_INDEXNOW_KEY : null);
-  const effectiveKeyLocation = keyLocation || (isPlatformHost ? `https://${host}/${PLATFORM_INDEXNOW_KEY}.txt` : (effectiveKey ? `https://${host}/${effectiveKey}.txt` : null));
+  const effectiveKeyLocation = keyLocation || (isPlatformHost ? `https://${host}/${PLATFORM_INDEXNOW_KEY}.txt` : (effectiveKey ? `https://${host}/${effectiveKey}.txt` : undefined));
 
   if (!effectiveKey) {
     return res.status(400).json({
@@ -2110,22 +2111,26 @@ app.post('/api/indexnow/publish', async (req, res) => {
       error: `IndexNow requires an API verification key hosted on your domain root (e.g., https://${host}/${host}-key.txt).`,
       keyRequired: true,
       host,
-      url
+      url: targetUrl
     });
   }
 
   try {
+    const urlList = Array.isArray(urls) && urls.length > 0 ? urls : [targetUrl];
     const payload = {
       host,
       key: effectiveKey,
-      keyLocation: effectiveKeyLocation,
-      urlList: [url]
+      urlList
     };
+    if (effectiveKeyLocation) {
+      payload.keyLocation = effectiveKeyLocation;
+    }
 
     const indexNowRes = await fetch('https://api.indexnow.org/indexnow', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(10000)
     });
 
     const isOk = indexNowRes.status === 200 || indexNowRes.status === 202;
@@ -2136,8 +2141,10 @@ app.post('/api/indexnow/publish', async (req, res) => {
       success: isOk,
       status: indexNowRes.status,
       host,
-      url,
+      url: targetUrl,
+      urls: urlList,
       message: isOk ? 'IndexNow accepted URL submission for Bing, Yandex, Seznam & Naver.' : `IndexNow returned HTTP ${indexNowRes.status}`,
+      error: !isOk ? (responseText || `IndexNow returned HTTP ${indexNowRes.status}`) : undefined,
       responseDetails: responseText
     });
   } catch (err) {
