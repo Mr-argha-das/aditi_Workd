@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Control Center — INDEX MATRIX</title>
   <meta name="robots" content="noindex, nofollow" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -143,8 +143,8 @@
 <div class="app-layout">
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <div class="brand-icon-admin"><i class="ri-shield-star-line"></i></div>
-      <div><div class="brand-name">INDEX MATRIX</div><div class="brand-sub">Admin Center</div></div>
+      <img src="../logo-icon.svg" alt="IndexMatrix Logo" style="width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35); flex-shrink: 0;" />
+      <div><div class="brand-name" style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.05rem;">Index<span style="background: linear-gradient(135deg, #38bdf8, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Matrix</span></div><div class="brand-sub">Admin Center</div></div>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
@@ -273,8 +273,8 @@
 <!-- Admin Password Gatekeeper Modal -->
 <div id="admin-gatekeeper" class="admin-gatekeeper-overlay" style="display: none;">
   <div class="admin-gatekeeper-card">
-    <div class="admin-gatekeeper-icon"><i class="ri-shield-keyhole-fill"></i></div>
-    <h2 class="admin-gatekeeper-title">Admin Master Gatekeeper</h2>
+    <img src="../logo-icon.svg" alt="IndexMatrix Logo" style="width: 62px; height: 62px; border-radius: 16px; margin: 0 auto 1.25rem; display: block; box-shadow: 0 0 30px rgba(56,189,248,.45);" />
+    <h2 class="admin-gatekeeper-title" style="font-family: 'Outfit', sans-serif; font-weight: 800;">Index<span style="background: linear-gradient(135deg, #38bdf8, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Matrix</span> Admin</h2>
     <p class="admin-gatekeeper-sub">This control center is restricted. Enter your environment security password to access telemetry and database audit archives.</p>
     <form id="admin-auth-form" onsubmit="handleAdminAuth(event)">
       <input type="password" id="admin-password-input" class="admin-pass-input" placeholder="Enter ADMIN_PASSWORD" autocomplete="current-password" required />
