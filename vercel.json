@@ -2,7 +2,7 @@
   "version": 2,
   "functions": {
     "api/index.js": {
-      "includeFiles": "{*.html,admin/**,css/**,js/**,data/**}"
+      "includeFiles": "{*.html,admin/**,css/**,js/**,data/**,*.svg,*.png,robots.txt,sitemap.xml}"
     }
   },
   "routes": [
