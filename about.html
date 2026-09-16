@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <!-- SEO Meta Tags -->
-  <title>About INDEX MATRIX — Platform Architecture &amp; Leadership</title>
-  <meta name="description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and the engineering leadership behind the platform.">
+  <title>About INDEX MATRIX — Platform Architecture &amp; Search Engine Infrastructure</title>
+  <meta name="description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and technical search engine infrastructure.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="theme-color" content="#020617">
   <link rel="canonical" href="https://www.indexmetrix.com/about.html">
@@ -19,15 +19,15 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="INDEX MATRIX">
   <meta property="og:url" content="https://www.indexmetrix.com/about.html">
-  <meta property="og:title" content="About INDEX MATRIX — Platform Architecture &amp; Leadership">
-  <meta property="og:description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and the engineering leadership behind the platform.">
+  <meta property="og:title" content="About INDEX MATRIX — Platform Architecture &amp; Search Engine Infrastructure">
+  <meta property="og:description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and technical search engine infrastructure.">
   <meta property="og:image" content="https://www.indexmetrix.com/logo-highres.png">
 
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@indexmetrix">
-  <meta name="twitter:title" content="About INDEX MATRIX — Platform Architecture &amp; Leadership">
-  <meta name="twitter:description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and the engineering leadership behind the platform.">
+  <meta name="twitter:title" content="About INDEX MATRIX — Platform Architecture &amp; Search Engine Infrastructure">
+  <meta name="twitter:description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and technical search engine infrastructure.">
   <meta name="twitter:image" content="https://www.indexmetrix.com/logo-highres.png">
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -37,32 +37,12 @@
     "@type": "AboutPage",
     "name": "About INDEX MATRIX",
     "url": "https://www.indexmetrix.com/about.html",
-    "description": "Platform architecture, real-time crawler, bot indexer, and leadership overview.",
+    "description": "Platform architecture, real-time crawler, bot indexer, and search engine infrastructure overview.",
     "publisher": {
       "@type": "Organization",
       "name": "INDEX MATRIX",
       "url": "https://www.indexmetrix.com/",
       "logo": "https://www.indexmetrix.com/logo.svg"
-    },
-    "founder": {
-      "@type": "Person",
-      "name": "Aditi Chandelkar",
-      "jobTitle": "Owner & Founder",
-      "sameAs": [
-        "https://github.com/aditichandelkar-sys",
-        "https://airfixdispatch.com/"
-      ]
-    },
-    "creator": {
-      "@type": "Person",
-      "name": "Himanshu Jangid",
-      "jobTitle": "Creator & Lead System Architect",
-      "email": "himanshulm9@gmail.com",
-      "sameAs": [
-        "https://github.com/himanshulm9-debug",
-        "https://linkedin.com/in/himanshu978",
-        "https://himanshu-bio.vercel.app"
-      ]
     }
   }
   </script>
@@ -297,108 +277,6 @@
       font-size: 1.45rem;
     }
 
-    /* Leadership Profiles */
-    .leadership-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-    .leader-card {
-      background: rgba(10, 16, 35, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-md);
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-    .leader-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--border-cyan);
-    }
-    .leader-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-indigo));
-    }
-    .leader-header {
-      display: flex;
-      align-items: center;
-      gap: 1.15rem;
-      margin-bottom: 1rem;
-    }
-    .leader-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.75rem;
-      color: #fff;
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.3));
-      border: 1px solid var(--border-cyan);
-      flex-shrink: 0;
-    }
-    .leader-names h3 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.01em;
-    }
-    .leader-role-badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.2rem 0.6rem;
-      border-radius: var(--radius-full);
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--accent-cyan);
-      margin-top: 0.25rem;
-      letter-spacing: 0.03em;
-    }
-    .leader-bio {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 1.25rem;
-    }
-    .leader-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: auto;
-      padding-top: 0.85rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .leader-link-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.4rem 0.75rem;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-    .leader-link-pill:hover {
-      background: rgba(56, 189, 248, 0.15);
-      border-color: var(--border-cyan);
-      color: #fff;
-    }
-
     /* Feature Grid */
     .feature-grid {
       display: grid;
@@ -567,9 +445,6 @@
       .hero-title {
         font-size: 2.15rem;
       }
-      .leadership-grid {
-        grid-template-columns: 1fr;
-      }
     }
     @media (max-width: 540px) {
       .footer-container {
@@ -626,81 +501,6 @@
       <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
         Unlike standard dashboard wrappers that merely pull cached metrics, INDEX MATRIX executes authentic live HTTP/2 connection handshakes, extracts and parses DOM trees with high-throughput streaming engines, and interfaces directly with Google's Indexing API (via cryptographic RS256 JWT service accounts) and the modern IndexNow protocol (serving Bing, Yandex, Seznam, and Naver) for instant crawl acceleration.
       </p>
-    </section>
-
-    <!-- Leadership & Engineering Section -->
-    <section class="section-card" id="leadership">
-      <h2 class="card-title"><i class="ri-team-line"></i> Platform Leadership &amp; Engineering</h2>
-      <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem;">
-        The vision, engineering, and architecture driving the INDEX MATRIX platform:
-      </p>
-
-      <div class="leadership-grid">
-
-        <!-- Aditi Chandelkar (Owner & Founder) -->
-        <article class="leader-card">
-          <div>
-            <div class="leader-header">
-              <div class="leader-avatar" style="background: linear-gradient(135deg, rgba(217, 70, 239, 0.2), rgba(99, 102, 241, 0.3)); border-color: rgba(217, 70, 239, 0.35);">
-                <i class="ri-user-star-line" style="color: #f0abfc;"></i>
-              </div>
-              <div class="leader-names">
-                <h3>Aditi Chandelkar</h3>
-                <span class="leader-role-badge" style="background: rgba(217, 70, 239, 0.15); color: #f0abfc;">Owner &amp; Founder</span>
-              </div>
-            </div>
-            <p class="leader-bio">
-              Owner and visionary behind INDEX MATRIX, steering platform operations, enterprise expansion, and strategic search technology solutions. Also the founder and owner of commercial dispatch service platform <strong>Airfix Dispatch</strong>.
-            </p>
-          </div>
-
-          <div class="leader-links">
-            <a href="mailto:aditichandelkar@gmail.com" class="leader-link-pill" title="Email Aditi Chandelkar">
-              <i class="ri-mail-line"></i> aditichandelkar@gmail.com
-            </a>
-            <a href="https://github.com/aditichandelkar-sys" target="_blank" rel="noopener noreferrer" class="leader-link-pill" title="Aditi Chandelkar GitHub">
-              <i class="ri-github-fill"></i> GitHub
-            </a>
-            <a href="https://airfixdispatch.com/" target="_blank" rel="noopener noreferrer" class="leader-link-pill" style="color: #f0abfc; border-color: rgba(217, 70, 239, 0.3);" title="Airfix Dispatch Website">
-              <i class="ri-global-line"></i> Airfix Dispatch
-            </a>
-          </div>
-        </article>
-
-        <!-- Himanshu Jangid (Creator & Lead Architect) -->
-        <article class="leader-card">
-          <div>
-            <div class="leader-header">
-              <div class="leader-avatar">
-                <i class="ri-code-box-line" style="color: var(--accent-cyan);"></i>
-              </div>
-              <div class="leader-names">
-                <h3>Himanshu Jangid</h3>
-                <span class="leader-role-badge">Creator &amp; Lead System Architect</span>
-              </div>
-            </div>
-            <p class="leader-bio">
-              Creator and principal software architect of INDEX MATRIX. Engineered the high-velocity DOM streaming parser, authentic Googlebot simulation pipeline, multi-tenant session vault, and cryptographic OAuth2 JWT dispatcher.
-            </p>
-          </div>
-
-          <div class="leader-links">
-            <a href="mailto:himanshulm9@gmail.com" class="leader-link-pill" title="Email Himanshu Jangid">
-              <i class="ri-mail-line"></i> himanshulm9@gmail.com
-            </a>
-            <a href="https://himanshu-bio.vercel.app" target="_blank" rel="noopener noreferrer" class="leader-link-pill" style="color: var(--accent-cyan); border-color: var(--border-cyan);" title="Himanshu Jangid Bio & Portfolio">
-              <i class="ri-user-smile-line"></i> Bio Portfolio
-            </a>
-            <a href="https://github.com/himanshulm9-debug" target="_blank" rel="noopener noreferrer" class="leader-link-pill" title="Himanshu Jangid GitHub">
-              <i class="ri-github-fill"></i> GitHub
-            </a>
-            <a href="https://linkedin.com/in/himanshu978" target="_blank" rel="noopener noreferrer" class="leader-link-pill" title="Himanshu Jangid LinkedIn">
-              <i class="ri-linkedin-box-fill"></i> LinkedIn
-            </a>
-          </div>
-        </article>
-
-      </div>
     </section>
 
     <!-- Core Capabilities Grid -->
