@@ -773,6 +773,14 @@ app.get('/sitemap.xml', (req, res) => {
   return res.status(404).send('Not Found');
 });
 
+// 10. Official IndexNow Protocol Domain Key (Bing, Yandex, Seznam, Naver)
+const PLATFORM_INDEXNOW_KEY = 'f5fb4c764702f03f41e30356b02fe79d';
+app.get('/f5fb4c764702f03f41e30356b02fe79d.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400');
+  return res.send(PLATFORM_INDEXNOW_KEY);
+});
+
 app.get('/api/pixel/config', async (req, res) => {
   const targetUrl = (req.query.url || '').trim();
   if (!targetUrl) {
@@ -896,7 +904,8 @@ app.use((req, res, next) => {
     reqPath === '/favicon.ico' ||
     reqPath === '/robots.txt' ||
     reqPath === '/sitemap.xml' ||
-    reqPath.startsWith('/logo')
+    reqPath.startsWith('/logo') ||
+    reqPath === '/f5fb4c764702f03f41e30356b02fe79d.txt'
   ) {
     return next();
   }
@@ -2090,7 +2099,11 @@ app.post('/api/indexnow/publish', async (req, res) => {
     return res.status(400).json({ error: 'Invalid URL format' });
   }
 
-  if (!key) {
+  const isPlatformHost = host === 'indexmetrix.com' || host === 'www.indexmetrix.com';
+  const effectiveKey = key || (isPlatformHost ? PLATFORM_INDEXNOW_KEY : null);
+  const effectiveKeyLocation = keyLocation || (isPlatformHost ? `https://${host}/${PLATFORM_INDEXNOW_KEY}.txt` : (effectiveKey ? `https://${host}/${effectiveKey}.txt` : null));
+
+  if (!effectiveKey) {
     return res.status(400).json({
       success: false,
       status: 400,
@@ -2104,8 +2117,8 @@ app.post('/api/indexnow/publish', async (req, res) => {
   try {
     const payload = {
       host,
-      key,
-      keyLocation: keyLocation || `https://${host}/${key}.txt`,
+      key: effectiveKey,
+      keyLocation: effectiveKeyLocation,
       urlList: [url]
     };
 
@@ -2421,7 +2434,8 @@ const ALLOWED_PUBLIC_ROOT_ASSETS = new Set([
   'logo-192.png',
   'logo-512.png',
   'logo-highres.png',
-  'favicon.ico'
+  'favicon.ico',
+  'f5fb4c764702f03f41e30356b02fe79d.txt'
 ]);
 
 app.get('/:asset', (req, res, next) => {

@@ -368,10 +368,15 @@
       
       appendLog('INDEXNOW', `Broadcasting to IndexNow protocol (Bing, Yandex, Seznam, Naver) for host: <strong>${host}</strong>...`, 'tag-sys', 'text-dim');
       try {
+        const inPayload = { url };
+        if (host === 'indexmetrix.com' || host === 'www.indexmetrix.com') {
+          inPayload.key = 'f5fb4c764702f03f41e30356b02fe79d';
+          inPayload.keyLocation = `https://${host}/f5fb4c764702f03f41e30356b02fe79d.txt`;
+        }
         const inResp = await fetch('/api/indexnow/publish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url })
+          body: JSON.stringify(inPayload)
         });
         const inData = await inResp.json();
         if (inResp.ok && inData.success) {
