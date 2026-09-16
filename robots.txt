@@ -14,7 +14,9 @@ Allow: /js/
 Allow: /logo*
 Allow: /favicon.ico
 
-# Disallow internal application APIs, admin portal, and data files
+# Disallow internal application APIs, admin portal, device restriction warning, and data files
+Disallow: /device-restricted.html
+Disallow: /device-restricted
 Disallow: /admin/
 Disallow: /admin
 Disallow: /api/

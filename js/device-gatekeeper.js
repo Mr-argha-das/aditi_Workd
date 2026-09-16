@@ -29,8 +29,17 @@
 
   if (isMobileHardware()) {
     var path = window.location.pathname || '';
-    if (!path.endsWith('/about.html') && path !== '/about.html') {
-      window.location.replace('/about.html');
+    var isAllowedMobilePath = 
+      path.endsWith('/device-restricted.html') || 
+      path === '/device-restricted.html' || 
+      path === '/device-restricted' ||
+      path.endsWith('/about.html') || 
+      path === '/about.html' || 
+      path === '/about';
+
+    if (!isAllowedMobilePath) {
+      window.location.replace('/device-restricted.html');
     }
   }
 })();
+

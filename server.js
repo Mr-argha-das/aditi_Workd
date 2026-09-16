@@ -852,8 +852,13 @@ const ALLOWED_PROTECTED_PAGES = new Set([
 app.use((req, res, next) => {
   const reqPath = decodeURIComponent(req.path);
 
-  // 0. Allow public About page for all devices
-  if (reqPath === '/about' || reqPath === '/about.html') {
+  // 0. Allow public About page and Workstation Restriction page for all devices
+  if (
+    reqPath === '/about' || 
+    reqPath === '/about.html' || 
+    reqPath === '/device-restricted' || 
+    reqPath === '/device-restricted.html'
+  ) {
     return next();
   }
 
@@ -911,18 +916,22 @@ app.use((req, res, next) => {
   }
 
   // 1b. Mobile Device Restriction:
-  // Mobile devices (phones & tablets) are strictly restricted to the /about.html overview.
+  // Mobile devices (phones & tablets) are strictly restricted to the /device-restricted.html workstation warning.
   // Interactive tools, dashboards, and login pages are not accessible on mobile.
-  // Ensure search engine crawler bots requesting discoverability files are not redirected.
+  // Public documentation (/about.html) and search engine crawler bots remain freely accessible.
   if (isMobileUserAgent(req)) {
     if (
       !reqPath.startsWith('/api/') && 
       !reqPath.startsWith('/admin/api/') &&
       reqPath !== '/robots.txt' &&
       reqPath !== '/sitemap.xml' &&
-      !reqPath.startsWith('/logo')
+      !reqPath.startsWith('/logo') &&
+      reqPath !== '/device-restricted' &&
+      reqPath !== '/device-restricted.html' &&
+      reqPath !== '/about' &&
+      reqPath !== '/about.html'
     ) {
-      return res.redirect('/about.html');
+      return res.redirect('/device-restricted.html');
     }
   }
 
@@ -2408,6 +2417,10 @@ app.post('/api/logs/clear', async (req, res) => {
    ========================================================================== */
 app.get(['/about', '/about.html'], (req, res) => {
   return renderHtmlFile(path.join(__dirname, 'about.html'), res);
+});
+
+app.get(['/device-restricted', '/device-restricted.html'], (req, res) => {
+  return renderHtmlFile(path.join(__dirname, 'device-restricted.html'), res);
 });
 
 app.get(['/', '/index.html'], (req, res) => {

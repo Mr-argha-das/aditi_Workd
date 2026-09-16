@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <!-- SEO Meta Tags -->
-  <title>About INDEX MATRIX — Platform Architecture &amp; Capabilities</title>
-  <meta name="description" content="Explore INDEX MATRIX platform architecture: Enterprise Search Engine Crawler, Bot Indexer, Real-Time DOM Auditor &amp; Google Search Console Suite.">
+  <title>About INDEX MATRIX — Platform Architecture &amp; Leadership</title>
+  <meta name="description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and the engineering leadership behind the platform.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="theme-color" content="#020617">
   <link rel="canonical" href="https://www.indexmetrix.com/about.html">
@@ -19,15 +19,15 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="INDEX MATRIX">
   <meta property="og:url" content="https://www.indexmetrix.com/about.html">
-  <meta property="og:title" content="About INDEX MATRIX — Platform Architecture &amp; Capabilities">
-  <meta property="og:description" content="Explore INDEX MATRIX platform architecture: Enterprise Search Engine Crawler, Bot Indexer, Real-Time DOM Auditor &amp; Google Search Console Suite.">
+  <meta property="og:title" content="About INDEX MATRIX — Platform Architecture &amp; Leadership">
+  <meta property="og:description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and the engineering leadership behind the platform.">
   <meta property="og:image" content="https://www.indexmetrix.com/logo-highres.png">
 
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@indexmetrix">
-  <meta name="twitter:title" content="About INDEX MATRIX — Platform Architecture &amp; Capabilities">
-  <meta name="twitter:description" content="Explore INDEX MATRIX platform architecture: Enterprise Search Engine Crawler, Bot Indexer, Real-Time DOM Auditor &amp; Google Search Console Suite.">
+  <meta name="twitter:title" content="About INDEX MATRIX — Platform Architecture &amp; Leadership">
+  <meta name="twitter:description" content="Explore INDEX MATRIX: Enterprise Search Engine Crawler, Real-Time Bot Indexer, Google Search Console Suite, and the engineering leadership behind the platform.">
   <meta name="twitter:image" content="https://www.indexmetrix.com/logo-highres.png">
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -37,27 +37,50 @@
     "@type": "AboutPage",
     "name": "About INDEX MATRIX",
     "url": "https://www.indexmetrix.com/about.html",
-    "description": "Platform architecture, real-time crawler, bot indexer, and Google Search Console suite overview.",
+    "description": "Platform architecture, real-time crawler, bot indexer, and leadership overview.",
     "publisher": {
       "@type": "Organization",
       "name": "INDEX MATRIX",
       "url": "https://www.indexmetrix.com/",
       "logo": "https://www.indexmetrix.com/logo.svg"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Aditi Chandelkar",
+      "jobTitle": "Owner & Founder",
+      "sameAs": [
+        "https://github.com/aditichandelkar-sys",
+        "https://airfixdispatch.com/"
+      ]
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Himanshu Jangid",
+      "jobTitle": "Creator & Lead System Architect",
+      "email": "himanshulm9@gmail.com",
+      "sameAs": [
+        "https://github.com/himanshulm9-debug",
+        "https://linkedin.com/in/himanshu978",
+        "https://himanshu-bio.vercel.app"
+      ]
     }
   }
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Typography & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg-void: #020617;
-      --bg-surface: rgba(15, 23, 42, 0.82);
+      --bg-surface: rgba(15, 23, 42, 0.85);
       --bg-card: rgba(30, 41, 59, 0.7);
       --accent-cyan: #38bdf8;
       --accent-emerald: #34d399;
       --accent-violet: #a78bfa;
+      --accent-indigo: #6366f1;
       --accent-amber: #fbbf24;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -67,17 +90,19 @@
       --radius-sm: 10px;
       --radius-md: 16px;
       --radius-lg: 24px;
+      --radius-full: 9999px;
     }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-void);
       color: var(--text-main);
       min-height: 100vh;
       line-height: 1.6;
-      padding: 1.5rem 1rem 3rem 1rem;
       position: relative;
       overflow-x: hidden;
     }
+
     body::before {
       content: '';
       position: fixed;
@@ -89,77 +114,150 @@
       pointer-events: none;
       z-index: 0;
     }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(2, 6, 23, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-glass);
+      padding: 0.85rem 1.5rem;
+    }
+    .nav-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+    .brand-logo-img {
+      height: 38px;
+      width: 38px;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35);
+    }
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .brand-gradient {
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: var(--accent-cyan);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      list-style: none;
+    }
+    .nav-link-item a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .nav-link-item a:hover {
+      color: var(--accent-cyan);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .btn-nav-portal {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.15rem;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-nav-portal:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+    }
+
+    /* Main Container */
     .wrapper {
       position: relative;
       z-index: 1;
-      max-width: 820px;
+      max-width: 980px;
       margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem 1.25rem;
     }
 
-    /* Device Alert Banner */
-    .mobile-gate-banner {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
-      border: 1px solid rgba(251, 191, 36, 0.35);
-      border-radius: var(--radius-md);
-      padding: 1.25rem 1.4rem;
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(251, 191, 36, 0.1);
-    }
-    .banner-icon {
-      font-size: 1.75rem;
-      color: var(--accent-amber);
-      line-height: 1;
-      flex-shrink: 0;
-      margin-top: 0.2rem;
-    }
-    .banner-content h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fef08a;
-      margin-bottom: 0.3rem;
-    }
-    .banner-content p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* Brand Header */
-    .brand-header {
+    /* Hero Section */
+    .hero-section {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 3.5rem;
     }
-    .logo-badge {
+    .hero-badge {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      width: 58px;
-      height: 58px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(167, 139, 250, 0.2));
+      gap: 0.5rem;
+      padding: 0.35rem 0.95rem;
+      border-radius: var(--radius-full);
+      background: rgba(56, 189, 248, 0.1);
       border: 1px solid var(--border-cyan);
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
-      font-size: 1.75rem;
       color: var(--accent-cyan);
-      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
     }
-    .brand-title {
-      font-size: 2.25rem;
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.75rem;
       font-weight: 900;
       letter-spacing: -0.03em;
-      background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+      line-height: 1.15;
+      background: linear-gradient(180deg, #ffffff 40%, #cbd5e1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
     }
-    .brand-tagline {
-      font-size: 1rem;
+    .hero-subtitle {
+      font-size: 1.1rem;
       color: var(--text-muted);
-      max-width: 580px;
+      max-width: 680px;
       margin: 0 auto;
+      line-height: 1.6;
     }
 
     /* Section Cards */
@@ -169,82 +267,183 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: var(--radius-lg);
-      padding: 1.75rem;
-      margin-bottom: 1.75rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
     }
     .card-title {
-      font-size: 1.2rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
       font-weight: 700;
       color: #fff;
       display: flex;
       align-items: center;
       gap: 0.65rem;
       margin-bottom: 1.25rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border-glass);
     }
     .card-title i {
       color: var(--accent-cyan);
-      font-size: 1.35rem;
+      font-size: 1.45rem;
+    }
+
+    /* Leadership Profiles */
+    .leadership-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .leader-card {
+      background: rgba(10, 16, 35, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .leader-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-cyan);
+    }
+    .leader-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-indigo));
+    }
+    .leader-header {
+      display: flex;
+      align-items: center;
+      gap: 1.15rem;
+      margin-bottom: 1rem;
+    }
+    .leader-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.3));
+      border: 1px solid var(--border-cyan);
+      flex-shrink: 0;
+    }
+    .leader-names h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .leader-role-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent-cyan);
+      margin-top: 0.25rem;
+      letter-spacing: 0.03em;
+    }
+    .leader-bio {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+    .leader-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .leader-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .leader-link-pill:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--border-cyan);
+      color: #fff;
     }
 
     /* Feature Grid */
     .feature-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.25rem;
+      margin-top: 1rem;
     }
     .feature-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border-glass);
+      background: rgba(10, 16, 35, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: var(--radius-md);
-      padding: 1.25rem;
-      transition: transform 0.2s, border-color 0.2s;
+      padding: 1.4rem;
+      transition: transform 0.2s ease;
     }
     .feature-item:hover {
-      border-color: var(--border-cyan);
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.2);
     }
     .feature-header {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.5rem;
+      gap: 0.85rem;
+      margin-bottom: 0.85rem;
     }
     .feature-icon {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       flex-shrink: 0;
     }
-    .fi-cyan { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); }
-    .fi-emerald { background: rgba(52, 211, 153, 0.15); color: var(--accent-emerald); }
-    .fi-violet { background: rgba(167, 139, 250, 0.15); color: var(--accent-violet); }
-    .fi-amber { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); }
-    
+    .fi-cyan { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .fi-emerald { background: rgba(52, 211, 153, 0.15); color: var(--accent-emerald); border: 1px solid rgba(52, 211, 153, 0.3); }
+    .fi-violet { background: rgba(167, 139, 250, 0.15); color: var(--accent-violet); border: 1px solid rgba(167, 139, 250, 0.3); }
+    .fi-amber { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.3); }
+
     .feature-title {
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       color: #fff;
     }
     .feature-desc {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
-    /* Tech Specs Table */
+    /* Specs Grid */
     .specs-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-    @media (max-width: 480px) {
-      .specs-grid { grid-template-columns: 1fr; }
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
     }
     .spec-item {
       background: rgba(10, 16, 35, 0.7);
@@ -267,84 +466,247 @@
       margin-top: 0.2rem;
     }
 
-    /* Desktop Pass Button (Visible ONLY on non-touch desktop monitors) */
-    .desktop-launch-wrap {
-      display: none;
-      text-align: center;
-      margin-top: 2rem;
+    /* Global Footer */
+    .site-footer {
+      background: rgba(2, 6, 23, 0.95);
+      border-top: 1px solid var(--border-glass);
+      padding: 3rem 1.5rem 2rem 1.5rem;
+      margin-top: 4rem;
     }
-    .btn-launch {
+    .footer-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 2rem;
+    }
+    .footer-brand-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+    .footer-tagline {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .footer-nav-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      margin-bottom: 1rem;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.65rem;
-      padding: 0.9rem 1.8rem;
-      border-radius: var(--radius-full);
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4);
-      transition: all 0.2s;
+      gap: 0.4rem;
+      transition: color 0.2s;
     }
-    .btn-launch:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(2, 132, 199, 0.5);
+    .footer-links a:hover {
+      color: #fff;
+    }
+    .footer-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+      color: #6ee7b7;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+    .footer-bottom {
+      max-width: 1080px;
+      margin: 2rem auto 0 auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-dim);
     }
 
-    /* Footer */
-    .about-footer {
-      text-align: center;
-      margin-top: 3rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border-glass);
-      color: var(--text-dim);
-      font-size: 0.8rem;
+    @media (max-width: 820px) {
+      .footer-container {
+        grid-template-columns: 1fr 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+      .hero-title {
+        font-size: 2.15rem;
+      }
+      .leadership-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 540px) {
+      .footer-container {
+        grid-template-columns: 1fr;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="wrapper">
+  <!-- Top Navigation Header -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <a href="/index.html" class="nav-brand">
+        <img src="/logo-icon.svg" class="brand-logo-img" alt="IndexMatrix Logo" />
+        <div class="brand-title-wrap">
+          <span class="brand-title-text">Index<span class="brand-gradient">Matrix</span></span>
+          <span class="brand-sub">SUBMIT &bull; INDEX &bull; GROW</span>
+        </div>
+      </a>
 
-    <!-- Mobile Device Gatekeeper Banner -->
-    <div class="mobile-gate-banner" id="mobile-notice">
-      <i class="ri-computer-line banner-icon"></i>
-      <div class="banner-content">
-        <h3>Workstation Environment Required</h3>
-        <p>
-          You are viewing <strong>INDEX MATRIX</strong> from a mobile device. Because this platform is a high-velocity technical SEO workstation featuring multi-pane DOM crawlers, terminal telemetry streams, and batch dispatchers, <strong>interactive tools are restricted to laptop &amp; desktop displays</strong>. Below is the full architecture overview of the suite.
-        </p>
+      <ul class="nav-links">
+        <li class="nav-link-item"><a href="/index.html"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+        <li class="nav-link-item"><a href="/indexer.html"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+        <li class="nav-link-item"><a href="/keywords.html"><i class="ri-file-text-line"></i> Keywords</a></li>
+        <li class="nav-link-item"><a href="/console.html"><i class="ri-google-fill"></i> Google Console</a></li>
+        <li class="nav-link-item"><a href="/audit.html"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+        <li class="nav-link-item"><a href="#leadership"><i class="ri-team-line"></i> Team</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="/login.html" class="btn-nav-portal">
+          <i class="ri-lock-password-line"></i> Workstation Portal
+        </a>
       </div>
     </div>
+  </nav>
 
-    <!-- Brand Header -->
-    <div class="brand-header">
-      <div class="logo-badge" style="background: transparent; border: none; box-shadow: none; width: auto; height: auto;">
-        <img src="logo-icon.svg" alt="IndexMatrix Logo" style="width: 72px; height: 72px; border-radius: 18px; box-shadow: 0 8px 32px rgba(56, 189, 248, 0.45);" />
+  <!-- Content Container -->
+  <main class="wrapper">
+
+    <!-- Hero Header -->
+    <header class="hero-section">
+      <div class="hero-badge">
+        <i class="ri-code-s-slash-line"></i> Engineering &amp; Platform Architecture
       </div>
-      <h1 class="brand-title" style="font-family: 'Outfit', sans-serif; font-weight: 900; margin-top: 0.75rem;">Index<span style="background: linear-gradient(135deg, #38bdf8 0%, #6366f1 50%, #d946ef 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Matrix</span></h1>
-      <p class="brand-tagline" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; letter-spacing: 0.15em; color: var(--accent-cyan);">
-        SUBMIT &bull; INDEX &bull; GROW
+      <h1 class="hero-title">Inside INDEX MATRIX</h1>
+      <p class="hero-subtitle">
+        The unified enterprise technical search optimization suite engineered for real-time bot simulation, search engine crawl queue dispatching, and automated SERP auditing.
       </p>
-      <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 600px; margin: 0.75rem auto 0;">
-        Enterprise Search Engine Indexing Engine, Live Webpage Crawler &amp; Google Search Console Automation Platform.
-      </p>
-    </div>
+    </header>
 
-    <!-- About Platform Section -->
-    <div class="section-card">
+    <!-- About the Platform -->
+    <section class="section-card" id="overview">
       <h2 class="card-title"><i class="ri-information-line"></i> About the Platform</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.7;">
+        <strong>INDEX MATRIX</strong> is an enterprise-grade technical search operations platform created for webmasters, digital marketing agencies, and software engineering teams who require direct, authenticated interactions with search engine crawl queues.
+      </p>
+      <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+        Unlike standard dashboard wrappers that merely pull cached metrics, INDEX MATRIX executes authentic live HTTP/2 connection handshakes, extracts and parses DOM trees with high-throughput streaming engines, and interfaces directly with Google's Indexing API (via cryptographic RS256 JWT service accounts) and the modern IndexNow protocol (serving Bing, Yandex, Seznam, and Naver) for instant crawl acceleration.
+      </p>
+    </section>
+
+    <!-- Leadership & Engineering Section -->
+    <section class="section-card" id="leadership">
+      <h2 class="card-title"><i class="ri-team-line"></i> Platform Leadership &amp; Engineering</h2>
       <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem;">
-        <strong>INDEX MATRIX</strong> is an unified technical search optimization suite engineered for webmasters, digital agencies, and engineering teams who require real-time bot simulation, search engine index queue dispatching, and automated SERP auditing.
+        The vision, engineering, and architecture driving the INDEX MATRIX platform:
       </p>
-      <p style="color: var(--text-muted); font-size: 0.92rem;">
-        Unlike standard SEO dashboard wrappers, INDEX MATRIX directly executes real live HTTP/2 connection handshakes, extracts full DOM trees via high-speed streaming parsers, and interfaces directly with Google's Indexing API and the IndexNow protocol (Bing, Yandex, Seznam, Naver) for instant crawl queue push.
-      </p>
-    </div>
+
+      <div class="leadership-grid">
+
+        <!-- Aditi Chandelkar (Owner & Founder) -->
+        <article class="leader-card">
+          <div>
+            <div class="leader-header">
+              <div class="leader-avatar" style="background: linear-gradient(135deg, rgba(217, 70, 239, 0.2), rgba(99, 102, 241, 0.3)); border-color: rgba(217, 70, 239, 0.35);">
+                <i class="ri-user-star-line" style="color: #f0abfc;"></i>
+              </div>
+              <div class="leader-names">
+                <h3>Aditi Chandelkar</h3>
+                <span class="leader-role-badge" style="background: rgba(217, 70, 239, 0.15); color: #f0abfc;">Owner &amp; Founder</span>
+              </div>
+            </div>
+            <p class="leader-bio">
+              Owner and visionary behind INDEX MATRIX, steering platform operations, enterprise expansion, and strategic search technology solutions. Also the founder and owner of commercial dispatch service platform <strong>Airfix Dispatch</strong>.
+            </p>
+          </div>
+
+          <div class="leader-links">
+            <a href="mailto:aditichandelkar@gmail.com" class="leader-link-pill" title="Email Aditi Chandelkar">
+              <i class="ri-mail-line"></i> aditichandelkar@gmail.com
+            </a>
+            <a href="https://github.com/aditichandelkar-sys" target="_blank" rel="noopener noreferrer" class="leader-link-pill" title="Aditi Chandelkar GitHub">
+              <i class="ri-github-fill"></i> GitHub
+            </a>
+            <a href="https://airfixdispatch.com/" target="_blank" rel="noopener noreferrer" class="leader-link-pill" style="color: #f0abfc; border-color: rgba(217, 70, 239, 0.3);" title="Airfix Dispatch Website">
+              <i class="ri-global-line"></i> Airfix Dispatch
+            </a>
+          </div>
+        </article>
+
+        <!-- Himanshu Jangid (Creator & Lead Architect) -->
+        <article class="leader-card">
+          <div>
+            <div class="leader-header">
+              <div class="leader-avatar">
+                <i class="ri-code-box-line" style="color: var(--accent-cyan);"></i>
+              </div>
+              <div class="leader-names">
+                <h3>Himanshu Jangid</h3>
+                <span class="leader-role-badge">Creator &amp; Lead System Architect</span>
+              </div>
+            </div>
+            <p class="leader-bio">
+              Creator and principal software architect of INDEX MATRIX. Engineered the high-velocity DOM streaming parser, authentic Googlebot simulation pipeline, multi-tenant session vault, and cryptographic OAuth2 JWT dispatcher.
+            </p>
+          </div>
+
+          <div class="leader-links">
+            <a href="mailto:himanshulm9@gmail.com" class="leader-link-pill" title="Email Himanshu Jangid">
+              <i class="ri-mail-line"></i> himanshulm9@gmail.com
+            </a>
+            <a href="https://himanshu-bio.vercel.app" target="_blank" rel="noopener noreferrer" class="leader-link-pill" style="color: var(--accent-cyan); border-color: var(--border-cyan);" title="Himanshu Jangid Bio & Portfolio">
+              <i class="ri-user-smile-line"></i> Bio Portfolio
+            </a>
+            <a href="https://github.com/himanshulm9-debug" target="_blank" rel="noopener noreferrer" class="leader-link-pill" title="Himanshu Jangid GitHub">
+              <i class="ri-github-fill"></i> GitHub
+            </a>
+            <a href="https://linkedin.com/in/himanshu978" target="_blank" rel="noopener noreferrer" class="leader-link-pill" title="Himanshu Jangid LinkedIn">
+              <i class="ri-linkedin-box-fill"></i> LinkedIn
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </section>
 
     <!-- Core Capabilities Grid -->
-    <div class="section-card">
+    <section class="section-card" id="capabilities">
       <h2 class="card-title"><i class="ri-cpu-line"></i> Core Engine Capabilities</h2>
       <div class="feature-grid">
 
@@ -354,7 +716,7 @@
             <div class="feature-title">Live DOM Crawler &amp; Deep SERP Auditor</div>
           </div>
           <p class="feature-desc">
-            Executes real live webpage extractions, validating HTTP headers, canonical parity, OpenGraph &amp; Twitter card social graphs, security protocol compliance (HSTS, CSP, X-Frame), and Googlebot rendering readiness.
+            Executes real live webpage extractions, validating HTTP response headers, canonical integrity, OpenGraph &amp; Twitter card social graphs, security protocol compliance (HSTS, CSP, X-Frame), and Googlebot rendering readiness.
           </p>
         </div>
 
@@ -384,15 +746,15 @@
             <div class="feature-title">NLP Document &amp; PDF Keyword Extractor</div>
           </div>
           <p class="feature-desc">
-            Extracts raw text streams from binary PDF files and document uploads using high-throughput NLP tokenizers, clustering keyword density, classifying search intents (Informational, Commercial, Navigational), and running competitor gap analysis.
+            Extracts raw text streams from binary PDF files and document uploads using high-throughput NLP tokenizers, clustering keyword density, classifying search intents, and running competitor gap analysis.
           </p>
         </div>
 
       </div>
-    </div>
+    </section>
 
-    <!-- Technical Architecture -->
-    <div class="section-card">
+    <!-- Technical Architecture & Specs -->
+    <section class="section-card" id="architecture">
       <h2 class="card-title"><i class="ri-shield-check-line"></i> Architecture &amp; Security Specs</h2>
       <div class="specs-grid">
         <div class="spec-item">
@@ -420,58 +782,95 @@
           <div class="spec-val">Google WebSub, IndexNow, OAuth2</div>
         </div>
       </div>
+    </section>
+
+    <!-- Protocols & IndexNow Specs -->
+    <section class="section-card" id="protocols">
+      <h2 class="card-title"><i class="ri-pulse-line"></i> Search Engine Protocol Compliance</h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem;">
+        INDEX MATRIX implements authentic, specification-compliant protocols across all global search engine networks:
+      </p>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <div class="feature-header">
+            <div class="feature-icon fi-cyan"><i class="ri-global-line"></i></div>
+            <div class="feature-title">IndexNow Protocol v1.0</div>
+          </div>
+          <p class="feature-desc">
+            Directly submits URL lists to <code>api.indexnow.org</code> with root key validation (<code>/{key}.txt</code>) to instantly notify Bing, Yandex, Seznam.cz, and Naver simultaneously.
+          </p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-header">
+            <div class="feature-icon fi-emerald"><i class="ri-google-fill"></i></div>
+            <div class="feature-title">Google WebSub (PubSubHubbub)</div>
+          </div>
+          <p class="feature-desc">
+            Signals Google Frontend hubs (<code>pubsubhubbub.appspot.com</code>) with real-time publish pings to trigger immediate crawler bot scheduling for updated sitemaps and pages.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div>
+        <div class="footer-brand-title">
+          <img src="/logo-icon.svg" style="height: 32px; width: 32px; border-radius: 8px;" alt="IndexMatrix Logo" />
+          <span style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.15rem;">Index<span class="brand-gradient">Matrix</span></span>
+        </div>
+        <p class="footer-tagline">
+          Enterprise search engine intelligence, automated crawl dispatchers, and real-time SERP auditing suite.
+        </p>
+      </div>
+
+      <div>
+        <div class="footer-nav-title">Platform Hubs</div>
+        <ul class="footer-links">
+          <li><a href="/index.html"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+          <li><a href="/indexer.html"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+          <li><a href="/keywords.html"><i class="ri-file-text-line"></i> Keywords</a></li>
+          <li><a href="/console.html"><i class="ri-google-fill"></i> Google Console</a></li>
+          <li><a href="/audit.html"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-nav-title">Company &amp; Specs</div>
+        <ul class="footer-links">
+          <li><a href="/about.html"><i class="ri-information-line"></i> About Platform</a></li>
+          <li><a href="/about.html#leadership"><i class="ri-team-line"></i> Leadership Team</a></li>
+          <li><a href="/about.html#architecture"><i class="ri-cpu-line"></i> Architecture Specs</a></li>
+          <li><a href="/about.html#protocols"><i class="ri-pulse-line"></i> Protocols &amp; IndexNow</a></li>
+          <li><a href="https://airfixdispatch.com/" target="_blank" rel="noopener"><i class="ri-external-link-line"></i> Airfix Dispatch</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-nav-title">System Telemetry</div>
+        <div class="footer-status-pill">
+          <div class="status-dot"></div>
+          <span>Indexing Engine Online</span>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.5rem; line-height: 1.5;">
+          Created by <strong>Himanshu Jangid</strong><br />
+          Owned by <strong>Aditi Chandelkar</strong>
+        </div>
+      </div>
     </div>
 
-    <!-- Desktop Access Button (Shown only if user is on true desktop/laptop with mouse) -->
-    <div class="desktop-launch-wrap" id="desktop-launch-area">
-      <a href="/login.html" class="btn-launch">
-        <i class="ri-dashboard-line"></i> Launch Desktop Workstation Portal
-      </a>
+    <div class="footer-bottom">
+      <div>
+        &copy; 2026 INDEX MATRIX. All rights reserved.
+      </div>
+      <div>
+        High-Performance Technical Search Operations
+      </div>
     </div>
+  </footer>
 
-    <footer class="about-footer">
-      <p>&copy; 2026 INDEX MATRIX. All rights reserved.</p>
-      <p style="margin-top: 0.35rem; color: var(--text-dim);">Enterprise Search Engine Automation &bull; Technical Architecture Overview</p>
-    </footer>
-
-  </div>
-
-  <script>
-    // Hardware-level anti-desktop-spoofing detector
-    (function() {
-      function detectMobile() {
-        var ua = navigator.userAgent || '';
-        var mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
-        
-        // Touch digitizer detection (mobile touchscreens have multi-touch points)
-        var maxTouch = navigator.maxTouchPoints || 0;
-        var hasTouch = maxTouch > 1;
-        
-        // Pointer resolution media queries
-        var coarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-        var noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
-        
-        // Physical screen dimensions (phones have narrow physical hardware width)
-        var minDim = Math.min(window.screen.width, window.screen.height);
-        var isSmallScreen = minDim < 700;
-
-        return mobileUA || (hasTouch && (coarsePointer || noHover || isSmallScreen));
-      }
-
-      var isMobile = detectMobile();
-      var notice = document.getElementById('mobile-notice');
-      var launchArea = document.getElementById('desktop-launch-area');
-
-      if (!isMobile) {
-        // Visitor is on a genuine desktop / laptop with a physical mouse/pointer and large screen
-        if (notice) notice.style.display = 'none';
-        if (launchArea) launchArea.style.display = 'block';
-      } else {
-        // Mobile device (even if "Desktop site" is toggled in mobile Chrome/Safari)
-        if (notice) notice.style.display = 'flex';
-        if (launchArea) launchArea.style.display = 'none';
-      }
-    })();
-  </script>
 </body>
 </html>

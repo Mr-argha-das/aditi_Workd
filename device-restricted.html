@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Workstation Environment Required — INDEX MATRIX</title>
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#020617">
+
+  <!-- Vector Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/logo-icon.svg">
+  <link rel="alternate icon" type="image/png" sizes="192x192" href="/logo-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-192.png">
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-void: #020617;
+      --bg-surface: rgba(15, 23, 42, 0.85);
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --accent-cyan: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-amber: #fbbf24;
+      --accent-rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --border-cyan: rgba(56, 189, 248, 0.25);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --radius-md: 16px;
+      --radius-lg: 24px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-void);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.18), transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.12), transparent 40%),
+        radial-gradient(circle at 20% 90%, rgba(244, 63, 94, 0.08), transparent 35%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .restriction-box {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 540px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 1.75rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(56, 189, 248, 0.08);
+      text-align: center;
+    }
+
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .brand-logo-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.4);
+    }
+    .brand-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .brand-gradient {
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .warning-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      color: #fef08a;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .headline {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 1rem;
+      background: linear-gradient(180deg, #ffffff 40%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .description {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+    }
+
+    /* Diagnostics telemetry block */
+    .telemetry-card {
+      background: rgba(10, 16, 35, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.75rem;
+      text-align: left;
+    }
+    .telemetry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.5rem;
+    }
+    .telemetry-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      padding: 0.3rem 0;
+      color: var(--text-dim);
+    }
+    .telemetry-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: #f8fafc;
+      font-weight: 600;
+    }
+
+    /* Action Buttons */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      width: 100%;
+      padding: 0.95rem 1.5rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(2, 132, 199, 0.45);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .device-footer {
+      margin-top: 1.75rem;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+
+  <main class="restriction-box">
+    <!-- Brand -->
+    <div class="brand-lockup">
+      <img src="/logo-icon.svg" class="brand-logo-img" alt="IndexMatrix Logo" />
+      <span class="brand-name">Index<span class="brand-gradient">Matrix</span></span>
+    </div>
+
+    <!-- Alert Tag -->
+    <div>
+      <span class="warning-badge">
+        <i class="ri-laptop-line"></i> Workstation Required
+      </span>
+    </div>
+
+    <h1 class="headline">Laptop or Desktop Display Needed</h1>
+
+    <p class="description">
+      <strong>INDEX MATRIX</strong> is an enterprise-grade technical search operations workstation featuring multi-column DOM crawlers, terminal telemetry streams, and batch dispatch pipelines engineered for full-width high-resolution monitors.
+    </p>
+
+    <!-- Telemetry Inspector -->
+    <div class="telemetry-card">
+      <div class="telemetry-header">
+        <span><i class="ri-cpu-line"></i> Hardware Probe</span>
+        <span style="color: var(--accent-amber);">RESTRICTED</span>
+      </div>
+      <div class="telemetry-row">
+        <span>Viewport Width:</span>
+        <span class="telemetry-val" id="diag-width">Probing...</span>
+      </div>
+      <div class="telemetry-row">
+        <span>Digitizer Type:</span>
+        <span class="telemetry-val" id="diag-touch">Probing...</span>
+      </div>
+      <div class="telemetry-row">
+        <span>Operating System:</span>
+        <span class="telemetry-val" id="diag-platform">Probing...</span>
+      </div>
+      <div class="telemetry-row">
+        <span>Min Required Resolution:</span>
+        <span class="telemetry-val">1024 &times; 768 px</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-group">
+      <a href="/about.html" class="btn-primary">
+        <i class="ri-information-line"></i> Read Platform Overview &amp; Architecture
+      </a>
+      <a href="mailto:himanshulm9@gmail.com?subject=IndexMatrix%20Workstation%20Access%20Inquiry" class="btn-secondary">
+        <i class="ri-mail-line"></i> Contact Engineering Team
+      </a>
+    </div>
+
+    <p class="device-footer">
+      Please open <strong>https://www.indexmetrix.com</strong> on your computer or laptop browser to access the full interactive suite.
+    </p>
+  </main>
+
+  <script>
+    (function() {
+      // Populate hardware telemetry display
+      var w = window.innerWidth || screen.width;
+      var h = window.innerHeight || screen.height;
+      document.getElementById('diag-width').textContent = w + ' × ' + h + ' px';
+      
+      var maxTouch = navigator.maxTouchPoints || 0;
+      document.getElementById('diag-touch').textContent = maxTouch > 0 ? ('Touch Screen (' + maxTouch + ' pts)') : 'Fine Pointer (Mouse)';
+      
+      var ua = navigator.userAgent || '';
+      var platform = 'Standard Desktop';
+      if (/iPhone|iPad|iPod/i.test(ua)) platform = 'iOS Mobile Device';
+      else if (/Android/i.test(ua)) platform = 'Android Device';
+      else if (/Mac/i.test(ua)) platform = 'macOS';
+      else if (/Win/i.test(ua)) platform = 'Windows';
+      else if (/Linux/i.test(ua)) platform = 'Linux';
+      document.getElementById('diag-platform').textContent = platform;
+
+      // Auto-unlock if visitor opens this URL on a genuine desktop display
+      function checkDesktop() {
+        var minDim = Math.min(window.screen.width, window.screen.height);
+        var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        var noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
+        var isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
+        if (!isMobileUA && !coarse && !noHover && minDim >= 700) {
+          // Genuine desktop screen - provide quick launch button
+          var actGrp = document.querySelector('.action-group');
+          var launchBtn = document.createElement('a');
+          launchBtn.href = '/index.html';
+          launchBtn.className = 'btn-primary';
+          launchBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+          launchBtn.style.marginTop = '0.5rem';
+          launchBtn.innerHTML = '<i class="ri-check-line"></i> Desktop Detected — Open Dashboard';
+          actGrp.prepend(launchBtn);
+        }
+      }
+      checkDesktop();
+    })();
+  </script>
+
+</body>
+</html>
