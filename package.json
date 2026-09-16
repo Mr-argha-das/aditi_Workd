@@ -1,0 +1,33 @@
+{
+  "name": "index-matrix",
+  "version": "2.0.0",
+  "description": "INDEX MATRIX - High Performance SEO Crawler, Fast Document Bot Indexer & Google Search Console Suite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test/test-api.js && node test/test-pdf-scan.js && node test/test-ui-pages.js",
+    "test:pdf": "node test/test-pdf-scan.js",
+    "test:api": "node test/test-api.js"
+  },
+  "keywords": [
+    "seo",
+    "crawler",
+    "indexer",
+    "bot-indexer",
+    "audit",
+    "keywords",
+    "google-search-console",
+    "mongodb"
+  ],
+  "type": "commonjs",
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "mongoose": "^9.9.4",
+    "multer": "^2.3.0",
+    "pdf-parse": "^2.4.5"
+  }
+}

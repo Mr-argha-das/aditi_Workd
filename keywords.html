@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Keyword Extractor &amp; PDF Document Parser - INDEX MATRIX</title>
+  <meta name="description" content="Upload PDF documents or keyword files to extract high-intent SEO phrases, search volume, difficulty, and feed them into Google Search Console.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- Ambient Glow Spheres -->
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Sticky Glass Header Navigation -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" id="brand-logo-btn">
+        <div class="brand-icon">
+          <i class="ri-radar-fill"></i>
+        </div>
+        <span class="brand-app-name">INDEX MATRIX</span>
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+        <li><a href="indexer.html" class="nav-link" id="nav-indexer"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+        <li><a href="keywords.html" class="nav-link active" id="nav-keywords"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+        <li><a href="console.html" class="nav-link" id="nav-console"><i class="ri-google-fill"></i> Google Console</a></li>
+        <li><a href="audit.html" class="nav-link" id="nav-audit"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+        <li><a href="reports.html" class="nav-link" id="nav-reports"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="user-profile-badge" id="nav-user-badge">
+          <i class="ri-user-3-line"></i>
+          <span id="nav-username-display">Account</span>
+        </div>
+        <button type="button" class="btn-lock-session" onclick="lockUserSession()" title="Lock Platform Session">
+          <i class="ri-lock-line" style="color: var(--accent-cyan);"></i>
+          <span>Lock</span>
+        </button>
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" id="mobile-toggle-btn">
+          <i class="ri-menu-4-line"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <!-- Page Header Title -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div class="hero-pill" style="margin-bottom: 1rem;">
+        <i class="ri-file-pdf-line" style="color: var(--accent-cyan);"></i>
+        <span>Real PDF &amp; Document NLP Keyword Extractor</span>
+      </div>
+      <h1 style="font-size: 2.4rem; margin-bottom: 0.6rem;">
+        Extract Keywords from <span class="text-gradient-blue">PDFs &amp; Documents</span>
+      </h1>
+      <p style="color: var(--text-muted); max-width: 700px; margin: 0 auto; font-size: 1.05rem;">
+        Upload your real keyword research PDFs, client strategy docs, or CSVs. The engine parses the text, extracts n-grams, computes exact term density, and maps them to your target website.
+      </p>
+    </div>
+
+    <!-- Drag and Drop File Upload Area -->
+    <div class="glass-card glass-card-solid" style="padding: 2.5rem; margin-bottom: 2.5rem;">
+      <div id="dropzone" style="border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: var(--radius-lg); padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(15, 23, 42, 0.6);" onclick="document.getElementById('file-input').click()">
+        <input type="file" id="file-input" style="display: none;" accept=".pdf,.txt,.csv,.json,.doc,.docx" onchange="handleFileSelect(event)">
+        <div style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 1rem;">
+          <i class="ri-upload-cloud-2-line"></i>
+        </div>
+        <div style="font-size: 1.3rem; font-weight: 700; color: #ffffff; margin-bottom: 0.4rem;">Drop your Keyword PDF or Document here</div>
+        <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem;">Supports PDF, TXT, CSV, JSON files. Parsed through server binary parser &amp; in-browser NLP tokenizers.</div>
+        
+        <button type="button" class="btn btn-primary" style="pointer-events: none;">
+          <i class="ri-folder-open-line"></i> Browse Files
+        </button>
+
+        <div style="display: flex; justify-content: center; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap;">
+          <span class="badge badge-danger"><i class="ri-file-pdf-fill"></i> .PDF</span>
+          <span class="badge badge-primary"><i class="ri-file-text-fill"></i> .TXT</span>
+          <span class="badge badge-success"><i class="ri-file-excel-fill"></i> .CSV</span>
+          <span class="badge badge-warning"><i class="ri-file-code-fill"></i> .JSON</span>
+        </div>
+      </div>
+
+      <!-- Quick Preset Sample Datasets for instant testing -->
+      <div style="margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+          <i class="ri-magic-line" style="color: var(--accent-cyan);"></i>
+          <span>Or Test With Sample SEO Datasets:</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+          <button class="btn btn-sm btn-glass" onclick="loadSamplePreset('ecommerce')">
+            <i class="ri-shopping-bag-3-line" style="color: var(--accent-cyan);"></i> E-Commerce Tech Pack
+          </button>
+          <button class="btn btn-sm btn-glass" onclick="loadSamplePreset('saas')">
+            <i class="ri-cloud-line" style="color: var(--accent-indigo);"></i> B2B SaaS Cloud Pack
+          </button>
+          <button class="btn btn-sm btn-glass" onclick="loadSamplePreset('agency')">
+            <i class="ri-rocket-line" style="color: var(--accent-emerald);"></i> SEO Agency Pack
+          </button>
+          <button class="btn btn-sm btn-glass" onclick="loadSamplePreset('local')">
+            <i class="ri-map-pin-user-line" style="color: var(--accent-amber);"></i> Local Services Pack
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyword Results Table & Filter Section -->
+    <div class="glass-card glass-card-solid" style="padding: 2.25rem; margin-bottom: 2.5rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+            <h3 style="font-size: 1.4rem; margin: 0;">Extracted Target Phrases</h3>
+            <span class="badge badge-primary" id="kw-count-badge">0 Keywords</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.25rem;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;" id="kw-source-info">
+              Source: Awaiting file or live crawl
+            </p>
+            <button 
+              type="button" 
+              class="btn btn-sm btn-glass" 
+              id="btn-clear-keywords" 
+              onclick="clearExtractedKeywords()" 
+              style="display: none; padding: 0.2rem 0.65rem; font-size: 0.78rem; color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.08); align-items: center; gap: 0.35rem; border-radius: var(--radius-sm); cursor: pointer;" 
+              title="Clear all extracted keywords and active file"
+            >
+              <i class="ri-delete-bin-line"></i> Clear Keywords
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+          <button class="btn btn-secondary btn-sm" onclick="exportKeywordsCsv()">
+            <i class="ri-download-2-line"></i> Export CSV
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="feedToGoogleConsole()">
+            <i class="ri-google-fill"></i> Feed into Google Console
+          </button>
+        </div>
+      </div>
+
+      <!-- Keyword Filter Bar -->
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-sm btn-glass active-intent-btn btn-primary" onclick="filterByIntent('all', this)">All Intents</button>
+          <button class="btn btn-sm btn-glass" onclick="filterByIntent('Informational', this)">Informational</button>
+          <button class="btn btn-sm btn-glass" onclick="filterByIntent('Commercial', this)">Commercial</button>
+          <button class="btn btn-sm btn-glass" onclick="filterByIntent('Transactional', this)">Transactional</button>
+        </div>
+
+        <div style="max-width: 280px; width: 100%;">
+          <input 
+            type="text" 
+            id="filter-keyword-input" 
+            class="form-control" 
+            style="padding: 0.5rem 0.9rem; font-size: 0.85rem;" 
+            placeholder="Search keywords..." 
+            oninput="filterKeywords()"
+          >
+        </div>
+      </div>
+
+      <!-- Keywords Table -->
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 40px;"><input type="checkbox" id="check-all-kws" onchange="toggleSelectAllKws(this)" checked></th>
+              <th>Keyword Phrase</th>
+              <th>Search Intent</th>
+              <th>Occurrences</th>
+              <th>Density</th>
+              <th>Difficulty Score</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="keywords-table-body">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">
+                No keywords loaded yet. Upload a PDF/CSV file or scan a website URL!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Competitor Keyword Gap Analysis Section -->
+    <div class="glass-card glass-card-solid" style="padding: 2.25rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+            <h3 style="font-size: 1.35rem; margin: 0;">Competitor Keyword Gap &amp; Overlap Engine</h3>
+            <span class="badge badge-warning"><i class="ri-sword-line"></i> Competitive Edge</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">Compare your active website against any competitor URL to uncover untapped search queries they rank for.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 280px; position: relative;">
+          <input 
+            type="url" 
+            id="comp-url-input" 
+            class="form-control" 
+            style="padding: 0.75rem 1rem;" 
+            placeholder="Enter competitor URL (e.g., https://competitor.com)"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+          >
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-run-comp-gap" onclick="runCompetitorGap()">
+          <i class="ri-radar-line"></i> Compare Keyword Gap
+        </button>
+      </div>
+
+      <!-- Competitor Comparison Results View (Hidden until run) -->
+      <div id="comp-results-container" style="display: none;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: var(--radius-sm); padding: 1rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Shared Keywords</div>
+            <div id="comp-overlap-count" style="font-size: 1.6rem; font-weight: 700; color: var(--accent-cyan);">0</div>
+            <div style="font-size: 0.7rem; color: var(--accent-emerald);">Both Sites Target</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-sm); padding: 1rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Competitor Keyword Gaps</div>
+            <div id="comp-gap-count" style="font-size: 1.6rem; font-weight: 700; color: #fbbf24;">0</div>
+            <div style="font-size: 0.7rem; color: #fbbf24;">Untapped Opportunities</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(52, 211, 153, 0.2); border-radius: var(--radius-sm); padding: 1rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Your Exclusive Edge</div>
+            <div id="comp-target-count" style="font-size: 1.6rem; font-weight: 700; color: var(--accent-emerald);">0</div>
+            <div style="font-size: 0.7rem; color: var(--accent-emerald);">Only on Your Site</div>
+          </div>
+        </div>
+
+        <h4 style="font-size: 1rem; margin-bottom: 0.75rem; color: #ffffff; display: flex; align-items: center; gap: 0.4rem;">
+          <i class="ri-lightbulb-flash-line" style="color: #fbbf24;"></i> High-Impact Keyword Gap Opportunities
+        </h4>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Discovered Competitor Phrase</th>
+                <th>Search Volume</th>
+                <th>Competitor Density</th>
+                <th>Intent</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="comp-gap-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Glass Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="brand-icon footer-icon">
+            <i class="ri-radar-fill"></i>
+          </div>
+          <span class="brand-app-name">INDEX MATRIX</span>
+        </div>
+        <p class="footer-tagline">
+          Enterprise SEO intelligence, autonomous keyword ranking matrices, and high-speed search engine crawler dispatch engine.
+        </p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-nav-title">Platform Hubs</div>
+        <ul class="footer-links">
+          <li><a href="index.html"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+          <li><a href="indexer.html"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+          <li><a href="keywords.html"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+          <li><a href="console.html"><i class="ri-google-fill"></i> Google Console</a></li>
+          <li><a href="audit.html"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+          <li><a href="reports.html"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-status-panel">
+        <div class="footer-nav-title">Engine Security &amp; Telemetry</div>
+        <div class="footer-status-pills">
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Indexing Engine Online</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Encrypted Session Vault</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Googlebot Webhook Stream Online</span>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          &copy; <span id="footer-year">2026</span> <span class="brand-app-name">INDEX MATRIX</span>. High-Performance Search Operations.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/pdf-parser.js"></script>
+  <script src="js/console-feeder.js"></script>
+  <script>
+    let currentKeywords = [];
+    let selectedIntent = 'all';
+
+    async function handleFileSelect(e) {
+      const file = e.target.files ? e.target.files[0] : null;
+      if (!file) return;
+      processUploadedFile(file);
+      e.target.value = '';
+    }
+
+    async function processUploadedFile(file) {
+      if (!file) return;
+
+      SEONexus.showToast(`Parsing ${file.name}...`, 'info');
+
+      try {
+        const result = await PDFKeywordExtractor.parseFile(file);
+        if (result && result.keywords && result.keywords.length > 0) {
+          currentKeywords = result.keywords;
+          
+          const state = SEONexus.getState();
+          state.extractedKeywords = currentKeywords;
+          state.primaryKeywords = currentKeywords.slice(0, 5).map(k => k.term);
+          state.uploadedFileName = file.name;
+          state.uploadedFileSize = (file.size / 1024).toFixed(1) + ' KB';
+          state.uploadedFileDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          SEONexus.saveState(state);
+
+          renderKeywordsTable();
+          SEONexus.showToast(`Extracted ${currentKeywords.length} keywords from ${file.name}!`, 'success');
+        } else {
+          SEONexus.showToast(`No keywords could be extracted from ${file.name}. Please check file contents.`, 'warning');
+        }
+      } catch (err) {
+        console.error('File parse error:', err);
+        SEONexus.showToast('Failed to parse file: ' + err.message, 'error');
+      }
+    }
+
+    function loadSamplePreset(packKey) {
+      const result = PDFKeywordExtractor.loadSamplePack(packKey);
+      if (result && result.keywords) {
+        currentKeywords = result.keywords;
+        
+        const state = SEONexus.getState();
+        state.extractedKeywords = currentKeywords;
+        state.primaryKeywords = currentKeywords.slice(0, 5).map(k => k.term);
+        state.uploadedFileName = result.fileName;
+        state.uploadedFileSize = result.fileSize;
+        state.uploadedFileDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        SEONexus.saveState(state);
+
+        renderKeywordsTable();
+        SEONexus.showToast(`Loaded ${result.fileName}!`, 'success');
+      }
+    }
+
+    function clearExtractedKeywords() {
+      const state = SEONexus.getState();
+      state.extractedKeywords = [];
+      state.primaryKeywords = [];
+      state.uploadedFileName = '';
+      state.uploadedFileSize = '';
+      state.uploadedFileDate = '';
+      SEONexus.saveState(state);
+
+      currentKeywords = [];
+      const fileInput = document.getElementById('file-input');
+      if (fileInput) fileInput.value = '';
+
+      const searchInput = document.getElementById('filter-keyword-input');
+      if (searchInput) searchInput.value = '';
+
+      renderKeywordsTable();
+      SEONexus.showToast('Cleared all extracted keywords and active file attachment.', 'info');
+    }
+
+    function renderKeywordsTable() {
+      const state = SEONexus.getState();
+      currentKeywords = state.extractedKeywords || [];
+      const hasKeywords = currentKeywords.length > 0 || !!state.uploadedFileName;
+      
+      const countBadge = document.getElementById('kw-count-badge');
+      if (countBadge) {
+        countBadge.textContent = `${currentKeywords.length} Keywords`;
+      }
+
+      const sourceInfo = document.getElementById('kw-source-info');
+      const clearBtn = document.getElementById('btn-clear-keywords');
+
+      if (sourceInfo) {
+        if (state.uploadedFileName) {
+          sourceInfo.innerHTML = `Active Source: <strong style="color: #ffffff;">${state.uploadedFileName}</strong> (${state.uploadedFileSize || 'Extracted'})`;
+          if (clearBtn) clearBtn.style.display = 'inline-flex';
+        } else if (state.targetUrl) {
+          sourceInfo.innerHTML = `Extracted from Live Web: <strong style="color: var(--accent-cyan);">${state.targetUrl}</strong>`;
+          if (clearBtn) clearBtn.style.display = 'inline-flex';
+        } else {
+          sourceInfo.textContent = 'Source: Awaiting file or live crawl';
+          if (clearBtn) clearBtn.style.display = 'none';
+        }
+      }
+
+      const searchTerm = (document.getElementById('filter-keyword-input')?.value || '').toLowerCase().trim();
+      const tbody = document.getElementById('keywords-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      let filtered = currentKeywords.filter(kw => {
+        const matchesSearch = (kw.term || '').toLowerCase().includes(searchTerm);
+        const matchesIntent = selectedIntent === 'all' || (kw.intent || '').toLowerCase() === selectedIntent.toLowerCase();
+        return matchesSearch && matchesIntent;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">No keywords loaded yet. Upload a PDF/CSV file or scan a website URL!</td></tr>`;
+        return;
+      }
+
+      filtered.forEach((kw) => {
+        const row = document.createElement('tr');
+        
+        let intentBadge = 'badge-primary';
+        if (kw.intent === 'Commercial') intentBadge = 'badge-warning';
+        if (kw.intent === 'Transactional') intentBadge = 'badge-success';
+        if (kw.intent === 'Informational') intentBadge = 'badge-primary';
+
+        const wordsCount = (kw.term || '').split(' ').length;
+        const gramTag = wordsCount === 1 ? '1-Word' : wordsCount === 2 ? '2-Word' : '3-Word';
+
+        row.innerHTML = `
+          <td><input type="checkbox" class="kw-row-check" checked data-term="${kw.term}" onchange="updateSelectedCount()"></td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <strong style="color: #ffffff; font-size: 0.92rem;">${kw.term}</strong>
+              <span style="font-size: 0.68rem; padding: 0.1rem 0.4rem; background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); border-radius: var(--radius-full); font-weight: 600;">${gramTag}</span>
+            </div>
+          </td>
+          <td><span class="badge ${intentBadge}">${kw.intent || 'General'}</span></td>
+          <td><strong style="color: #ffffff;">${kw.count || 1}x</strong></td>
+          <td>
+            <span style="font-weight: 600; color: var(--accent-cyan);">${kw.density || '1.5%'}</span>
+          </td>
+          <td>
+            <div style="font-size: 0.85rem; font-weight: 600;">${kw.difficulty || 'Medium (45%)'}</div>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-glass" onclick="SEONexus.copyToClipboard('${(kw.term || '').replace(/'/g, "\\'")}', 'Keyword copied!')" title="Copy keyword">
+              <i class="ri-file-copy-line"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      updateSelectedCount();
+    }
+
+    function filterKeywords() {
+      renderKeywordsTable();
+    }
+
+    function filterByIntent(intent, btnElement) {
+      selectedIntent = intent;
+      document.querySelectorAll('.active-intent-btn').forEach(btn => btn.classList.remove('btn-primary', 'active-intent-btn'));
+      btnElement.classList.add('btn-primary', 'active-intent-btn');
+      renderKeywordsTable();
+    }
+
+    function toggleSelectAllKws(master) {
+      document.querySelectorAll('.kw-row-check').forEach(cb => {
+        cb.checked = master.checked;
+      });
+      updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+      const checkedBoxes = document.querySelectorAll('.kw-row-check:checked');
+      const allBoxes = document.querySelectorAll('.kw-row-check');
+      const countBadge = document.getElementById('kw-count-badge');
+      if (allBoxes.length > 0 && countBadge) {
+        countBadge.textContent = `${checkedBoxes.length} of ${allBoxes.length} Selected`;
+      }
+    }
+
+    function exportKeywordsCsv() {
+      const state = SEONexus.getState();
+      const allKws = state.extractedKeywords || [];
+      if (allKws.length === 0) {
+        SEONexus.showToast('No keywords to export!', 'error');
+        return;
+      }
+
+      const checkedTerms = new Set();
+      document.querySelectorAll('.kw-row-check:checked').forEach(cb => {
+        const term = cb.getAttribute('data-term');
+        if (term) checkedTerms.add(term);
+      });
+
+      let kwsToExport = allKws;
+      if (checkedTerms.size > 0 && checkedTerms.size < allKws.length) {
+        kwsToExport = allKws.filter(k => checkedTerms.has(k.term));
+      }
+
+      let csv = 'Keyword,Intent,Occurrences,Density,Difficulty\n';
+      kwsToExport.forEach(k => {
+        csv += `"${k.term}","${k.intent || 'General'}",${k.count || 1},"${k.density || '1.5%'}","${k.difficulty || 'Medium'}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `index_matrix_keywords_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      SEONexus.showToast(`Exported ${kwsToExport.length} keywords to CSV!`, 'success');
+    }
+
+    function feedToGoogleConsole() {
+      SEONexus.showToast('Packaging keywords for Google Search Console...', 'success');
+      setTimeout(() => {
+        window.location.href = 'console.html';
+      }, 450);
+    }
+
+    async function runCompetitorGap() {
+      const state = SEONexus.getState();
+      const targetUrl = state.targetUrl;
+      const compInput = document.getElementById('comp-url-input');
+      const compUrl = compInput ? compInput.value.trim() : '';
+
+      if (!targetUrl) {
+        SEONexus.showToast('Please first scan your website on the Dashboard!', 'error');
+        return;
+      }
+      if (!compUrl) {
+        SEONexus.showToast('Please enter a competitor URL to compare!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-run-comp-gap');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Analyzing...';
+
+      const data = await SEONexus.compareCompetitor(targetUrl, compUrl);
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+
+      if (!data || !data.success) return;
+
+      const container = document.getElementById('comp-results-container');
+      container.style.display = 'block';
+
+      document.getElementById('comp-overlap-count').textContent = data.analysis.overlapCount;
+      document.getElementById('comp-gap-count').textContent = data.analysis.competitorExclusiveCount;
+      document.getElementById('comp-target-count').textContent = data.analysis.targetExclusiveCount;
+
+      const tbody = document.getElementById('comp-gap-tbody');
+      tbody.innerHTML = '';
+
+      const gaps = data.analysis.competitorGaps || [];
+      if (gaps.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No unique competitor keyword gaps found.</td></tr>';
+        return;
+      }
+
+      gaps.forEach(g => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong style="color: #ffffff;">${g.term}</strong></td>
+          <td style="font-family: monospace;">${(g.searchVol || 1500).toLocaleString()} /mo</td>
+          <td style="color: #fbbf24; font-weight: 600;">${g.density || '2.1%'}</td>
+          <td><span class="badge badge-warning">${g.intent || 'Commercial'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-glass" onclick="addGapKeyword('${g.term.replace(/'/g, "\\'")}', '${g.intent || 'Commercial'}', ${g.searchVol || 1500}, '${g.density || '2.1%'}', ${g.difficulty || 35})" title="Add to project target keywords">
+              <i class="ri-add-line" style="color: var(--accent-emerald);"></i> Add Keyword
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addGapKeyword(term, intent, searchVol, density, difficulty) {
+      const state = SEONexus.getState();
+      const existing = (state.extractedKeywords || []).some(k => (k.term || '').toLowerCase() === term.toLowerCase());
+      if (existing) {
+        SEONexus.showToast(`Keyword "${term}" is already in your project list.`, 'info');
+        return;
+      }
+
+      state.extractedKeywords = state.extractedKeywords || [];
+      state.extractedKeywords.unshift({
+        term,
+        intent,
+        searchVol,
+        density,
+        difficulty,
+        count: 1
+      });
+
+      SEONexus.saveState(state);
+      renderKeywordsTable();
+      SEONexus.showToast(`Added "${term}" to target keyword matrix!`, 'success');
+    }
+
+    window.addEventListener('seonexus:statechange', renderKeywordsTable);
+    document.addEventListener('DOMContentLoaded', async () => {
+      await SEONexus.init();
+      renderKeywordsTable();
+
+      const dropzone = document.getElementById('dropzone');
+      if (dropzone) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+          dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.style.borderColor = 'var(--accent-cyan)';
+            dropzone.style.background = 'rgba(56, 189, 248, 0.15)';
+          }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+          dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+            dropzone.style.background = 'rgba(15, 23, 42, 0.6)';
+          }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+          const dt = e.dataTransfer;
+          const files = dt ? dt.files : null;
+          if (files && files.length > 0) {
+            processUploadedFile(files[0]);
+          }
+        }, false);
+      }
+    });
+  </script>
+</body>
+</html>

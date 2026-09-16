@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Search Console &amp; Indexing API Feeder - INDEX MATRIX</title>
+  <meta name="description" content="Feed website URLs and extracted keyword lists directly into Google Search Console, trigger Indexing API payloads, and inspect Googlebot crawl status.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- Ambient Glow Spheres -->
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Sticky Glass Header Navigation -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" id="brand-logo-btn">
+        <div class="brand-icon">
+          <i class="ri-radar-fill"></i>
+        </div>
+        <span class="brand-app-name">INDEX MATRIX</span>
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+        <li><a href="indexer.html" class="nav-link" id="nav-indexer"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+        <li><a href="keywords.html" class="nav-link" id="nav-keywords"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+        <li><a href="console.html" class="nav-link active" id="nav-console"><i class="ri-google-fill"></i> Google Console</a></li>
+        <li><a href="audit.html" class="nav-link" id="nav-audit"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+        <li><a href="reports.html" class="nav-link" id="nav-reports"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="user-profile-badge" id="nav-user-badge">
+          <i class="ri-user-3-line"></i>
+          <span id="nav-username-display">Account</span>
+        </div>
+        <button type="button" class="btn-lock-session" onclick="lockUserSession()" title="Lock Platform Session">
+          <i class="ri-lock-line" style="color: var(--accent-cyan);"></i>
+          <span>Lock</span>
+        </button>
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" id="mobile-toggle-btn">
+          <i class="ri-menu-4-line"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <!-- Page Header Title -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div class="hero-pill" style="margin-bottom: 1rem;">
+        <i class="ri-google-fill" style="color: var(--accent-cyan);"></i>
+        <span>Official Google Search Central &amp; Indexing API Pipeline</span>
+      </div>
+      <h1 style="font-size: 2.4rem; margin-bottom: 0.6rem;">
+        Google Search Console <span class="text-gradient-blue">Direct Feeding Hub</span>
+      </h1>
+      <p style="color: var(--text-muted); max-width: 720px; margin: 0 auto; font-size: 1.05rem;">
+        Feed your website URL and attached PDF keywords into Google's official indexing pipeline. Dispatch Google Indexing API requests and inspect Googlebot crawl diagnostics.
+      </p>
+    </div>
+
+    <!-- Direct URL Input Station & Google Search Console Action Center -->
+    <div class="glass-card glass-card-solid" style="padding: 2rem; margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+        <div>
+          <h2 style="font-size: 1.3rem; margin: 0 0 0.35rem 0; color: #ffffff; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-radar-fill" style="color: var(--accent-cyan);"></i> Google Search Console URL Dispatcher
+          </h2>
+          <span style="font-size: 0.82rem; color: var(--text-muted);">
+            Paste any website URL below to index directly with Google Indexing API v3 and generate official Search Console crawl requests.
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+          <span id="gsc-sa-status-badge" class="badge badge-primary" style="font-size: 0.76rem; padding: 0.35rem 0.75rem;">
+            <i class="ri-shield-keyhole-line"></i> Checking Key...
+          </span>
+          <button class="btn btn-secondary btn-sm" onclick="toggleCredentialsModal()" title="Configure Google Cloud Service Account">
+            <i class="ri-key-2-line"></i> API Credentials Setup
+          </button>
+        </div>
+      </div>
+
+      <form id="console-url-form" onsubmit="handleConsoleUrlSubmit(event)">
+        <div class="url-scan-box" style="margin-bottom: 1.25rem;">
+          <div class="url-scan-prefix">
+            <i class="ri-link"></i>
+          </div>
+          <input 
+            type="url" 
+            id="console-url-input" 
+            class="url-scan-input" 
+            placeholder="https://yourdomain.com/page or any live webpage URL" 
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            required
+          >
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button type="submit" class="btn btn-primary" id="btn-trigger-crawl" style="flex: 1; min-width: 250px; padding: 0.95rem 1.4rem; font-weight: 700; font-size: 0.95rem;">
+            <i class="ri-send-plane-fill"></i>
+            <span>Inspect &amp; Dispatch to Google Indexing API</span>
+          </button>
+          <button type="button" class="btn btn-glass" id="btn-open-gsc-direct" onclick="openInGoogleSearchConsole()" style="padding: 0.95rem 1.4rem; font-weight: 700; font-size: 0.95rem; border-color: rgba(56, 189, 248, 0.4); color: var(--accent-cyan); background: rgba(14, 165, 233, 0.1);">
+            <i class="ri-external-link-line"></i>
+            <span>🚀 Open in Google Search Console (Request Indexing)</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Active Website Info Strip -->
+      <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; font-size: 0.85rem;">
+        <div style="color: var(--text-muted);">
+          Current Active Target: <strong id="console-target-url" style="color: #ffffff;">No Website Selected</strong>
+        </div>
+        <div style="color: var(--text-muted);">
+          Attached Keyword Source: <strong id="console-attached-file" style="color: #ffffff;">None</strong> (<span id="console-kw-count">0</span> keywords)
+        </div>
+      </div>
+    </div>
+
+    <!-- Credentials Modal / Card (Collapsible) -->
+    <div id="credentials-card" class="glass-card glass-card-solid" style="display: none; padding: 1.75rem; margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+        <h3 style="font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="ri-shield-keyhole-line" style="color: var(--accent-cyan);"></i>
+          Google Cloud Service Account &amp; API Key Configuration
+        </h3>
+        <button class="btn btn-sm btn-glass" onclick="toggleCredentialsModal()"><i class="ri-close-line"></i> Close</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+        Connect your real Google Cloud Service Account to push direct requests to <code>https://indexing.googleapis.com/v3/urlNotifications:publish</code> with OAuth2 token authentication.
+      </p>
+
+      <!-- Drop or Upload Service Account JSON Key -->
+      <div style="background: rgba(15, 23, 42, 0.7); border: 2px dashed rgba(56, 189, 248, 0.35); border-radius: var(--radius-md); padding: 1.25rem; text-align: center; margin-bottom: 1.25rem; cursor: pointer;" onclick="document.getElementById('sa-json-file-input').click()">
+        <input type="file" id="sa-json-file-input" style="display: none;" accept=".json" onchange="handleSaFileUpload(event)">
+        <i class="ri-upload-cloud-line" style="font-size: 1.8rem; color: var(--accent-cyan);"></i>
+        <div style="font-size: 0.9rem; font-weight: 700; color: #ffffff; margin-top: 0.2rem;">Drop or Upload service_account.json Key File</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Auto-extracts client_email, project_id and validates private key format</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <label class="form-label">Google Service Account Email</label>
+          <input type="email" id="gsc-sa-email" class="form-control" placeholder="seo-indexer@your-gcp-project.iam.gserviceaccount.com">
+        </div>
+        <div>
+          <label class="form-label">OAuth2 Bearer Token / API Secret Key</label>
+          <input type="password" id="gsc-bearer-token" class="form-control" placeholder="ya29.a0AfH6SM...">
+        </div>
+      </div>
+
+      <div id="sa-validation-feedback" style="display: none; padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1rem; font-size: 0.82rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399;"></div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="font-size: 0.78rem; color: var(--text-muted);">
+          <i class="ri-database-2-line" style="color: var(--accent-cyan);"></i> Credentials are encrypted &amp; stored securely in your private MongoDB database.
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-sm btn-glass" type="button" onclick="testCurrentGscCreds()">
+            <i class="ri-check-double-line"></i> Verify Key
+          </button>
+          <button class="btn btn-sm btn-primary" onclick="saveGscCredentials()">
+            <i class="ri-save-line"></i> Save Credentials
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Search Console URL Inspection Panel & Real-time Terminal -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.75rem; margin-bottom: 2.5rem;">
+      <!-- GSC Inspection Card -->
+      <div class="glass-card glass-card-solid" style="padding: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--card-border);">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.3); display: flex; align-items: center; justify-content: center; color: var(--accent-emerald); font-size: 1.35rem;">
+              <i class="ri-checkbox-circle-fill"></i>
+            </div>
+            <div>
+              <h3 style="font-size: 1.15rem;" id="gsc-headline-status">Google Search Console Status</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted);" id="gsc-headline-desc">Eligible to appear in Google search results.</p>
+            </div>
+          </div>
+          <span class="badge badge-success" id="gsc-status-badge"><i class="ri-check-double-line"></i> GSC Ready</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem; font-size: 0.88rem;">
+          <!-- Coverage Section -->
+          <div>
+            <div style="font-weight: 700; font-size: 0.92rem; margin-bottom: 0.6rem; color: var(--accent-cyan); display: flex; align-items: center; gap: 0.4rem;">
+              <i class="ri-file-list-3-line"></i> Page Indexing &amp; Googlebot Signals
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: rgba(15, 23, 42, 0.8); padding: 0.9rem; border-radius: var(--radius-md); border: 1px solid var(--card-border);">
+              <div>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">Discovery Sitemaps</span>
+                <div style="font-weight: 600; font-size: 0.82rem; font-family: monospace; color: #ffffff;" id="gsc-sitemap-val">/sitemap.xml</div>
+              </div>
+              <div>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">Last Live Crawl</span>
+                <div id="gsc-crawl-time" style="font-weight: 600; font-size: 0.82rem; color: #ffffff;">--</div>
+              </div>
+              <div>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">Crawled As</span>
+                <div style="font-weight: 600; font-size: 0.82rem; color: #ffffff;">Googlebot Smartphone</div>
+              </div>
+              <div>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">Crawl Allowed?</span>
+                <div style="font-weight: 600; font-size: 0.82rem; color: var(--accent-emerald);" id="gsc-crawl-allowed"><i class="ri-check-line"></i> Yes (robots.txt ok)</div>
+              </div>
+              <div>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">Page Fetch</span>
+                <div style="font-weight: 600; font-size: 0.82rem; color: var(--accent-emerald);" id="gsc-fetch-status"><i class="ri-check-line"></i> Successful (200 OK)</div>
+              </div>
+              <div>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">Indexing Allowed?</span>
+                <div style="font-weight: 600; font-size: 0.82rem; color: var(--accent-emerald);"><i class="ri-check-line"></i> Yes</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Canonical Section -->
+          <div>
+            <div style="font-weight: 700; font-size: 0.92rem; margin-bottom: 0.6rem; color: var(--accent-cyan); display: flex; align-items: center; gap: 0.4rem;">
+              <i class="ri-links-line"></i> Canonical &amp; Search Intent Match
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; background: rgba(15, 23, 42, 0.8); padding: 0.9rem; border-radius: var(--radius-md); border: 1px solid var(--card-border);">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">User-declared canonical:</span>
+                <strong id="gsc-user-canonical" style="font-family: monospace; font-size: 0.82rem; color: #ffffff;">--</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Google-selected canonical:</span>
+                <strong id="gsc-google-canonical" style="font-family: monospace; font-size: 0.82rem; color: var(--accent-cyan);">--</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Attached Keyword Entity:</span>
+                <span class="badge badge-primary" id="gsc-entity-badge">Verified Structured Entity</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Googlebot Terminal Simulator -->
+      <div class="terminal-wrapper" style="margin-top: 0;">
+        <div class="terminal-topbar">
+          <div class="terminal-dots">
+            <div class="dot dot-1"></div>
+            <div class="dot dot-2"></div>
+            <div class="dot dot-3"></div>
+          </div>
+          <div class="terminal-title">
+            <i class="ri-terminal-box-line"></i> Googlebot Live Inspection &amp; Indexing Telemetry
+          </div>
+          <button class="btn btn-sm btn-glass" style="color: #94a3b8; padding: 0.2rem 0.6rem; font-size: 0.75rem;" onclick="clearTerminal()">
+            Clear
+          </button>
+        </div>
+
+        <div class="terminal-stream" id="terminal-stream">
+          <div class="log-row">
+            <span class="log-time">[System]</span>
+            <span class="tag-sys">[READY]</span>
+            <span class="text-dim">Google Search Console Connector standing by. Click 'Inspect &amp; Dispatch to Google' above to begin.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Developer Tools: Google Indexing API Payload (Collapsible) -->
+    <div class="glass-card glass-card-solid" style="padding: 1.5rem 2rem; margin-bottom: 2.5rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; cursor: pointer;" onclick="togglePayloadAccordion()">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <h2 style="font-size: 1.25rem; margin-bottom: 0.2rem;">
+              <i class="ri-code-s-slash-line" style="color: var(--accent-cyan);"></i>
+              Developer Tools: Google Indexing API v3 Payload
+            </h2>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem;">
+            Inspect the raw JSON packet used behind the scenes when communicating with Google's API endpoint.
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <button class="btn btn-sm btn-glass" id="btn-toggle-payload" type="button">
+            <i class="ri-arrow-down-s-line" id="payload-arrow-icon"></i> <span id="payload-toggle-text">Show Raw JSON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Collapsible Container (Hidden by default) -->
+      <div id="payload-accordion-body" style="display: none; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
+          <button class="btn btn-sm btn-primary" onclick="copyCurrentPayload()">
+            <i class="ri-file-copy-line"></i> Copy JSON Payload
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="dispatchDirectPayload()">
+            <i class="ri-send-plane-fill"></i> Dispatch Indexing Request
+          </button>
+        </div>
+
+        <div style="background: #040711; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md); overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; padding: 0.6rem 1rem; background: rgba(15, 23, 42, 0.9); font-size: 0.78rem; font-family: monospace; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+            <div style="display: flex; gap: 1rem;">
+              <span style="font-weight: 600; color: #f8fafc;"><i class="ri-code-s-slash-line"></i> JSON Webhook Payload</span>
+              <span style="color: var(--text-muted);">POST https://indexing.googleapis.com/v3/urlNotifications:publish</span>
+            </div>
+            <span style="color: var(--accent-cyan);">Content-Type: application/json</span>
+          </div>
+          <pre style="padding: 1.25rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;"><code id="indexing-payload-code">// Loading payload...</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyword Topic Mapping Visualizer -->
+    <div class="glass-card glass-card-solid" style="padding: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.2rem;">Keywords From Attached File Fed to Googlebot</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">These topics are fed to Googlebot's Natural Language &amp; Knowledge Graph indexer for this URL.</p>
+        </div>
+        <a href="keywords.html" class="btn btn-sm btn-glass">Upload New File &rarr;</a>
+      </div>
+
+      <div id="topic-tags-container" style="display: flex; flex-wrap: wrap; gap: 0.65rem;">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Glass Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="brand-icon footer-icon">
+            <i class="ri-radar-fill"></i>
+          </div>
+          <span class="brand-app-name">INDEX MATRIX</span>
+        </div>
+        <p class="footer-tagline">
+          Enterprise SEO intelligence, autonomous keyword ranking matrices, and high-speed search engine crawler dispatch engine.
+        </p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-nav-title">Platform Hubs</div>
+        <ul class="footer-links">
+          <li><a href="index.html"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+          <li><a href="indexer.html"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+          <li><a href="keywords.html"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+          <li><a href="console.html"><i class="ri-google-fill"></i> Google Console</a></li>
+          <li><a href="audit.html"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+          <li><a href="reports.html"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-status-panel">
+        <div class="footer-nav-title">Engine Security &amp; Telemetry</div>
+        <div class="footer-status-pills">
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Indexing Engine Online</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Encrypted Session Vault</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Googlebot Webhook Stream Online</span>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          &copy; <span id="footer-year">2026</span> <span class="brand-app-name">INDEX MATRIX</span>. High-Performance Search Operations.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/pdf-parser.js"></script>
+  <script src="js/console-feeder.js"></script>
+  <script>
+    function toggleCredentialsModal() {
+      const card = document.getElementById('credentials-card');
+      card.style.display = card.style.display === 'none' ? 'block' : 'none';
+      if (card.style.display === 'block') {
+        const creds = SEONexus.getCredentials();
+        document.getElementById('gsc-sa-email').value = creds.email || '';
+        document.getElementById('gsc-bearer-token').value = creds.token || '';
+      }
+    }
+
+    async function handleSaFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+
+        if (parsed.client_email) {
+          document.getElementById('gsc-sa-email').value = parsed.client_email;
+        }
+        if (parsed.private_key) {
+          document.getElementById('gsc-bearer-token').value = parsed.private_key;
+        }
+
+        const fb = document.getElementById('sa-validation-feedback');
+        fb.style.display = 'block';
+        fb.style.background = 'rgba(16, 185, 129, 0.1)';
+        fb.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        fb.style.color = '#34d399';
+        fb.innerHTML = `✅ <strong>Parsed ${file.name}</strong> &bull; Project ID: <code>${parsed.project_id || 'detected'}</code> &bull; Client: <code>${parsed.client_email || 'Service Account'}</code>`;
+
+        const verifyResult = await SEONexus.verifyServiceAccount(parsed);
+        if (verifyResult && verifyResult.valid) {
+          SEONexus.saveCredentials({
+            email: parsed.client_email,
+            token: parsed.private_key,
+            serviceAccountKey: parsed,
+            projectId: parsed.project_id,
+            privateKeyId: parsed.private_key_id
+          });
+        }
+      } catch (err) {
+        const fb = document.getElementById('sa-validation-feedback');
+        fb.style.display = 'block';
+        fb.style.background = 'rgba(239, 68, 68, 0.1)';
+        fb.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+        fb.style.color = '#f87171';
+        fb.innerHTML = `❌ Error parsing JSON file: ${err.message}`;
+      }
+    }
+
+    async function testCurrentGscCreds() {
+      const email = document.getElementById('gsc-sa-email').value.trim();
+      const token = document.getElementById('gsc-bearer-token').value.trim();
+
+      if (!email && !token) {
+        SEONexus.showToast('Please enter Service Account Email and Key to verify.', 'error');
+        return;
+      }
+
+      const verifyObj = {
+        type: 'service_account',
+        project_id: email.split('@')[1] ? email.split('@')[1].replace('.iam.gserviceaccount.com', '') : 'custom-project',
+        client_email: email,
+        private_key: token.includes('PRIVATE KEY') ? token : `-----BEGIN PRIVATE KEY-----\n${token}\n-----END PRIVATE KEY-----`
+      };
+
+      const res = await SEONexus.verifyServiceAccount(verifyObj);
+      const fb = document.getElementById('sa-validation-feedback');
+      if (res && res.valid) {
+        fb.style.display = 'block';
+        fb.style.background = 'rgba(16, 185, 129, 0.1)';
+        fb.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        fb.style.color = '#34d399';
+        fb.innerHTML = `✅ <strong>Key Verified</strong> &bull; Scope: <code>indexing.googleapis.com</code> &bull; Project: <code>${res.projectId}</code>`;
+      } else {
+        fb.style.display = 'block';
+        fb.style.background = 'rgba(239, 68, 68, 0.1)';
+        fb.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+        fb.style.color = '#f87171';
+        fb.innerHTML = `❌ Key Validation Failed. Check email and private key formatting.`;
+      }
+    }
+
+    function saveGscCredentials() {
+      const email = document.getElementById('gsc-sa-email').value.trim();
+      const token = document.getElementById('gsc-bearer-token').value.trim();
+      let saKey = null;
+      if (token.includes('{') && token.includes('client_email')) {
+        try { saKey = JSON.parse(token); } catch (e) {}
+      }
+      SEONexus.saveCredentials({ 
+        email, 
+        token,
+        serviceAccountKey: saKey || (email && token ? { client_email: email, private_key: token } : undefined)
+      });
+      toggleCredentialsModal();
+      updateCredentialStatusBadge();
+    }
+
+    function updateCredentialStatusBadge() {
+      const badge = document.getElementById('gsc-sa-status-badge');
+      if (!badge) return;
+      const creds = SEONexus.getCredentials();
+      const hasCreds = !!(creds.serviceAccountKey || (creds.email && creds.token));
+      if (hasCreds) {
+        badge.className = 'badge badge-success';
+        const label = creds.isGlobal ? 'Company Master Key Active (Shared for All Employees)' : 'Google Service Account Active';
+        badge.innerHTML = `<i class="ri-checkbox-circle-fill"></i> ${label}`;
+        badge.style.cursor = 'pointer';
+        badge.onclick = toggleCredentialsModal;
+      } else {
+        badge.className = 'badge badge-warning';
+        badge.innerHTML = '<i class="ri-alert-line"></i> Service Account Key Missing';
+        badge.style.cursor = 'pointer';
+        badge.onclick = toggleCredentialsModal;
+      }
+    }
+
+    function openInGoogleSearchConsole() {
+      const inputVal = (document.getElementById('console-url-input')?.value || '').trim();
+      const state = SEONexus.getState();
+      const target = inputVal || state.targetUrl;
+      if (!target) {
+        SEONexus.showToast('Please enter a target webpage URL above first!', 'warning');
+        return;
+      }
+      let origin = target;
+      try {
+        origin = new URL(target).origin;
+      } catch (e) {
+        SEONexus.showToast('Please enter a valid URL (e.g. https://example.com)', 'error');
+        return;
+      }
+      const gscLink = `https://search.google.com/search-console/inspect?resource_id=${encodeURIComponent(origin + '/')}&url=${encodeURIComponent(target)}`;
+      window.open(gscLink, '_blank');
+      SEONexus.showToast('Opening Google Search Console for live URL inspection & indexing...', 'info');
+    }
+
+    async function handleConsoleUrlSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('console-url-input');
+      let url = input ? input.value.trim() : '';
+      if (!url) return;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+        if (input) input.value = url;
+      }
+
+      const curState = SEONexus.getState();
+      if (!curState.targetUrl || curState.targetUrl !== url) {
+        SEONexus.saveState({
+          ...curState,
+          targetUrl: url,
+          siteName: new URL(url).hostname
+        });
+      }
+
+      await startGoogleInspectionAndDispatch();
+    }
+
+    function renderConsoleView() {
+      updateCredentialStatusBadge();
+      const state = SEONexus.getState();
+
+      const urlInput = document.getElementById('console-url-input');
+      if (urlInput && !urlInput.value && state.targetUrl) {
+        urlInput.value = state.targetUrl;
+      }
+
+      if (!state.targetUrl) {
+        document.getElementById('console-target-url').textContent = 'No Website Selected (Enter URL above)';
+        document.getElementById('console-attached-file').textContent = 'None';
+        document.getElementById('console-kw-count').textContent = '0';
+        document.getElementById('gsc-crawl-time').textContent = '--';
+        document.getElementById('gsc-user-canonical').textContent = '--';
+        document.getElementById('gsc-google-canonical').textContent = '--';
+        document.getElementById('indexing-payload-code').textContent = '// Enter a URL above and click Dispatch to generate live payload';
+        document.getElementById('topic-tags-container').innerHTML = '<div style="color: var(--text-muted); font-size: 0.88rem; padding: 1rem 0;">No active website. Type a target URL above and click Inspect &amp; Dispatch.</div>';
+        return;
+      }
+
+      document.getElementById('console-target-url').textContent = state.targetUrl;
+      document.getElementById('console-attached-file').textContent = state.uploadedFileName || 'Live Body Extraction';
+      document.getElementById('console-kw-count').textContent = (state.extractedKeywords || []).length;
+      document.getElementById('gsc-crawl-time').textContent = state.scanTimestamp ? new Date(state.scanTimestamp).toUTCString() : 'Just now';
+      document.getElementById('gsc-user-canonical').textContent = state.auditDetails?.canonical || state.targetUrl;
+      document.getElementById('gsc-google-canonical').textContent = state.auditDetails?.canonical || state.targetUrl;
+
+      const payload = GoogleConsoleFeeder.generateIndexingApiPayload(state.targetUrl, 'URL_UPDATED');
+      document.getElementById('indexing-payload-code').textContent = JSON.stringify(payload, null, 2);
+
+      const topicContainer = document.getElementById('topic-tags-container');
+      topicContainer.innerHTML = '';
+      const kws = state.extractedKeywords || [];
+      
+      if (kws.length === 0) {
+        topicContainer.innerHTML = `<span style="color: var(--text-muted); font-size: 0.88rem;">No keywords loaded. <a href="keywords.html" style="color: var(--accent-cyan);">Upload a PDF or scan website</a>.</span>`;
+      } else {
+        kws.forEach(k => {
+          const pill = document.createElement('div');
+          pill.style.cssText = 'background: rgba(15, 23, 42, 0.85); border: 1px solid var(--card-border); border-radius: 999px; padding: 0.35rem 0.8rem; font-size: 0.82rem; color: #ffffff; display: inline-flex; align-items: center; gap: 0.4rem;';
+          pill.innerHTML = `
+            <i class="ri-price-tag-3-line" style="color: var(--accent-cyan);"></i>
+            <span>${k.term}</span>
+            <span style="font-size: 0.72rem; color: var(--accent-cyan); font-weight: 600;">${k.volume || (k.count + 'x')}</span>
+          `;
+          topicContainer.appendChild(pill);
+        });
+      }
+    }
+
+
+    async function startGoogleInspectionAndDispatch() {
+      let inputUrl = (document.getElementById('console-url-input')?.value || '').trim();
+      let state = SEONexus.getState();
+
+      if (!inputUrl && !state.targetUrl) {
+        SEONexus.showToast('Please enter a target webpage URL above first!', 'warning');
+        return;
+      }
+
+      let targetUrl = inputUrl || state.targetUrl;
+      if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+        targetUrl = 'https://' + targetUrl;
+        if (document.getElementById('console-url-input')) {
+          document.getElementById('console-url-input').value = targetUrl;
+        }
+      }
+
+      if (targetUrl !== state.targetUrl) {
+        try {
+          SEONexus.saveState({
+            ...state,
+            targetUrl,
+            siteName: new URL(targetUrl).hostname
+          });
+        } catch (e) {}
+        state = SEONexus.getState();
+      }
+
+      const btn = document.getElementById('btn-trigger-crawl');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="ri-loader-4-line ri-spin"></i> Live Inspection &amp; Google Dispatch...`;
+      }
+
+      clearTerminal();
+      addTerminalLog('START', `Initiating real Googlebot inspection &amp; Indexing API dispatch for: <span class="text-highlight">${targetUrl}</span>`, 'tag-url');
+      if (state.uploadedFileName) {
+        addTerminalLog('FILE_ATTACHED', `Attached keyword source: ${state.uploadedFileName} (${(state.extractedKeywords || []).length} keywords)`, 'tag-sys');
+      }
+
+      await GoogleConsoleFeeder.inspectAndPublishGoogle(
+        targetUrl,
+        state.extractedKeywords || [],
+        (logItem) => {
+          addTerminalLog(logItem.tag, logItem.text, logItem.type);
+        },
+        (res) => {
+          // Update live inspection card with genuine server signals
+          if (res && res.inspectData) {
+            const insp = res.inspectData;
+            const crawlTimeEl = document.getElementById('gsc-crawl-time');
+            if (crawlTimeEl) crawlTimeEl.textContent = new Date(insp.checkedAt).toLocaleTimeString();
+
+            const sitemapEl = document.getElementById('gsc-sitemap-val');
+            if (sitemapEl) sitemapEl.textContent = insp.sitemapDetected ? '/sitemap.xml (Found)' : '/sitemap.xml (Not Found)';
+
+            const crawlAllowedEl = document.getElementById('gsc-crawl-allowed');
+            if (crawlAllowedEl) {
+              const ok = insp.robotsTxt?.allowed !== false;
+              crawlAllowedEl.innerHTML = ok 
+                ? '<i class="ri-check-line"></i> Yes (robots.txt ok)' 
+                : '<i class="ri-close-line" style="color: #f43f5e;"></i> Disallowed by robots.txt';
+              crawlAllowedEl.style.color = ok ? 'var(--accent-emerald)' : '#f43f5e';
+            }
+
+            const fetchStatusEl = document.getElementById('gsc-fetch-status');
+            if (fetchStatusEl) {
+              fetchStatusEl.innerHTML = insp.httpStatus === 200 
+                ? `<i class="ri-check-line"></i> 200 OK (${insp.latency})` 
+                : `<i class="ri-alert-line"></i> HTTP ${insp.httpStatus} (${insp.latency})`;
+            }
+
+            const userCanonEl = document.getElementById('gsc-user-canonical');
+            if (userCanonEl) userCanonEl.textContent = insp.canonical || targetUrl;
+
+            const googleCanonEl = document.getElementById('gsc-google-canonical');
+            if (googleCanonEl) googleCanonEl.textContent = insp.canonical || targetUrl;
+          }
+
+          if (res && res.success) {
+            SEONexus.showToast('Google Indexing API accepted notification (HTTP 200 OK).', 'success');
+          } else if (res && (res.requiresCredentials || res.status === 401)) {
+            SEONexus.showToast('Google Service Account key required for API automation. Use the 1-Click Search Console button below or configure key.', 'warning');
+            const card = document.getElementById('credentials-card');
+            if (card && card.style.display === 'none') {
+              card.style.display = 'block';
+            }
+          } else {
+            SEONexus.showToast(res.error || 'Google API notification completed with status: ' + (res.status || 'unknown'), 'info');
+          }
+
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="ri-send-plane-fill"></i> Inspect &amp; Dispatch to Google Indexing API`;
+          }
+        }
+      );
+    }
+
+    function addTerminalLog(tag, text, typeClass = 'text-dim') {
+      const terminal = document.getElementById('terminal-stream');
+      const time = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'log-row';
+      entry.innerHTML = `
+        <span class="log-time">[${time}]</span>
+        <span class="tag-sys">[${tag}]</span>
+        <span class="${typeClass}">${text}</span>
+      `;
+      terminal.appendChild(entry);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function clearTerminal() {
+      document.getElementById('terminal-stream').innerHTML = '';
+    }
+
+    function copyCurrentPayload() {
+      const state = SEONexus.getState();
+      if (!state.targetUrl) {
+        SEONexus.showToast('Please scan a website on the Dashboard first!', 'warning');
+        return;
+      }
+      const code = document.getElementById('indexing-payload-code').textContent;
+      SEONexus.copyToClipboard(code, 'Indexing API payload copied to clipboard!');
+    }
+
+    async function dispatchDirectPayload() {
+      const state = SEONexus.getState();
+      if (!state.targetUrl) {
+        SEONexus.showToast('Please scan a website on the Dashboard first!', 'warning');
+        return;
+      }
+
+      SEONexus.showToast('Dispatching payload to Google Indexing API endpoint...', 'info');
+      const result = await GoogleConsoleFeeder.publishToGoogleIndexingApi(state.targetUrl, 'URL_UPDATED', SEONexus.getCredentials());
+      if (result.success) {
+        SEONexus.showToast('Google Indexing API accepted notification (HTTP 200 OK).', 'success');
+        addTerminalLog('API_DISPATCH', `POST https://indexing.googleapis.com/v3/urlNotifications:publish -> HTTP ${result.status} OK`, 'tag-ok');
+      } else if (result.requiresCredentials || result.status === 401) {
+        SEONexus.showToast('Google Service Account key required to dispatch.', 'warning');
+        addTerminalLog('AUTH_REQUIRED', result.error || 'Google Cloud Service Account credentials required.', 'tag-probe');
+        const card = document.getElementById('credentials-card');
+        if (card && card.style.display === 'none') {
+          card.style.display = 'block';
+        }
+      } else {
+        SEONexus.showToast('Google API Error: ' + (result.error || 'Check credentials'), 'error');
+        addTerminalLog('API_ERR', `HTTP ${result.status}: ${result.error || 'Request rejected by Google'}`, 'tag-probe');
+      }
+    }
+
+    function togglePayloadAccordion() {
+      const body = document.getElementById('payload-accordion-body');
+      const icon = document.getElementById('payload-arrow-icon');
+      const text = document.getElementById('payload-toggle-text');
+      
+      if (body.style.display === 'none') {
+        body.style.display = 'block';
+        icon.className = 'ri-arrow-up-s-line';
+        text.textContent = 'Hide Raw JSON';
+      } else {
+        body.style.display = 'none';
+        icon.className = 'ri-arrow-down-s-line';
+        text.textContent = 'Show Raw JSON';
+      }
+    }
+
+    window.addEventListener('seonexus:statechange', renderConsoleView);
+    document.addEventListener('DOMContentLoaded', async () => {
+      await SEONexus.init();
+      renderConsoleView();
+    });
+  </script>
+</body>
+</html>

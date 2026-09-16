@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fast Document &amp; Bot Indexer - INDEX MATRIX</title>
+  <meta name="description" content="Instant URL and hosted document bot indexer with role-based rate limiting, terminal log stamps, and multi-engine webhook broadcasts.">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient Glow Spheres -->
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Floating Glass Header Navigation with Curved Corners -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" id="brand-logo-btn">
+        <div class="brand-icon">
+          <i class="ri-radar-fill"></i>
+        </div>
+        <span class="brand-app-name">INDEX MATRIX</span>
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+        <li><a href="indexer.html" class="nav-link active" id="nav-indexer"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+        <li><a href="keywords.html" class="nav-link" id="nav-keywords"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+        <li><a href="console.html" class="nav-link" id="nav-console"><i class="ri-google-fill"></i> Google Console</a></li>
+        <li><a href="audit.html" class="nav-link" id="nav-audit"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+        <li><a href="reports.html" class="nav-link" id="nav-reports"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="user-profile-badge" id="nav-user-badge" title="Click to manage Profile, Phone, and Password Settings">
+          <i class="ri-user-3-line"></i>
+          <span id="nav-username-display">Account</span>
+        </div>
+        <button type="button" class="btn-lock-session" onclick="lockUserSession()" title="Lock Platform Session">
+          <i class="ri-lock-line" style="color: var(--accent-cyan);"></i>
+          <span>Lock</span>
+        </button>
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" id="mobile-toggle-btn">
+          <i class="ri-menu-4-line"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem; position: relative; z-index: 10;">
+    
+    <!-- Page Header Title -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div class="hero-pill" style="margin-bottom: 1rem;">
+        <i class="ri-speed-up-line" style="color: var(--accent-cyan);"></i>
+        <span>High-Speed Search Engine Webhook Dispatcher &bull; Scoped Account Engine</span>
+      </div>
+      <h1 style="font-size: 2.4rem; margin-bottom: 0.6rem;">
+        Fast Document &amp; <span class="text-gradient-blue">Bot Indexer</span>
+      </h1>
+      <p style="color: var(--text-muted); max-width: 760px; margin: 0 auto; font-size: 1.05rem; line-height: 1.6;">
+        Paste any live hosted PDF document or target webpage URL to dispatch immediate Googlebot and multi-engine crawler pings with timestamped audit stamps.
+      </p>
+    </div>
+
+    <!-- Dispatcher Control Station Card -->
+    <div class="glass-card glass-card-solid" style="padding: 2.25rem; margin-bottom: 2.25rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="brand-icon" style="width: 38px; height: 38px; font-size: 1.2rem;">
+            <i class="ri-radar-line"></i>
+          </div>
+          <div>
+            <h3 style="font-size: 1.3rem; margin: 0; color: #ffffff;">Dispatcher Control Station</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Configure target URLs, rate limit cooldowns &amp; broadcast pipelines</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+          <a href="console.html" class="btn btn-sm btn-glass" title="Configure Google Cloud Service Account">
+            <i class="ri-google-fill" style="color: var(--accent-cyan);"></i> Google Console
+          </a>
+          <button type="button" class="btn btn-sm btn-glass" onclick="exportHistoryCSV()" title="Export Dispatched URLs as CSV">
+            <i class="ri-download-2-line"></i> Export CSV
+          </button>
+          <button type="button" class="btn btn-sm btn-glass" onclick="clearServerLogs()" id="btn-clear-logs" title="Clear Dispatched Archive (Admin Only)">
+            <i class="ri-eraser-line"></i> Clear Logs
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode Switcher Tabs: Single vs Batch -->
+      <div style="display: inline-flex; background: rgba(15, 23, 42, 0.85); padding: 0.35rem; border-radius: var(--radius-md); border: 1px solid rgba(56, 189, 248, 0.2); gap: 0.4rem; margin-bottom: 1.75rem;">
+        <button type="button" class="btn btn-sm btn-primary" id="btn-mode-single" onclick="switchIndexerMode('single')" style="padding: 0.5rem 1.1rem;">
+          <i class="ri-link"></i> Single URL Dispatch
+        </button>
+        <button type="button" class="btn btn-sm btn-glass" id="btn-mode-batch" onclick="switchIndexerMode('batch')" style="padding: 0.5rem 1.1rem;">
+          <i class="ri-list-check-2"></i> Multi-URL &amp; XML Sitemap Batch
+        </button>
+      </div>
+
+      <!-- Mode 1: Single URL Form -->
+      <form id="indexer-form" onsubmit="executeBotDispatch(event)">
+        <div style="margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-size: 0.88rem; font-weight: 700; color: var(--text-main);">
+            <span><i class="ri-global-line" style="color: var(--accent-cyan);"></i> Target Document / Webpage URL</span>
+            <span style="color: var(--accent-cyan); font-size: 0.78rem; font-weight: 600;" id="live-rate-status"><i class="ri-pulse-line"></i> Live Network Stream</span>
+          </div>
+          <div class="url-scan-box" style="margin-bottom: 1.5rem;">
+            <div class="url-scan-prefix">
+              <i class="ri-link"></i>
+            </div>
+            <input 
+              type="url" 
+              id="target-url-input" 
+              class="url-scan-input" 
+              placeholder="https://domain.com/document.pdf or any live webpage URL" 
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+            >
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button type="submit" id="submit-btn" class="btn btn-primary" style="flex: 1; min-width: 260px; padding: 1.15rem 1.75rem; font-size: 1.05rem; font-weight: 700; border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);">
+            <i class="ri-send-plane-fill"></i>
+            <span>Dispatch Googlebot &amp; Indexing API Ping</span>
+          </button>
+          <button type="button" class="btn btn-glass" id="btn-open-gsc-indexer" onclick="openGscFromIndexer()" style="padding: 1.15rem 1.75rem; font-size: 1.05rem; font-weight: 700; border-radius: var(--radius-md); border-color: rgba(56, 189, 248, 0.4); color: var(--accent-cyan); background: rgba(14, 165, 233, 0.1);">
+            <i class="ri-external-link-line"></i>
+            <span>🚀 Open in Google Search Console</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Mode 2: Multi-URL & XML Sitemap Batch Queue Form (Collapsible) -->
+      <div id="indexer-batch-wrapper" style="display: none; margin-bottom: 1.5rem;">
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+            <label class="form-label" style="margin: 0; font-size: 0.88rem; font-weight: 700; color: var(--accent-cyan);">
+              <i class="ri-file-code-line"></i> Quick Sitemap XML Importer
+            </label>
+            <span style="font-size: 0.75rem; color: var(--text-dim);">Auto-extracts child URLs from sitemap.xml</span>
+          </div>
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <input 
+              type="url" 
+              id="sitemap-url-input" 
+              class="form-control" 
+              style="flex: 1; min-width: 260px; padding: 0.75rem 1rem;" 
+              placeholder="https://example.com/sitemap.xml"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            >
+            <button type="button" class="btn btn-sm btn-glass" onclick="importSitemapToBatch()" id="btn-import-sitemap" style="padding: 0.75rem 1.25rem;">
+              <i class="ri-download-cloud-2-line"></i> Import URLs
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-size: 0.88rem; font-weight: 700; color: var(--text-main);">
+            <span><i class="ri-list-unordered" style="color: var(--accent-cyan);"></i> Batch URL Queue (1 URL per line)</span>
+            <span id="batch-count-badge" class="badge badge-primary">0 URLs in Queue</span>
+          </div>
+          <textarea 
+            id="batch-urls-textarea" 
+            class="form-control" 
+            rows="6" 
+            placeholder="https://example.com/page-1&#10;https://example.com/page-2&#10;https://example.com/whitepaper.pdf"
+            oninput="updateBatchCount()"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; line-height: 1.6; padding: 1rem 1.25rem; background: rgba(8, 14, 28, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md);"
+          ></textarea>
+        </div>
+
+        <button type="button" id="btn-start-batch" class="btn btn-primary" onclick="runBatchDispatch()" style="width: 100%; padding: 1.15rem 1.75rem; font-size: 1.05rem; font-weight: 700; border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);">
+          <i class="ri-play-list-add-line"></i>
+          <span>Start Sequential Batch Crawler Broadcast</span>
+        </button>
+      </div>
+
+      <!-- Real-Time Metrics Strip -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.18); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+          <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Target Format</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; font-family: 'JetBrains Mono', monospace;" id="diag-format">--</div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.18); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+          <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">HTTP Reachability</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; font-family: 'JetBrains Mono', monospace;" id="diag-http">--</div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.18); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+          <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Crawl Directives</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; font-family: 'JetBrains Mono', monospace;" id="diag-robots">--</div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.18); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+          <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Bot Pipeline</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace;" id="diag-pipeline">Standing By</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expansive 2-Column Command Center Grid -->
+    <div class="indexer-main-grid">
+      
+      <!-- Left Column: Live Terminal Console & Dispatch Stream -->
+      <div class="terminal-wrapper wide-term">
+        <div class="terminal-topbar">
+          <div class="terminal-dots">
+            <div class="dot dot-1"></div>
+            <div class="dot dot-2"></div>
+            <div class="dot dot-3"></div>
+          </div>
+          <div class="terminal-title">
+            <i class="ri-terminal-box-line"></i> Bot Broadcast Log &amp; Dispatch Stamp
+          </div>
+          <div class="terminal-actions">
+            <button type="button" class="btn-term-action" onclick="copyTerminalLogs()" title="Copy all logs to clipboard">
+              <i class="ri-file-copy-line"></i> <span>Copy</span>
+            </button>
+            <button type="button" class="btn-term-action" onclick="clearTerminalLogs()" title="Clear terminal stream">
+              <i class="ri-delete-bin-7-line"></i>
+            </button>
+            <span class="status-indicator" id="log-status">Ready</span>
+          </div>
+        </div>
+
+        <div class="terminal-stream wide-stream" id="log-stream">
+          <div class="log-row">
+            <span class="log-time">[00:00:00]</span>
+            <span class="tag-sys">[SYSTEM]</span>
+            <span class="text-dim"><span class="brand-app-name">INDEX MATRIX</span> engine standing by. Paste your target URL above to broadcast to search engine bots.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Dispatched URL History Archive Vault -->
+      <div class="history-drawer always-open" id="history-drawer">
+        <div class="history-header">
+          <div class="history-title">
+            <i class="ri-time-line" style="color: var(--accent-cyan);"></i>
+            <span>Dispatched URL Vault</span>
+            <span id="history-user-label" class="badge badge-primary" style="font-size: 0.72rem; margin-left: 0.5rem;">Current User</span>
+          </div>
+          <div class="history-tools">
+            <button type="button" class="btn-term-action" onclick="loadHistoryLogs()" title="Refresh Logs">
+              <i class="ri-refresh-line"></i> <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+        <div class="history-body wide-body" id="history-list">
+          <div class="history-empty">No past URL dispatches recorded for your account yet. Paste a URL and click Dispatch!</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Floating Glass Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="brand-icon footer-icon">
+            <i class="ri-radar-fill"></i>
+          </div>
+          <span class="brand-app-name">INDEX MATRIX</span>
+        </div>
+        <p class="footer-tagline">
+          Enterprise SEO intelligence, autonomous keyword ranking matrices, and high-speed search engine crawler dispatch engine.
+        </p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-nav-title">Platform Hubs</div>
+        <ul class="footer-links">
+          <li><a href="index.html"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+          <li><a href="indexer.html"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+          <li><a href="keywords.html"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+          <li><a href="console.html"><i class="ri-google-fill"></i> Google Console</a></li>
+          <li><a href="audit.html"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+          <li><a href="reports.html"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-status-panel">
+        <div class="footer-nav-title">Engine Security &amp; Telemetry</div>
+        <div class="footer-status-pills">
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Indexing Engine Online</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Encrypted Session Vault</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Search Engine Bot Telemetry Active</span>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          &copy; <span id="footer-year">2026</span> <span class="brand-app-name">INDEX MATRIX</span>. High-Performance Search Operations.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Client JavaScript Logic -->
+  <script src="js/app.js?v=2.2"></script>
+  <script src="js/indexer.js?v=2.2"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Auto-load history on page load in wide layout
+      setTimeout(() => {
+        if (typeof loadHistoryLogs === 'function') {
+          loadHistoryLogs();
+        }
+      }, 300);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INDEX MATRIX - Portal Gatekeeper</title>
+  <meta name="description" content="Secure authentication gatekeeper for INDEX MATRIX unified SEO and indexing engine.">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+
+  <!-- Three.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #040711;
+      --bg-surface: #0a0f1d;
+      --accent-cyan: #38bdf8;
+      --accent-blue: #2563eb;
+      --accent-sky: #0284c7;
+      --accent-indigo: #6366f1;
+      --accent-purple: #a855f7;
+      --accent-emerald: #10b981;
+      
+      --blue-box-bg: linear-gradient(145deg, rgba(12, 34, 82, 0.94) 0%, rgba(6, 18, 48, 0.96) 100%);
+      --blue-box-border: rgba(56, 189, 248, 0.45);
+      
+      --white-box-bg: linear-gradient(145deg, rgba(245, 249, 255, 0.96) 0%, rgba(228, 238, 255, 0.94) 100%);
+      --white-box-border: rgba(255, 255, 255, 0.95);
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --text-dark: #0f172a;
+      
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+
+      --dock-blue: 0px;
+      --dock-white: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Three.js Background Canvas */
+    #three-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Ambient Lighting Overlays */
+    .glow-sphere {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(140px);
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    .glow-1 {
+      top: 10%;
+      left: 12%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, rgba(37, 99, 235, 0) 70%);
+    }
+
+    .glow-2 {
+      bottom: 10%;
+      right: 12%;
+      width: 540px;
+      height: 540px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, rgba(99, 102, 241, 0) 70%);
+    }
+
+    /* Stage Container */
+    .stage-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1420px;
+      height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem;
+      perspective: 1400px;
+    }
+
+    /* ==========================================================================
+       LEFT PANEL: Deep Cyberpunk Blue Box
+       ========================================================================== */
+    .panel-blue {
+      width: 380px;
+      height: 540px;
+      background: var(--blue-box-bg);
+      border: 1px solid var(--blue-box-border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      padding: 2.25rem 2rem;
+      box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 35px rgba(56, 189, 248, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 20;
+      will-change: transform, border-radius, box-shadow;
+      transition: 
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.7s ease,
+        box-shadow 0.7s ease,
+        border-color 0.5s ease;
+    }
+
+    .blue-brand-header {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .blue-logo-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(37, 99, 235, 0.45));
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+    }
+
+    .blue-brand-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+
+    .blue-brand-tagline {
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .blue-feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .blue-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .blue-feature-item:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(15, 23, 42, 0.85);
+      transform: translateX(4px);
+    }
+
+    .feature-icon-badge {
+      font-size: 1.15rem;
+      color: var(--accent-cyan);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .feature-item-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.15rem;
+    }
+
+    .feature-item-desc {
+      font-size: 0.74rem;
+      color: #94a3b8;
+      line-height: 1.35;
+    }
+
+    .blue-status-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(56, 189, 248, 0.2);
+      font-size: 0.76rem;
+      color: #94a3b8;
+    }
+
+    .status-pulse-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    .pulse-dot-green {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+      animation: pulseAnim 2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* ==========================================================================
+       CENTER ARENA: Spacious Overview Stage with Large LOGIN Button
+       ========================================================================== */
+    .center-arena {
+      flex: 1;
+      max-width: 520px;
+      margin: 0 2rem;
+      text-align: center;
+      z-index: 12;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      will-change: opacity, transform, filter;
+      transition: 
+        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), 
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.6s ease;
+    }
+
+    .brand-gate-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 1.25rem;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+    }
+
+    .hero-brand-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 20%, #93c5fd 60%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      text-shadow: 0 0 50px rgba(56, 189, 248, 0.25);
+    }
+
+    .hero-brand-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 2.75rem;
+      max-width: 460px;
+    }
+
+    /* The Large Heading LOGIN Button */
+    .btn-hero-login {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.1rem;
+      padding: 1.4rem 3.8rem;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(14, 165, 233, 0.95) 50%, rgba(99, 102, 241, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 20px 50px -5px rgba(37, 99, 235, 0.7), 0 0 60px rgba(56, 189, 248, 0.5);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .btn-hero-login::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(90deg, #38bdf8, #ffffff, #6366f1, #38bdf8);
+      background-size: 300% 300%;
+      border-radius: 999px;
+      z-index: -1;
+      opacity: 0.7;
+      animation: borderShimmer 4s linear infinite;
+    }
+
+    @keyframes borderShimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .btn-hero-login:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 26px 65px -5px rgba(37, 99, 235, 0.9), 0 0 80px rgba(56, 189, 248, 0.7);
+    }
+
+    .btn-hero-login:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-hero-login .icon-arrow {
+      transition: transform 0.3s ease;
+    }
+
+    .btn-hero-login:hover .icon-arrow {
+      transform: translateX(6px);
+    }
+
+    /* ==========================================================================
+       RIGHT PANEL: Clean Arctic White Box & Authentication Terminal
+       ========================================================================== */
+    .panel-white {
+      width: 440px;
+      height: 540px;
+      background: var(--white-box-bg);
+      border: 1px solid var(--white-box-border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      padding: 2.25rem 2.25rem;
+      box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 255, 255, 0.25);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 20;
+      color: var(--text-dark);
+      position: relative;
+      will-change: transform, border-radius, box-shadow;
+      transition: 
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.7s ease,
+        box-shadow 0.7s ease;
+    }
+
+    /* Right Panel: Overview Preview State */
+    .white-preview-state {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      transition: opacity 0.45s ease;
+    }
+
+    .white-preview-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.3rem;
+    }
+
+    .white-preview-sub {
+      font-size: 0.82rem;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    .white-feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin: 1.25rem 0;
+    }
+
+    .white-feature-card {
+      background: #ffffff;
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      transition: all 0.3s ease;
+    }
+
+    .white-feature-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.12);
+    }
+
+    .white-card-title {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .white-card-desc {
+      font-size: 0.74rem;
+      color: #64748b;
+      line-height: 1.35;
+    }
+
+    /* Right Panel: Interactive Form State (Appears on top of converged white box) */
+    .white-form-state {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+    }
+
+    .form-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-title-text {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+    }
+
+    .form-subtitle-text {
+      font-size: 0.82rem;
+      color: #475569;
+    }
+
+    .auth-input-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    .auth-label {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .auth-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .auth-input-icon {
+      position: absolute;
+      left: 0.95rem;
+      font-size: 1.15rem;
+      color: #64748b;
+      pointer-events: none;
+    }
+
+    .auth-text-input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.75rem;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.92rem;
+      color: #0f172a;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .auth-text-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .auth-toggle-pwd {
+      position: absolute;
+      right: 0.75rem;
+      background: transparent;
+      border: none;
+      color: #64748b;
+      font-size: 1.15rem;
+      cursor: pointer;
+      padding: 0.35rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .auth-toggle-pwd:hover { color: var(--accent-blue); }
+
+    .auth-row-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+
+    .auth-remember {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .auth-remember input[type="checkbox"] {
+      accent-color: var(--accent-blue);
+      width: 15px;
+      height: 15px;
+    }
+
+    .btn-auth-action {
+      width: 100%;
+      padding: 0.95rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #4f46e5 100%);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.45);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-auth-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -5px rgba(37, 99, 235, 0.65);
+    }
+
+    .btn-auth-action:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-alert-box {
+      display: none;
+      align-items: center;
+      gap: 0.45rem;
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #e11d48;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    .error-alert-box.show { display: flex; }
+
+    .auth-switch-link {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-top: 0.85rem;
+      text-align: center;
+    }
+
+    .auth-switch-link a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .auth-switch-link a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-back-overview {
+      margin-top: 0.75rem;
+      background: transparent;
+      border: none;
+      color: #64748b;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color 0.2s ease;
+    }
+
+    .btn-back-overview:hover {
+      color: #0f172a;
+    }
+
+    /* ==========================================================================
+       CONVERGED DOCK STATE (When LOGIN is clicked):
+       Blue Box and White Box glide into center to form one unified console!
+       ========================================================================== */
+    .stage-container.active-login .center-arena {
+      opacity: 0;
+      filter: blur(10px);
+      transform: scale(0.85) translateY(24px);
+      pointer-events: none;
+    }
+
+    .stage-container.active-login .panel-blue {
+      transform: translate3d(var(--dock-blue, 210px), 0, 0);
+      border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+      border-right: none;
+      box-shadow: -20px 25px 60px -10px rgba(0, 0, 0, 0.8), 0 0 35px rgba(56, 189, 248, 0.25);
+    }
+
+    .stage-container.active-login .panel-white {
+      transform: translate3d(var(--dock-white, -210px), 0, 0);
+      border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+      border-left: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 20px 25px 60px -10px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 255, 255, 0.3);
+    }
+
+    .stage-container.active-login .white-preview-state {
+      display: none;
+      opacity: 0;
+    }
+
+    .stage-container.active-login .white-form-state {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes shakeCard {
+      0%, 100% { transform: translate3d(var(--dock-white, -210px), 0, 0) translateX(0); }
+      20%, 60% { transform: translate3d(var(--dock-white, -210px), 0, 0) translateX(-8px); }
+      40%, 80% { transform: translate3d(var(--dock-white, -210px), 0, 0) translateX(8px); }
+    }
+
+    .shake { animation: shakeCard 0.4s ease; }
+
+    /* Responsive Rules for Small Devices */
+    @media (max-width: 1024px) {
+      .stage-container {
+        flex-direction: column;
+        height: auto;
+        padding: 4rem 1.5rem;
+        gap: 2rem;
+      }
+      .panel-blue, .panel-white {
+        width: 100%;
+        max-width: 440px;
+        height: auto;
+      }
+      .stage-container.active-login .panel-blue {
+        display: none;
+      }
+      .stage-container.active-login .panel-white {
+        transform: none;
+        border-radius: var(--radius-xl);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Three.js Cosmic Canvas -->
+  <canvas id="three-bg"></canvas>
+
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Interactive Stage Layout (Normal Overview by default) -->
+  <main class="stage-container" id="stage-arena">
+    
+    <!-- LEFT PANEL: Blue Rectangular Box -->
+    <div class="panel-blue" id="panel-blue">
+      <div class="blue-brand-header">
+        <div class="blue-logo-icon">
+          <i class="ri-radar-fill"></i>
+        </div>
+        <div>
+          <h2 class="blue-brand-title" id="side-brand-name">INDEX MATRIX</h2>
+          <div class="blue-brand-tagline">Security Gatekeeper</div>
+        </div>
+      </div>
+
+      <div class="blue-feature-list">
+        <div class="blue-feature-item">
+          <i class="ri-radar-line feature-icon-badge"></i>
+          <div>
+            <div class="feature-item-title">Live DOM Crawler</div>
+            <div class="feature-item-desc">Deep technical diagnostics &amp; real SERP preview generator.</div>
+          </div>
+        </div>
+
+        <div class="blue-feature-item">
+          <i class="ri-speed-up-line feature-icon-badge"></i>
+          <div>
+            <div class="feature-item-title">Bot Indexer Pipeline</div>
+            <div class="feature-item-desc">Rate-limited Googlebot pings &amp; IndexNow multi-engine broadcaster.</div>
+          </div>
+        </div>
+
+        <div class="blue-feature-item">
+          <i class="ri-database-2-line feature-icon-badge"></i>
+          <div>
+            <div class="feature-item-title">MongoDB Isolated Vault</div>
+            <div class="feature-item-desc">Project crawls and bot stamps strictly isolated per user account.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="blue-status-footer">
+        <div class="status-pulse-pill">
+          <div class="pulse-dot-green"></div>
+          <span>System Online</span>
+        </div>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent-cyan);">20s / 10s Rate Gate</span>
+      </div>
+    </div>
+
+    <!-- CENTER ARENA: Spacious Center with Large LOGIN Heading Button -->
+    <div class="center-arena" id="center-arena">
+      <div class="brand-gate-badge">
+        <div class="pulse-dot-green"></div>
+        <span>Security Gatekeeper Active</span>
+      </div>
+
+      <h1 class="hero-brand-title" id="platform-brand-name">INDEX MATRIX</h1>
+      <p class="hero-brand-subtitle">
+        Unified live web crawler, PDF keyword processor &amp; Google Search Console bot indexing suite.
+      </p>
+
+      <button type="button" class="btn-hero-login" id="btn-open-login" onclick="openLoginInterface()">
+        <i class="ri-shield-keyhole-line"></i>
+        <span>LOGIN</span>
+        <i class="ri-arrow-right-line icon-arrow"></i>
+      </button>
+    </div>
+
+    <!-- RIGHT PANEL: White Rectangular Box (Holds Overview in initial state, forms Login Console on click) -->
+    <div class="panel-white" id="panel-white">
+      
+      <!-- 1. Overview Preview State (Visible initially) -->
+      <div class="white-preview-state" id="white-preview-box">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+            <span style="font-size: 0.72rem; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.06em;">Next-Gen SEO Suite</span>
+          </div>
+          <h3 class="white-preview-title">Indexing &amp; Diagnostics</h3>
+          <p class="white-preview-sub">High throughput search engine indexing engine with automated entity schemas.</p>
+        </div>
+
+        <div class="white-feature-list">
+          <div class="white-feature-card">
+            <div class="white-card-title"><i class="ri-file-pdf-fill" style="color: #f43f5e;"></i> Real Document Parser</div>
+            <div class="white-card-desc">Extract keyword density, volume metrics and search intent from PDFs.</div>
+          </div>
+
+          <div class="white-feature-card">
+            <div class="white-card-title"><i class="ri-google-fill" style="color: #0284c7;"></i> Google Console API</div>
+            <div class="white-card-desc">Direct OAuth2 Service Account notifications &amp; indexing webhooks.</div>
+          </div>
+
+          <div class="white-feature-card">
+            <div class="white-card-title"><i class="ri-code-box-line" style="color: #10b981;"></i> 1-Line Dynamic Pixel</div>
+            <div class="white-card-desc">Automated verified Schema.org entity generation for any site.</div>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding-top: 0.5rem;">
+          <button type="button" class="btn-auth-action" onclick="openLoginInterface()">
+            <i class="ri-login-box-line"></i> Open Authentication Portal
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Authentication Form State (Appears on top of converged white box) -->
+      <div class="white-form-state" id="white-form-box">
+        <div class="form-header">
+          <h2 class="form-title-text" id="auth-title">Authenticate</h2>
+          <p class="form-subtitle-text" id="auth-subtitle">Enter your credentials to unlock <span class="brand-app-name">INDEX MATRIX</span></p>
+        </div>
+
+        <div class="error-alert-box" id="error-alert">
+          <i class="ri-error-warning-fill" style="font-size: 1rem; flex-shrink: 0;"></i>
+          <span id="error-message">Invalid credentials. Access denied.</span>
+        </div>
+
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+          <div class="auth-input-group">
+            <label class="auth-label" for="username-input">Username</label>
+            <div class="auth-input-box">
+              <i class="ri-user-3-line auth-input-icon"></i>
+              <input 
+                type="text" 
+                id="username-input" 
+                class="auth-text-input" 
+                placeholder="Enter your username" 
+                required 
+                autocomplete="username"
+              >
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label class="auth-label" for="password-input">Password</label>
+            <div class="auth-input-box">
+              <i class="ri-lock-password-line auth-input-icon"></i>
+              <input 
+                type="password" 
+                id="password-input" 
+                class="auth-text-input" 
+                placeholder="Enter master password" 
+                required 
+                autocomplete="current-password"
+              >
+              <button type="button" class="auth-toggle-pwd" onclick="togglePasswordVisibility()" aria-label="Toggle password visibility">
+                <i class="ri-eye-line" id="eye-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-row-options">
+            <label class="auth-remember">
+              <input type="checkbox" id="remember-me-chk" checked>
+              <span>Remember me</span>
+            </label>
+            <span style="font-size: 0.74rem; color: var(--accent-blue); font-weight: 700;">Rate Limit: 5 / 15m</span>
+          </div>
+
+          <button type="submit" class="btn-auth-action" id="auth-submit-btn">
+            <i class="ri-key-2-line"></i>
+            <span id="btn-submit-text">Sign In to Dashboard</span>
+          </button>
+        </form>
+
+        <div class="auth-switch-link" id="auth-toggle-wrapper">
+          <span id="auth-toggle-prompt">Don't have an account?</span> 
+          <a href="javascript:void(0)" onclick="toggleAuthMode()" id="auth-toggle-btn">Create Account</a>
+        </div>
+
+        <div style="text-align: center;">
+          <button type="button" class="btn-back-overview" onclick="closeLoginInterface()">
+            <i class="ri-arrow-left-line"></i>
+            <span>Back to Overview</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // 1. Interactive Three.js Cosmic Particle Cosmos
+    (function initThreeCosmic() {
+      const canvas = document.getElementById('three-bg');
+      if (!canvas) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.y = 22;
+      camera.position.z = 52;
+
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+      const isMobile = window.innerWidth < 768;
+      const count = isMobile ? 1200 : 2600;
+
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+
+      const color1 = new THREE.Color(0x38bdf8); // Sky Cyan
+      const color2 = new THREE.Color(0x2563eb); // Royal Blue
+      const color3 = new THREE.Color(0xa855f7); // Purple
+
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        positions[i3] = (Math.random() - 0.5) * 220;
+        positions[i3 + 1] = 0;
+        positions[i3 + 2] = (Math.random() - 0.5) * 220;
+
+        const mixed = Math.random() < 0.45 ? color1 : (Math.random() < 0.75 ? color2 : color3);
+        colors[i3] = mixed.r;
+        colors[i3 + 1] = mixed.g;
+        colors[i3 + 2] = mixed.b;
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const material = new THREE.PointsMaterial({
+        size: isMobile ? 0.9 : 0.75,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.65,
+        sizeAttenuation: true,
+        blending: THREE.AdditiveBlending
+      });
+
+      const particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+
+      let mouseX = 0;
+      let mouseY = 0;
+
+      if (window.matchMedia("(hover: hover)").matches) {
+        window.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX / window.innerWidth) - 0.5;
+          mouseY = (e.clientY / window.innerHeight) - 0.5;
+        });
+      }
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      const clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
+
+        camera.position.x += (mouseX * 12 - camera.position.x) * 0.04;
+        camera.position.y += (-mouseY * 10 + 22 - camera.position.y) * 0.04;
+        camera.lookAt(0, 0, 0);
+
+        const posArray = particles.geometry.attributes.position.array;
+        for (let i = 0; i < count; i++) {
+          const i3 = i * 3;
+          const px = posArray[i3];
+          const pz = posArray[i3 + 2];
+          posArray[i3 + 1] = Math.sin(elapsedTime * 0.35 + px * 0.045) * 3.2 + Math.cos(elapsedTime * 0.22 + pz * 0.045) * 3.2;
+        }
+        particles.geometry.attributes.position.needsUpdate = true;
+        particles.rotation.y = elapsedTime * 0.01;
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    })();
+
+    // 2. Dynamic Config Fetch
+    fetch('/api/config').then(r => r.json()).then(cfg => {
+      if (cfg && cfg.appName) {
+        document.title = `${cfg.appName} - Portal Gatekeeper`;
+        const brandEls = document.querySelectorAll('.brand-app-name, #platform-brand-name, #side-brand-name');
+        brandEls.forEach(el => { el.textContent = cfg.appName; });
+      }
+    }).catch(() => {});
+
+    // 3. Dynamic Dock Offset Calculator (Mathematically joins Blue & White boxes in center)
+    function updateDockOffsets() {
+      const stage = document.getElementById('stage-arena');
+      const bluePanel = document.getElementById('panel-blue');
+      const whitePanel = document.getElementById('panel-white');
+      if (!stage || !bluePanel || !whitePanel) return;
+
+      const stageWidth = stage.offsetWidth;
+      const blueWidth = bluePanel.offsetWidth;
+      const whiteWidth = whitePanel.offsetWidth;
+      const totalDockedWidth = blueWidth + whiteWidth;
+
+      const stageCenterX = stageWidth / 2;
+      const targetBlueLeft = stageCenterX - (totalDockedWidth / 2);
+      const targetWhiteLeft = stageCenterX - (totalDockedWidth / 2) + blueWidth;
+
+      const initialBlueLeft = bluePanel.offsetLeft;
+      const initialWhiteLeft = whitePanel.offsetLeft;
+
+      const offsetBlue = targetBlueLeft - initialBlueLeft;
+      const offsetWhite = targetWhiteLeft - initialWhiteLeft;
+
+      stage.style.setProperty('--dock-blue', `${offsetBlue}px`);
+      stage.style.setProperty('--dock-white', `${offsetWhite}px`);
+    }
+
+    window.addEventListener('resize', updateDockOffsets);
+    window.addEventListener('load', updateDockOffsets);
+    document.addEventListener('DOMContentLoaded', updateDockOffsets);
+
+    // 4. UI Transition: Blue & White boxes glide and join in the center to form the Login Card
+    let isRegisterMode = false;
+
+    function openLoginInterface() {
+      updateDockOffsets();
+      const stage = document.getElementById('stage-arena');
+      stage.classList.add('active-login');
+      setTimeout(() => {
+        const usernameInput = document.getElementById('username-input');
+        if (usernameInput) usernameInput.focus();
+      }, 550);
+    }
+
+    function closeLoginInterface() {
+      const stage = document.getElementById('stage-arena');
+      stage.classList.remove('active-login');
+      document.getElementById('error-alert').classList.remove('show');
+    }
+
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      const title = document.getElementById('auth-title');
+      const subtitle = document.getElementById('auth-subtitle');
+      const btnText = document.getElementById('btn-submit-text');
+      const prompt = document.getElementById('auth-toggle-prompt');
+      const btn = document.getElementById('auth-toggle-btn');
+
+      if (isRegisterMode) {
+        title.textContent = 'Create Account';
+        subtitle.textContent = 'Register a new user in MongoDB database';
+        btnText.textContent = 'Register & Enter Dashboard';
+        prompt.textContent = 'Already have an account?';
+        btn.textContent = 'Sign In';
+      } else {
+        title.textContent = 'Authenticate';
+        subtitle.textContent = 'Enter your credentials to unlock INDEX MATRIX';
+        btnText.textContent = 'Sign In to Dashboard';
+        prompt.textContent = "Don't have an account?";
+        btn.textContent = 'Create Account';
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById('password-input');
+      const eyeIcon = document.getElementById('eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeIcon.className = 'ri-eye-off-line';
+      } else {
+        input.type = 'password';
+        eyeIcon.className = 'ri-eye-line';
+      }
+    }
+
+    // 5. Authentication Form Submission
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const usernameInput = document.getElementById('username-input');
+      const pwdInput = document.getElementById('password-input');
+      const username = usernameInput.value.trim();
+      const password = pwdInput.value.trim();
+      const rememberMe = document.getElementById('remember-me-chk').checked;
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const errorAlert = document.getElementById('error-alert');
+      const errorMsg = document.getElementById('error-message');
+      const whitePanel = document.getElementById('panel-white');
+
+      if (!username || !password) return;
+
+      errorAlert.classList.remove('show');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="ri-loader-4-line ri-spin"></i> <span>Verifying...</span>`;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirect = urlParams.get('redirect') || '/index.html';
+
+      const endpoint = isRegisterMode ? '/api/auth/register' : '/api/auth/login';
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, rememberMe, redirect })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          submitBtn.innerHTML = `<i class="ri-check-line"></i> <span>Access Granted!</span>`;
+          submitBtn.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+
+          if (data.token) {
+            localStorage.setItem('index_matrix_token', data.token);
+          }
+          if (data.user) {
+            localStorage.setItem('index_matrix_user', JSON.stringify(data.user));
+          }
+
+          setTimeout(() => {
+            window.location.href = data.redirectUrl || redirect;
+          }, 400);
+
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<i class="ri-key-2-line"></i> <span>${isRegisterMode ? 'Register & Enter' : 'Sign In to Dashboard'}</span>`;
+          errorMsg.textContent = data.error || 'Invalid credentials.';
+          errorAlert.classList.add('show');
+          whitePanel.classList.add('shake');
+          setTimeout(() => whitePanel.classList.remove('shake'), 450);
+          pwdInput.select();
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="ri-key-2-line"></i> <span>${isRegisterMode ? 'Register & Enter' : 'Sign In to Dashboard'}</span>`;
+        errorMsg.textContent = 'Server communication error: ' + err.message;
+        errorAlert.classList.add('show');
+      }
+    }
+  </script>
+</body>
+</html>

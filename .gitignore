@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Secrets & Private Keys (Security: Prevent GCP key revocation on GitHub)
+service-account.json
+*service-account*.json
+*.env
+data/global-gsc.json
+
+# Vercel & Archives
+.vercel/
+*.zip
+
+# Logs & temp
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+

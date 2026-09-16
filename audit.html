@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical SEO Audit &amp; Googlebot Diagnostics - INDEX MATRIX</title>
+  <meta name="description" content="In-depth on-page SEO scanner, SERP snippet simulator, heading tag hierarchy analyzer, and Core Web Vitals diagnostic suite.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- Ambient Glow Spheres -->
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Sticky Glass Header Navigation -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" id="brand-logo-btn">
+        <div class="brand-icon">
+          <i class="ri-radar-fill"></i>
+        </div>
+        <span class="brand-app-name">INDEX MATRIX</span>
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+        <li><a href="indexer.html" class="nav-link" id="nav-indexer"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+        <li><a href="keywords.html" class="nav-link" id="nav-keywords"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+        <li><a href="console.html" class="nav-link" id="nav-console"><i class="ri-google-fill"></i> Google Console</a></li>
+        <li><a href="audit.html" class="nav-link active" id="nav-audit"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+        <li><a href="reports.html" class="nav-link" id="nav-reports"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="user-profile-badge" id="nav-user-badge">
+          <i class="ri-user-3-line"></i>
+          <span id="nav-username-display">Account</span>
+        </div>
+        <button type="button" class="btn-lock-session" onclick="lockUserSession()" title="Lock Platform Session">
+          <i class="ri-lock-line" style="color: var(--accent-cyan);"></i>
+          <span>Lock</span>
+        </button>
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" id="mobile-toggle-btn">
+          <i class="ri-menu-4-line"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <!-- Page Header Title -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div class="hero-pill" style="margin-bottom: 1rem;">
+        <i class="ri-stethoscope-line" style="color: var(--accent-cyan);"></i>
+        <span>Deep Technical &amp; On-Page SEO Scanner</span>
+      </div>
+      <h1 style="font-size: 2.4rem; margin-bottom: 0.6rem;">
+        On-Page SEO &amp; <span class="text-gradient-blue">SERP Diagnostics</span>
+      </h1>
+      <p style="color: var(--text-muted); max-width: 720px; margin: 0 auto; font-size: 1.05rem;">
+        Review how Googlebot sees your website. Optimize title tags, heading structure, Core Web Vitals, and preview your live Google Search snippet.
+      </p>
+    </div>
+
+    <!-- Live Google Search Result (SERP) Simulator -->
+    <div class="glass-card glass-card-solid" style="padding: 2.25rem; margin-bottom: 2.5rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <h2 style="font-size: 1.4rem; margin-bottom: 0.2rem;">Live Google Search Snippet Preview</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Real-time preview of how your page appears in Google search engine result pages.</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-sm btn-primary active-device-btn" id="btn-device-desktop" onclick="setSerpDevice('desktop')">
+            <i class="ri-computer-line"></i> Desktop View
+          </button>
+          <button class="btn btn-sm btn-glass" id="btn-device-mobile" onclick="setSerpDevice('mobile')">
+            <i class="ri-smartphone-line"></i> Mobile View
+          </button>
+        </div>
+      </div>
+
+      <!-- Google SERP Card -->
+      <div id="serp-box" style="background: rgba(15, 23, 42, 0.9); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 1.5rem; max-width: 680px; transition: all 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.6rem;">
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(56, 189, 248, 0.2); border: 1px solid var(--accent-cyan); display: flex; align-items: center; justify-content: center; color: var(--accent-cyan); font-size: 0.9rem;">
+            <i class="ri-global-line"></i>
+          </div>
+          <div>
+            <div id="serp-domain-text" style="font-size: 0.85rem; font-weight: 600; color: #ffffff;">yourwebsite.com</div>
+            <div id="serp-breadcrumb-text" style="font-size: 0.72rem; color: var(--accent-cyan);">https://yourwebsite.com &rsaquo; official</div>
+          </div>
+        </div>
+        <h3 id="serp-title-text" onclick="editSnippet()" style="color: #60a5fa; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.4rem; cursor: pointer;">
+          Scan a website to view live SERP snippet
+        </h3>
+        <p id="serp-desc-text" style="color: var(--text-body); font-size: 0.88rem; line-height: 1.5;">
+          Enter your website URL on the Dashboard to live-crawl real titles, meta descriptions, and keyword highlights.
+        </p>
+      </div>
+
+      <!-- Editable Snippet Drawer with Real-Time Guidance Meters -->
+      <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+          <div>
+            <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Meta Title (Recommended: 50-60 chars)</span>
+              <span id="title-char-count" class="badge badge-primary">0 chars</span>
+            </label>
+            <input type="text" id="edit-title-input" class="form-control" oninput="updateSerpPreview()" placeholder="Enter title tag...">
+            <div class="meter-wrapper">
+              <div class="meter-track">
+                <div class="meter-fill" id="title-meter-fill"></div>
+              </div>
+            </div>
+            <div id="title-guidance-hint" style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">Ideal range: 50 - 60 characters for desktop & mobile snippet display.</div>
+          </div>
+          <div>
+            <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Meta Description (Recommended: 120-160 chars)</span>
+              <span id="desc-char-count" class="badge badge-primary">0 chars</span>
+            </label>
+            <input type="text" id="edit-desc-input" class="form-control" oninput="updateSerpPreview()" placeholder="Enter meta description...">
+            <div class="meter-wrapper">
+              <div class="meter-track">
+                <div class="meter-fill" id="desc-meter-fill"></div>
+              </div>
+            </div>
+            <div id="desc-guidance-hint" style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">Ideal range: 120 - 160 characters for compelling Google CTR.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Technical Audit Breakdown Grid (2x2 Grid) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; margin-bottom: 2.5rem;">
+      <!-- Headings & Structure Audit -->
+      <div class="glass-card glass-card-solid" style="padding: 1.75rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <h3 style="font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-heading" style="color: var(--accent-cyan);"></i> Headings Hierarchy
+          </h3>
+          <span class="badge badge-primary" id="audit-headings-badge"><i class="ri-check-line"></i> Headings Check</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.88rem;">
+          <div style="padding: 0.75rem; background: rgba(15, 23, 42, 0.8); border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+            <div style="font-weight: 700; color: var(--accent-cyan); font-size: 0.8rem;" id="audit-h1-header">H1 TAG</div>
+            <div id="audit-h1-text" style="color: #ffffff; font-weight: 600; margin-top: 0.2rem;">
+              (Awaiting scan)
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.4rem 0.2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <span style="color: var(--text-muted);">H2 Subheadings</span>
+            <strong id="audit-h2-count" style="color: #ffffff;">--</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.4rem 0.2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <span style="color: var(--text-muted);">H3 Minor Sections</span>
+            <strong id="audit-h3-count" style="color: #ffffff;">--</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.4rem 0.2rem;">
+            <span style="color: var(--text-muted);">Canonical Tag Status</span>
+            <span style="color: var(--accent-emerald); font-weight: 600;" id="audit-canonical-status"><i class="ri-checkbox-circle-fill"></i> Verified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Web Vitals & Speed -->
+      <div class="glass-card glass-card-solid" style="padding: 1.75rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <h3 style="font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-speed-up-line" style="color: var(--accent-indigo);"></i> Core Web Vitals
+          </h3>
+          <span class="badge badge-success" id="audit-speed-badge"><i class="ri-flashlight-fill"></i> Performance</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.85rem;">
+          <div style="background: rgba(15, 23, 42, 0.8); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+            <div style="color: var(--text-muted); font-size: 0.75rem;">Largest Contentful Paint</div>
+            <div id="audit-lcp" style="font-size: 1.15rem; font-weight: 700; color: var(--accent-emerald);">--</div>
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Target (&le; 2.5s)</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.8); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+            <div style="color: var(--text-muted); font-size: 0.75rem;">First Contentful Paint</div>
+            <div id="audit-fcp" style="font-size: 1.15rem; font-weight: 700; color: var(--accent-emerald);">--</div>
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Target (&le; 1.8s)</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.8); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+            <div style="color: var(--text-muted); font-size: 0.75rem;">Cumulative Layout Shift</div>
+            <div id="audit-cls" style="font-size: 1.15rem; font-weight: 700; color: var(--accent-emerald);">--</div>
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Target (&le; 0.1)</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.8); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+            <div style="color: var(--text-muted); font-size: 0.75rem;">Network Latency</div>
+            <div id="audit-loadtime" style="font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan);">--</div>
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Live Response Time</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security, HTTPS & HTTP Protocols Suite -->
+      <div class="glass-card glass-card-solid" style="padding: 1.75rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <h3 style="font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-shield-keyhole-line" style="color: var(--accent-emerald);"></i> Security &amp; Protocol Headers
+          </h3>
+          <span class="badge badge-success" id="audit-sec-badge"><i class="ri-lock-line"></i> TLS / HTTPS</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.85rem;">
+          <div style="display: flex; justify-content: space-between; padding-bottom: 0.35rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <span style="color: var(--text-muted);">HSTS (Strict-Transport-Security)</span>
+            <strong id="audit-hsts-status" style="color: var(--accent-emerald);">Active</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-bottom: 0.35rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <span style="color: var(--text-muted);">Content-Security-Policy</span>
+            <strong id="audit-csp-status" style="color: var(--text-muted);">Configured</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-bottom: 0.35rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <span style="color: var(--text-muted);">Clickjacking Protection (X-Frame)</span>
+            <strong id="audit-xframe-status" style="color: var(--accent-emerald);">Protected</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Compression &amp; Mobile Viewport</span>
+            <span style="color: var(--accent-cyan); font-weight: 600;" id="audit-viewport-status">gzip &bull; Viewport OK</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Links & Asset Media Audit -->
+      <div class="glass-card glass-card-solid" style="padding: 1.75rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <h3 style="font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ri-image-line" style="color: var(--accent-cyan);"></i> Media &amp; Links
+          </h3>
+          <span class="badge badge-primary" id="audit-media-badge"><i class="ri-check-line"></i> Media Audit</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.88rem;">
+          <div style="display: flex; justify-content: space-between; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <span style="color: var(--text-muted);">Total Images Discovered</span>
+            <strong id="audit-images-total" style="color: #ffffff;">--</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <span style="color: var(--text-muted);">Missing ALT Attributes</span>
+            <span class="badge badge-warning" id="audit-images-alt">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <span style="color: var(--text-muted);">Internal Links</span>
+            <strong id="audit-internal-links" style="color: #ffffff;">--</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">External Outbound Links</span>
+            <strong id="audit-external-links" style="color: #ffffff;">--</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time Broken Link & Redirect Chain Inspector -->
+    <div class="glass-card glass-card-solid" style="padding: 2.25rem; margin-bottom: 2.5rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+            <div class="brand-icon" style="width: 36px; height: 36px; font-size: 1.15rem;">
+              <i class="ri-link-unlink-m"></i>
+            </div>
+            <h2 style="font-size: 1.35rem; margin: 0;">Real-Time Broken Link &amp; Redirect Chain Inspector</h2>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">
+            Probe all discovered internal and external hyperlinks for HTTP 200 OK health, 301/302 redirect loops, and 404/500 broken links.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+          <button type="button" class="btn btn-sm btn-glass" onclick="exportLinksCSV()" title="Export link audit to CSV">
+            <i class="ri-download-2-line"></i> Export CSV
+          </button>
+          <button type="button" class="btn btn-sm btn-primary" onclick="runLiveLinkInspection()" id="btn-recheck-links">
+            <i class="ri-radar-line"></i> Re-Check Links
+          </button>
+        </div>
+      </div>
+
+      <!-- Link Health KPI Strip -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.75rem;">
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+          <div style="font-size: 0.74rem; font-weight: 700; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">
+            <i class="ri-checkbox-circle-fill"></i> Healthy (200 OK)
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: #ffffff;" id="link-stat-healthy">--</div>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+          <div style="font-size: 0.74rem; font-weight: 700; color: var(--accent-amber); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">
+            <i class="ri-route-line"></i> Redirects (301/302)
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: #ffffff;" id="link-stat-redirects">--</div>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+          <div style="font-size: 0.74rem; font-weight: 700; color: #f43f5e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">
+            <i class="ri-close-circle-fill"></i> Broken (404/500)
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: #ffffff;" id="link-stat-broken">--</div>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+          <div style="font-size: 0.74rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">
+            <i class="ri-shield-check-line"></i> Link Health Score
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent-cyan);" id="link-stat-score">--%</div>
+        </div>
+      </div>
+
+      <!-- Filter Controls & Search -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem;">
+        <div style="display: inline-flex; background: rgba(15, 23, 42, 0.85); padding: 0.3rem; border-radius: var(--radius-md); border: 1px solid rgba(56, 189, 248, 0.2); gap: 0.3rem;" id="link-filter-tabs">
+          <button type="button" class="btn btn-sm btn-primary" onclick="setLinkFilter('all')" id="tab-link-all">All (<span id="count-all">0</span>)</button>
+          <button type="button" class="btn btn-sm btn-glass" onclick="setLinkFilter('broken')" id="tab-link-broken">Broken (<span id="count-broken">0</span>)</button>
+          <button type="button" class="btn btn-sm btn-glass" onclick="setLinkFilter('redirect')" id="tab-link-redirect">Redirects (<span id="count-redirect">0</span>)</button>
+          <button type="button" class="btn btn-sm btn-glass" onclick="setLinkFilter('healthy')" id="tab-link-healthy">Healthy (<span id="count-healthy">0</span>)</button>
+        </div>
+
+        <div style="position: relative; min-width: 240px;">
+          <input 
+            type="text" 
+            id="link-search-input" 
+            class="form-control" 
+            placeholder="Search links or anchor..." 
+            style="padding: 0.55rem 0.85rem 0.55rem 2.25rem; font-size: 0.84rem;"
+            oninput="filterLinksList()"
+          >
+          <i class="ri-search-line" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-dim); pointer-events: none;"></i>
+        </div>
+      </div>
+
+      <!-- Links Table -->
+      <div class="table-wrapper" style="margin: 0; max-height: 420px; overflow-y: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Status</th>
+              <th>Anchor Text</th>
+              <th>Target Destination URL</th>
+              <th style="width: 100px;">Type</th>
+              <th style="width: 110px;">Latency</th>
+            </tr>
+          </thead>
+          <tbody id="link-inspector-body">
+            <tr>
+              <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">
+                <i class="ri-loader-4-line ri-spin" style="font-size: 1.5rem; color: var(--accent-cyan);"></i>
+                <div style="margin-top: 0.5rem;">Awaiting website live scan...</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Social Graph Live Preview Card (OpenGraph & Twitter Cards) -->
+    <div class="glass-card glass-card-solid" style="padding: 2.25rem; margin-bottom: 2.5rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+            <h2 style="font-size: 1.35rem;">Social Graph &amp; OpenGraph Rich Card Preview</h2>
+            <span class="badge badge-primary"><i class="ri-share-forward-line"></i> Social Crawler Ready</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Preview how your webpage displays when shared across LinkedIn, Twitter/X, Facebook, and Discord.</p>
+        </div>
+      </div>
+
+      <div class="social-card-box">
+        <div class="social-card-img-holder">
+          <img id="social-card-image" src="https://images.unsplash.com/photo-1557838923-2985c318be48?w=800&auto=format&fit=crop&q=60" alt="Social Graph Image Preview">
+        </div>
+        <div class="social-card-content">
+          <div class="social-card-domain" id="social-card-domain">YOURDOMAIN.COM</div>
+          <div class="social-card-title" id="social-card-title">Live Social Card Title</div>
+          <div class="social-card-desc" id="social-card-desc">Social preview description extracted from live page open-graph tags.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyword Placement & SEO On-Page Optimization Matrix -->
+    <div class="glass-card glass-card-solid" style="padding: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <h2 style="font-size: 1.35rem; margin-bottom: 0.2rem;">Target Keyword Placement Analysis</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Check where your uploaded PDF keywords appear inside critical on-page ranking positions.</p>
+        </div>
+        <a href="reports.html" class="btn btn-primary btn-sm">
+          <i class="ri-magic-line"></i> Auto-Generate Optimized Tags
+        </a>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Target Keyword</th>
+              <th>In Title Tag?</th>
+              <th>In Meta Desc?</th>
+              <th>In H1 Heading?</th>
+              <th>In JSON-LD Schema?</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="keyword-matrix-body">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Glass Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="brand-icon footer-icon">
+            <i class="ri-radar-fill"></i>
+          </div>
+          <span class="brand-app-name">INDEX MATRIX</span>
+        </div>
+        <p class="footer-tagline">
+          Enterprise SEO intelligence, autonomous keyword ranking matrices, and high-speed search engine crawler dispatch engine.
+        </p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-nav-title">Platform Hubs</div>
+        <ul class="footer-links">
+          <li><a href="index.html"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+          <li><a href="indexer.html"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+          <li><a href="keywords.html"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+          <li><a href="console.html"><i class="ri-google-fill"></i> Google Console</a></li>
+          <li><a href="audit.html"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+          <li><a href="reports.html"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-status-panel">
+        <div class="footer-nav-title">Engine Security &amp; Telemetry</div>
+        <div class="footer-status-pills">
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Indexing Engine Online</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Encrypted Session Vault</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Googlebot Webhook Stream Online</span>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          &copy; <span id="footer-year">2026</span> <span class="brand-app-name">INDEX MATRIX</span>. High-Performance Search Operations.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/pdf-parser.js"></script>
+  <script src="js/console-feeder.js"></script>
+  <script>
+    function renderAuditView() {
+      const state = SEONexus.getState();
+      
+      if (!state.targetUrl) {
+        document.getElementById('serp-domain-text').textContent = 'yourwebsite.com';
+        document.getElementById('serp-breadcrumb-text').textContent = 'https://yourwebsite.com › official';
+        document.getElementById('serp-title-text').textContent = 'Scan a website on Dashboard to view live SERP preview';
+        document.getElementById('serp-desc-text').textContent = 'Real meta description and keyword highlights will render here after scanning a URL.';
+        document.getElementById('keyword-matrix-body').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No website scanned yet. <a href="index.html" style="color: var(--accent-cyan);">Scan a website on the Dashboard</a>.</td></tr>';
+        
+        const titleInput = document.getElementById('edit-title-input');
+        const descInput = document.getElementById('edit-desc-input');
+        if (titleInput) titleInput.value = '';
+        if (descInput) descInput.value = '';
+        updateGuidanceMeters('', '');
+
+        document.getElementById('audit-h1-text').textContent = '(Awaiting scan)';
+        document.getElementById('audit-h1-header').textContent = 'H1 TAG';
+        document.getElementById('audit-h2-count').textContent = '0 Tags Found';
+        document.getElementById('audit-h3-count').textContent = '0 Tags Found';
+        document.getElementById('audit-lcp').textContent = '--';
+        document.getElementById('audit-fcp').textContent = '--';
+        document.getElementById('audit-cls').textContent = '--';
+        document.getElementById('audit-loadtime').textContent = '--';
+        document.getElementById('audit-images-total').textContent = '0 Images';
+        document.getElementById('audit-images-alt').textContent = '0 Missing';
+        document.getElementById('audit-internal-links').textContent = '0 Links';
+        document.getElementById('audit-external-links').textContent = '0 Links';
+        document.getElementById('audit-hsts-status').innerHTML = '<span style="color: var(--text-dim);">Awaiting Scan</span>';
+        document.getElementById('audit-csp-status').innerHTML = '<span style="color: var(--text-dim);">Awaiting Scan</span>';
+        document.getElementById('audit-xframe-status').innerHTML = '<span style="color: var(--text-dim);">Awaiting Scan</span>';
+        document.getElementById('audit-viewport-status').innerHTML = '<span style="color: var(--text-dim);">Awaiting Scan</span>';
+        document.getElementById('social-card-domain').textContent = 'YOURWEBSITE.COM';
+        document.getElementById('social-card-title').textContent = 'Scan a website on Dashboard to preview social graph';
+        document.getElementById('social-card-desc').textContent = 'Open Graph and Twitter Cards will render here.';
+
+        const tbody = document.getElementById('link-inspector-body');
+        if (tbody) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No website scanned yet. Run a crawl from the Dashboard.</td></tr>';
+        }
+        document.getElementById('link-stat-healthy').textContent = '0';
+        document.getElementById('link-stat-redirects').textContent = '0';
+        document.getElementById('link-stat-broken').textContent = '0';
+        document.getElementById('link-stat-score').textContent = '100%';
+        document.getElementById('count-all').textContent = '0';
+        document.getElementById('count-broken').textContent = '0';
+        document.getElementById('count-redirect').textContent = '0';
+        document.getElementById('count-healthy').textContent = '0';
+        return;
+      }
+
+      const domain = state.targetUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+
+      // SERP Box
+      document.getElementById('serp-domain-text').textContent = domain;
+      document.getElementById('serp-breadcrumb-text').textContent = `${state.targetUrl} › official`;
+      document.getElementById('serp-title-text').textContent = state.metaTitle;
+      document.getElementById('serp-desc-text').textContent = state.metaDescription;
+
+      document.getElementById('edit-title-input').value = state.metaTitle;
+      document.getElementById('edit-desc-input').value = state.metaDescription;
+      
+      updateGuidanceMeters(state.metaTitle || '', state.metaDescription || '');
+
+      // Technical metrics
+      document.getElementById('audit-h1-text').textContent = state.auditDetails?.h1Text || '(No H1 found)';
+      document.getElementById('audit-h1-header').textContent = `H1 TAG (Count: ${state.auditDetails?.h1Count || 0})`;
+      document.getElementById('audit-h2-count').textContent = `${state.auditDetails?.h2Count || 0} Tags Found`;
+      document.getElementById('audit-h3-count').textContent = `${state.auditDetails?.h3Count || 0} Tags Found`;
+      document.getElementById('audit-lcp').textContent = state.auditDetails?.lcp || '--';
+      document.getElementById('audit-fcp').textContent = state.auditDetails?.fcp || '--';
+      document.getElementById('audit-cls').textContent = state.auditDetails?.cls || '--';
+      document.getElementById('audit-loadtime').textContent = state.auditDetails?.loadTime || '--';
+      document.getElementById('audit-images-total').textContent = `${state.auditDetails?.imagesTotal || 0} Images`;
+      document.getElementById('audit-images-alt').textContent = `${state.auditDetails?.imagesMissingAlt || 0} Missing`;
+      document.getElementById('audit-internal-links').textContent = `${state.auditDetails?.internalLinks || 0} Links`;
+      document.getElementById('audit-external-links').textContent = `${state.auditDetails?.externalLinks || 0} Links`;
+
+      // Security & Protocols
+      const sec = state.auditDetails?.securityHeaders || {};
+      document.getElementById('audit-hsts-status').innerHTML = sec.hsts ? '✅ Active (max-age)' : '<span style="color: var(--text-dim);">Not Detected</span>';
+      document.getElementById('audit-csp-status').innerHTML = sec.csp ? '✅ Configured' : '<span style="color: var(--text-dim);">Standard Policy</span>';
+      document.getElementById('audit-xframe-status').innerHTML = sec.xFrame ? '✅ SAMEORIGIN' : '<span style="color: var(--text-dim);">Unrestricted</span>';
+      document.getElementById('audit-viewport-status').innerHTML = `${sec.compression || 'gzip'} &bull; ${state.auditDetails?.hasViewport !== false ? '✅ Viewport OK' : '⚠️ Missing Viewport'}`;
+
+      // Social Graph Preview
+      const og = state.auditDetails?.ogTags || {};
+      document.getElementById('social-card-domain').textContent = og.siteName || domain.toUpperCase();
+      document.getElementById('social-card-title').textContent = og.title || state.metaTitle;
+      document.getElementById('social-card-desc').textContent = og.description || state.metaDescription;
+      if (og.image) {
+        document.getElementById('social-card-image').src = og.image;
+      }
+
+      renderKeywordMatrix(state);
+
+      // Restore or run Link Inspector
+      if (state.auditDetails?.linkAuditResults) {
+        const cached = state.auditDetails.linkAuditResults;
+        inspectedLinks = cached.links || [];
+        const summary = cached.summary || {};
+        document.getElementById('link-stat-healthy').textContent = summary.healthy || 0;
+        document.getElementById('link-stat-redirects').textContent = summary.redirects || 0;
+        document.getElementById('link-stat-broken').textContent = summary.broken || 0;
+        document.getElementById('link-stat-score').textContent = `${summary.healthScore ?? 100}%`;
+        document.getElementById('count-all').textContent = inspectedLinks.length;
+        document.getElementById('count-broken').textContent = summary.broken || 0;
+        document.getElementById('count-redirect').textContent = summary.redirects || 0;
+        document.getElementById('count-healthy').textContent = summary.healthy || 0;
+        renderLinksTable();
+      } else if (state.targetUrl) {
+        runLiveLinkInspection();
+      }
+    }
+
+    let inspectedLinks = [];
+    let currentLinkFilter = 'all';
+
+    async function runLiveLinkInspection(forceFresh = false) {
+      const state = SEONexus.getState();
+      if (!state.targetUrl) {
+        SEONexus.showToast('Please crawl a website on Dashboard first to inspect links.', 'warning');
+        return;
+      }
+
+      const btn = document.getElementById('btn-recheck-links');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="ri-loader-4-line ri-spin"></i> Probing Links...`;
+      }
+
+      const tbody = document.getElementById('link-inspector-body');
+      if (tbody && (!inspectedLinks || inspectedLinks.length === 0)) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+              <i class="ri-radar-line ri-spin" style="font-size: 2rem; color: var(--accent-cyan); display: block; margin-bottom: 0.5rem;"></i>
+              <div style="font-weight: 600; color: #ffffff;">Dispatching Concurrent HTTP Probes...</div>
+              <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">Checking status codes, latency, and redirect headers across all discovered links.</div>
+            </td>
+          </tr>
+        `;
+      }
+
+      try {
+        const discovered = (state.auditDetails && state.auditDetails.discoveredLinks) ? state.auditDetails.discoveredLinks : [];
+        const result = await SEONexus.checkLinks(state.targetUrl, discovered);
+        
+        if (result && result.success) {
+          inspectedLinks = result.links || [];
+          const summary = result.summary || {
+            total: inspectedLinks.length,
+            healthy: inspectedLinks.filter(l => l.status >= 200 && l.status < 300).length,
+            redirects: inspectedLinks.filter(l => l.status >= 300 && l.status < 400).length,
+            broken: inspectedLinks.filter(l => l.status >= 400 || l.status === 0).length,
+            healthScore: 100
+          };
+
+          // Update KPI Strip
+          document.getElementById('link-stat-healthy').textContent = summary.healthy || 0;
+          document.getElementById('link-stat-redirects').textContent = summary.redirects || 0;
+          document.getElementById('link-stat-broken').textContent = summary.broken || 0;
+          document.getElementById('link-stat-score').textContent = `${summary.healthScore ?? 100}%`;
+
+          // Update Counts on Filter Tabs
+          document.getElementById('count-all').textContent = inspectedLinks.length;
+          document.getElementById('count-broken').textContent = summary.broken || 0;
+          document.getElementById('count-redirect').textContent = summary.redirects || 0;
+          document.getElementById('count-healthy').textContent = summary.healthy || 0;
+
+          // Save into state for persistence
+          if (!state.auditDetails) state.auditDetails = {};
+          state.auditDetails.linkAuditResults = result;
+          SEONexus.saveState(state);
+
+          renderLinksTable();
+          SEONexus.showToast(`Checked ${inspectedLinks.length} links. Health score: ${summary.healthScore}%`, 'success');
+        }
+      } catch (err) {
+        console.error('Link inspection error:', err);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="ri-radar-line"></i> Re-Check Links`;
+        }
+      }
+    }
+
+    function setLinkFilter(filter) {
+      currentLinkFilter = filter;
+      const tabs = ['all', 'broken', 'redirect', 'healthy'];
+      tabs.forEach(t => {
+        const tabBtn = document.getElementById(`tab-link-${t}`);
+        if (tabBtn) {
+          if (t === filter) {
+            tabBtn.className = 'btn btn-sm btn-primary';
+          } else {
+            tabBtn.className = 'btn btn-sm btn-glass';
+          }
+        }
+      });
+      renderLinksTable();
+    }
+
+    function filterLinksList() {
+      renderLinksTable();
+    }
+
+    function renderLinksTable() {
+      const tbody = document.getElementById('link-inspector-body');
+      if (!tbody) return;
+
+      const searchInput = document.getElementById('link-search-input');
+      const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+
+      let filtered = inspectedLinks.filter(l => {
+        // Filter by category
+        if (currentLinkFilter === 'broken' && !(l.status >= 400 || l.status === 0)) return false;
+        if (currentLinkFilter === 'redirect' && !(l.status >= 300 && l.status < 400)) return false;
+        if (currentLinkFilter === 'healthy' && !(l.status >= 200 && l.status < 300)) return false;
+
+        // Filter by search query
+        if (query) {
+          const matchUrl = (l.url || '').toLowerCase().includes(query);
+          const matchAnchor = (l.anchorText || '').toLowerCase().includes(query);
+          const matchStatus = (l.statusText || '').toLowerCase().includes(query) || String(l.status).includes(query);
+          const matchRedir = (l.redirectLocation || '').toLowerCase().includes(query);
+          return matchUrl || matchAnchor || matchStatus || matchRedir;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">
+              <i class="ri-search-eye-line" style="font-size: 1.8rem; display: block; margin-bottom: 0.5rem; color: var(--accent-cyan); opacity: 0.7;"></i>
+              <div>No links matching current filter (<strong>${currentLinkFilter}</strong>${query ? ` / "${query}"` : ''}).</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      filtered.forEach(item => {
+        const row = document.createElement('tr');
+        
+        // Status Badge
+        let statusBadge = '';
+        if (item.status >= 200 && item.status < 300) {
+          statusBadge = `<span class="badge badge-success"><i class="ri-checkbox-circle-fill"></i> ${item.status} OK</span>`;
+        } else if (item.status >= 300 && item.status < 400) {
+          statusBadge = `<span class="badge badge-warning"><i class="ri-route-line"></i> ${item.status} ${item.statusText || 'Redirect'}</span>`;
+        } else if (item.status === 404) {
+          statusBadge = `<span class="badge badge-danger" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);"><i class="ri-close-circle-fill"></i> 404 Not Found</span>`;
+        } else if (item.status >= 400 || item.status === 0) {
+          statusBadge = `<span class="badge badge-danger" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);"><i class="ri-error-warning-fill"></i> ${item.status || 'Error'} ${item.statusText || 'Broken'}</span>`;
+        } else {
+          statusBadge = `<span class="badge badge-primary">${item.status} ${item.statusText}</span>`;
+        }
+
+        // Latency
+        let latColor = '#10b981';
+        const ms = item.latencyMs || 0;
+        if (ms > 800) latColor = '#f43f5e';
+        else if (ms > 350) latColor = '#f59e0b';
+
+        // Anchor
+        const anchor = item.anchorText ? `<strong style="color: #ffffff;">${escapeHtml(item.anchorText)}</strong>` : `<span style="color: var(--text-dim); font-style: italic;">(No Anchor Text)</span>`;
+
+        // Redirect location if any
+        let redirHtml = '';
+        if (item.redirectLocation) {
+          redirHtml = `
+            <div style="font-size: 0.76rem; color: var(--accent-amber); margin-top: 0.25rem; display: flex; align-items: center; gap: 0.3rem;">
+              <i class="ri-corner-down-right-line"></i> &rarr; <span style="word-break: break-all;">${escapeHtml(item.redirectLocation)}</span>
+            </div>
+          `;
+        }
+
+        // Type Badge
+        const typeBadge = item.type === 'Internal' 
+          ? `<span class="badge badge-glass" style="color: var(--accent-cyan);"><i class="ri-home-4-line"></i> Internal</span>`
+          : `<span class="badge badge-glass" style="color: #a855f7;"><i class="ri-external-link-line"></i> External</span>`;
+
+        row.innerHTML = `
+          <td>${statusBadge}</td>
+          <td>${anchor}</td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; text-decoration: none; word-break: break-all; max-width: 320px;" title="${item.url}">
+                ${escapeHtml(item.url)}
+              </a>
+              <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-cyan); font-size: 0.95rem; flex-shrink: 0;" title="Open in new tab">
+                <i class="ri-external-link-line"></i>
+              </a>
+            </div>
+            ${redirHtml}
+          </td>
+          <td>${typeBadge}</td>
+          <td>
+            <span style="font-weight: 700; color: ${latColor}; font-size: 0.85rem;">
+              ${ms > 0 ? `${ms}ms` : '--'}
+            </span>
+          </td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    }
+
+    function exportLinksCSV() {
+      if (!inspectedLinks || inspectedLinks.length === 0) {
+        SEONexus.showToast('No inspected links to export. Run link check first.', 'warning');
+        return;
+      }
+
+      const headers = ['Status Code', 'Status Text', 'Anchor Text', 'Target URL', 'Type', 'Latency (ms)', 'Redirect Destination'];
+      const rows = inspectedLinks.map(l => [
+        l.status || 0,
+        `"${(l.statusText || '').replace(/"/g, '""')}"`,
+        `"${(l.anchorText || '').replace(/"/g, '""')}"`,
+        `"${(l.url || '').replace(/"/g, '""')}"`,
+        l.type || 'Internal',
+        l.latencyMs || 0,
+        `"${(l.redirectLocation || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const state = SEONexus.getState();
+      const domain = (state.targetUrl || 'site').replace(/^https?:\/\//, '').replace(/[^a-z0-9]/gi, '_');
+      a.download = `broken-links-audit-${domain}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      SEONexus.showToast('Link audit report downloaded as CSV!', 'success');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderKeywordMatrix(state) {
+      const tbody = document.getElementById('keyword-matrix-body');
+      if (!tbody) return;
+
+      const keywords = state.extractedKeywords || [];
+      if (keywords.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              No target keywords uploaded. <a href="keywords.html" style="color: var(--accent-cyan);">Upload a keyword PDF or extract terms</a> to inspect on-page placement.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const title = (state.metaTitle || '').toLowerCase();
+      const desc = (state.metaDescription || '').toLowerCase();
+      const h1 = (state.auditDetails?.h1Text || '').toLowerCase();
+      const schemaText = JSON.stringify(state.auditDetails?.ogTags || {}).toLowerCase();
+
+      tbody.innerHTML = '';
+      keywords.slice(0, 15).forEach(kw => {
+        const term = (kw.term || kw.keyword || '').toLowerCase();
+        if (!term) return;
+
+        const inTitle = title.includes(term);
+        const inDesc = desc.includes(term);
+        const inH1 = h1.includes(term);
+        const inSchema = schemaText.includes(term);
+
+        const score = (inTitle ? 1 : 0) + (inDesc ? 1 : 0) + (inH1 ? 1 : 0) + (inSchema ? 1 : 0);
+        let statusBadge = '';
+        if (score >= 3) {
+          statusBadge = '<span class="badge badge-success"><i class="ri-checkbox-circle-fill"></i> Highly Optimized</span>';
+        } else if (score >= 1) {
+          statusBadge = '<span class="badge badge-warning"><i class="ri-alert-fill"></i> Partial Match</span>';
+        } else {
+          statusBadge = '<span class="badge badge-danger"><i class="ri-close-circle-fill"></i> Missing Placement</span>';
+        }
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong style="color: #ffffff;">${kw.term || kw.keyword}</strong></td>
+          <td>${inTitle ? '<span class="badge badge-success"><i class="ri-check-line"></i> Yes</span>' : '<span style="color: var(--text-dim);">&times; No</span>'}</td>
+          <td>${inDesc ? '<span class="badge badge-success"><i class="ri-check-line"></i> Yes</span>' : '<span style="color: var(--text-dim);">&times; No</span>'}</td>
+          <td>${inH1 ? '<span class="badge badge-success"><i class="ri-check-line"></i> Yes</span>' : '<span style="color: var(--text-dim);">&times; No</span>'}</td>
+          <td>${inSchema ? '<span class="badge badge-success"><i class="ri-check-line"></i> Yes</span>' : '<span style="color: var(--text-dim);">&times; No</span>'}</td>
+          <td>${statusBadge}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function updateGuidanceMeters(title, desc) {
+      const titleLen = title.length;
+      const descLen = desc.length;
+
+      const titleCountEl = document.getElementById('title-char-count');
+      const descCountEl = document.getElementById('desc-char-count');
+      const titleFill = document.getElementById('title-meter-fill');
+      const descFill = document.getElementById('desc-meter-fill');
+      const titleHint = document.getElementById('title-guidance-hint');
+      const descHint = document.getElementById('desc-guidance-hint');
+
+      titleCountEl.textContent = `${titleLen} chars`;
+      descCountEl.textContent = `${descLen} chars`;
+
+      // Title meter: optimal is 50-60
+      const titlePct = Math.min(100, Math.round((titleLen / 70) * 100));
+      titleFill.style.width = `${titlePct}%`;
+      if (titleLen >= 50 && titleLen <= 60) {
+        titleFill.className = 'meter-fill good';
+        titleCountEl.className = 'badge badge-success';
+        titleHint.innerHTML = '✅ <strong style="color: #10b981;">Optimal Title Length</strong> (Displays completely on Google SERP).';
+      } else if (titleLen > 60) {
+        titleFill.className = 'meter-fill danger';
+        titleCountEl.className = 'badge badge-danger';
+        titleHint.innerHTML = '⚠️ <strong style="color: #f87171;">Too Long</strong> (Will be truncated with ellipsis "..." on Google).';
+      } else {
+        titleFill.className = 'meter-fill warning';
+        titleCountEl.className = 'badge badge-primary';
+        titleHint.innerHTML = 'ℹ️ <strong style="color: var(--accent-cyan);">Too Short</strong> (Add 1-2 primary keywords for ranking boost).';
+      }
+
+      // Desc meter: optimal is 120-160
+      const descPct = Math.min(100, Math.round((descLen / 180) * 100));
+      descFill.style.width = `${descPct}%`;
+      if (descLen >= 120 && descLen <= 160) {
+        descFill.className = 'meter-fill good';
+        descCountEl.className = 'badge badge-success';
+        descHint.innerHTML = '✅ <strong style="color: #10b981;">Optimal Description Length</strong> (Maximum CTR and search preview density).';
+      } else if (descLen > 160) {
+        descFill.className = 'meter-fill danger';
+        descCountEl.className = 'badge badge-danger';
+        descHint.innerHTML = '⚠️ <strong style="color: #f87171;">Too Long</strong> (Google will clip description after 160 chars).';
+      } else {
+        descFill.className = 'meter-fill warning';
+        descCountEl.className = 'badge badge-primary';
+        descHint.innerHTML = 'ℹ️ <strong style="color: var(--accent-cyan);">Too Short</strong> (Expand to 120+ chars with value proposition & call to action).';
+      }
+    }
+
+    function updateSerpPreview() {
+      const newTitle = document.getElementById('edit-title-input').value;
+      const newDesc = document.getElementById('edit-desc-input').value;
+
+      document.getElementById('serp-title-text').textContent = newTitle;
+      document.getElementById('serp-desc-text').textContent = newDesc;
+      document.getElementById('social-card-title').textContent = newTitle;
+      document.getElementById('social-card-desc').textContent = newDesc;
+
+      updateGuidanceMeters(newTitle, newDesc);
+
+      const state = SEONexus.getState();
+      state.metaTitle = newTitle;
+      state.metaDescription = newDesc;
+      SEONexus.saveState(state);
+    }
+
+    function setSerpDevice(device) {
+      const box = document.getElementById('serp-box');
+      const deskBtn = document.getElementById('btn-device-desktop');
+      const mobBtn = document.getElementById('btn-device-mobile');
+
+      if (device === 'mobile') {
+        box.style.maxWidth = '400px';
+        box.style.border = '2px solid var(--accent-cyan)';
+        deskBtn.className = 'btn btn-sm btn-glass';
+        mobBtn.className = 'btn btn-sm btn-primary active-device-btn';
+      } else {
+        box.style.maxWidth = '680px';
+        box.style.border = '1px solid var(--card-border)';
+        deskBtn.className = 'btn btn-sm btn-primary active-device-btn';
+        mobBtn.className = 'btn btn-sm btn-glass';
+      }
+    }
+
+    function editSnippet() {
+      document.getElementById('edit-title-input').focus();
+    }
+
+    window.addEventListener('seonexus:statechange', renderAuditView);
+    document.addEventListener('DOMContentLoaded', async () => {
+      await SEONexus.init();
+      renderAuditView();
+    });
+  </script>
+</body>
+</html>

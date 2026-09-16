@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INDEX MATRIX - Real Live Website Scanner & Google Search Console Feeder</title>
+  <meta name="description" content="Scan any website, upload keyword PDF documents, and feed Google Search Console with real live crawl data, Indexing API payloads, and Schema.org structured entities.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  
+  <!-- PDF.js for in-browser client fallback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Ambient Glow Spheres -->
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Sticky Glass Header Navigation -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" id="brand-logo-btn">
+        <div class="brand-icon">
+          <i class="ri-radar-fill"></i>
+        </div>
+        <span class="brand-app-name">INDEX MATRIX</span>
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="index.html" class="nav-link active" id="nav-home"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+        <li><a href="indexer.html" class="nav-link" id="nav-indexer"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+        <li><a href="keywords.html" class="nav-link" id="nav-keywords"><i class="ri-file-text-line"></i> Keywords & Files</a></li>
+        <li><a href="console.html" class="nav-link" id="nav-console"><i class="ri-google-fill"></i> Google Console</a></li>
+        <li><a href="audit.html" class="nav-link" id="nav-audit"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+        <li><a href="reports.html" class="nav-link" id="nav-reports"><i class="ri-code-box-line"></i> Schema & Export</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="user-profile-badge" id="nav-user-badge">
+          <i class="ri-user-3-line"></i>
+          <span id="nav-username-display">Account</span>
+        </div>
+        <button type="button" class="btn-lock-session" onclick="lockUserSession()" title="Lock Platform Session">
+          <i class="ri-lock-line" style="color: var(--accent-cyan);"></i>
+          <span>Lock</span>
+        </button>
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" id="mobile-toggle-btn">
+          <i class="ri-menu-4-line"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section with Real Live URL Scanner & File Attachment -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-pill">
+          <i class="ri-flashlight-line" style="color: var(--accent-cyan);"></i>
+          <span>100% Real Live Webpage Crawler &amp; Google Indexing Feeder</span>
+        </div>
+        
+        <h1 class="hero-title">
+          Scan Any Website, Feed <span class="text-gradient-blue">Google Console</span> &amp; Target Real Keywords
+        </h1>
+        
+        <p class="hero-subtitle">
+          Enter any real website URL and optionally attach a keyword PDF or document. Our live crawler inspects the actual DOM, Core Web Vitals, and feeds Google Search Console.
+        </p>
+
+        <!-- Glassmorphism Main Scan Input Bar -->
+        <div class="hero-scan-wrapper">
+          <form id="hero-scan-form" class="glass-card glass-card-solid" style="padding: 1.75rem; text-align: left;" onsubmit="handleHeroScan(event)">
+            <div style="margin-bottom: 1.25rem;">
+              <label class="form-label" style="font-weight: 700; color: var(--text-main); font-size: 0.9rem;">
+                <i class="ri-global-line" style="color: var(--accent-cyan);"></i> Website URL to Live-Scan &amp; Feed
+              </label>
+              <div class="url-scan-box">
+                <div class="url-scan-prefix">
+                  <i class="ri-link"></i>
+                </div>
+                <input 
+                  type="text" 
+                  id="hero-url-input" 
+                  class="url-scan-input" 
+                  placeholder="Enter any live website (e.g., https://github.com or your domain)"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  required
+                >
+              </div>
+            </div>
+
+            <!-- Optional File Upload Attachment -->
+            <div style="margin-bottom: 1.5rem;">
+              <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="ri-file-pdf-line" style="color: #ef4444;"></i> Attach Keyword File (PDF / CSV / TXT) <em style="color: var(--text-dim); font-weight: normal;">(Optional)</em></span>
+                <span id="file-attached-label" style="font-size: 0.78rem; color: var(--accent-emerald); font-weight: 700;"></span>
+              </label>
+              <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <input type="file" id="hero-file-input" style="display: none;" accept=".pdf,.txt,.csv,.json" onchange="handleHeroFileChange(event)">
+                <button type="button" class="btn btn-sm btn-glass" onclick="document.getElementById('hero-file-input').click()">
+                  <i class="ri-upload-2-line"></i> Choose File
+                </button>
+                <button type="button" class="btn btn-sm btn-glass" id="btn-hero-remove-file" onclick="clearHeroFile()" style="display: none; padding: 0.2rem 0.6rem; font-size: 0.78rem; color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
+                  <i class="ri-close-line"></i> Remove File
+                </button>
+                <span id="hero-file-name-display" style="font-size: 0.85rem; color: var(--text-muted);">
+                  No file attached. (Keywords will be auto-extracted from live body text).
+                </span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" id="hero-scan-submit-btn">
+              <i class="ri-radar-line"></i>
+              <span>Crawl</span>
+            </button>
+          </form>
+
+          <!-- Quick Try Real URLs -->
+          <div class="quick-examples">
+            <span>Quick Live Test:</span>
+            <span class="quick-tag" onclick="quickScan('https://stripe.com')">stripe.com</span>
+            <span class="quick-tag" onclick="quickScan('https://linear.app')">linear.app</span>
+            <span class="quick-tag" onclick="quickScan('https://shopify.com')">shopify.com</span>
+            <span class="quick-tag" onclick="quickScan('https://wikipedia.org')">wikipedia.org</span>
+            <span class="quick-tag" onclick="quickScan('https://github.com')">github.com</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Active Website Dashboard Overview Section -->
+    <section class="container" style="margin-bottom: 4rem;">
+      <div class="glass-card glass-card-solid" style="padding: 2.25rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 1.25rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+              <span class="badge badge-primary" id="project-status-badge"><i class="ri-checkbox-circle-fill"></i> Live Project</span>
+              <span class="badge badge-success" id="active-gsc-badge"><i class="ri-google-fill"></i> GSC Pipeline Active</span>
+            </div>
+            <h2 id="active-site-title" style="font-size: 1.6rem; margin-bottom: 0.2rem;">Ready to Scan</h2>
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+              <a id="active-site-url" href="#" target="_blank" style="color: var(--accent-cyan); font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none;">
+                <span id="active-site-url-text">Enter a URL in the scan box above</span>
+                <i class="ri-external-link-line"></i>
+              </a>
+              <span style="color: var(--text-dim);">|</span>
+              <span style="font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.35rem;">
+                <i class="ri-file-text-line" style="color: var(--accent-cyan);"></i> Source: <strong id="active-file-name" style="color: #ffffff;">Awaiting Scan</strong>
+              </span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button type="button" class="btn btn-glass" onclick="SEONexus.openExecutiveReportModal()" id="btn-executive-report" title="Generate Branded Executive Client SEO Report">
+              <i class="ri-file-chart-line" style="color: var(--accent-cyan);"></i>
+              <span>Executive Report</span>
+            </button>
+            <a href="keywords.html" class="btn btn-secondary" id="btn-upload-keywords">
+              <i class="ri-file-upload-line"></i>
+              <span>Upload Keywords</span>
+            </a>
+            <a href="console.html" class="btn btn-primary" id="btn-open-console">
+              <i class="ri-google-fill"></i>
+              <span>Feed to Google Console</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4 Key Health SVG Radial Score Gauges -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem;">
+          <!-- Overall SEO Score -->
+          <div class="radial-gauge-card" id="gauge-card-overall">
+            <div id="score-overall-val"></div>
+          </div>
+
+          <!-- On-Page Score -->
+          <div class="radial-gauge-card" id="gauge-card-onpage">
+            <div id="score-onpage-val"></div>
+          </div>
+
+          <!-- Speed & Performance -->
+          <div class="radial-gauge-card" id="gauge-card-perf">
+            <div id="score-perf-val"></div>
+          </div>
+
+          <!-- Googlebot Crawlability -->
+          <div class="radial-gauge-card" id="gauge-card-crawl">
+            <div id="score-crawl-val"></div>
+          </div>
+        </div>
+
+        <!-- Two Column Quick Insights -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+          <!-- Active Target Keywords Card -->
+          <div class="glass-card" style="padding: 1.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <h4 style="display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
+                <i class="ri-key-2-line" style="color: var(--accent-cyan);"></i>
+                <span>Keywords Extracted for Googlebot</span>
+              </h4>
+              <a href="keywords.html" style="font-size: 0.82rem; font-weight: 600; color: var(--accent-cyan); text-decoration: none;">Manage Keywords &rarr;</a>
+            </div>
+            <div id="hero-keywords-list" style="display: flex; flex-direction: column; gap: 0.65rem;">
+              <div style="color: var(--text-muted); font-size: 0.88rem; padding: 1rem 0;">
+                No keywords yet. Enter a website URL above to live-crawl real keywords or <a href="keywords.html" style="color: var(--accent-cyan);">upload a PDF</a>.
+              </div>
+            </div>
+          </div>
+
+          <!-- Google Search Console Live Status Card -->
+          <div class="glass-card" style="padding: 1.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <h4 style="display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
+                <i class="ri-google-fill" style="color: var(--accent-cyan);"></i>
+                <span>Google Console Pipeline Status</span>
+              </h4>
+              <a href="console.html" style="font-size: 0.82rem; font-weight: 600; color: var(--accent-cyan); text-decoration: none;">Feed Hub &rarr;</a>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.88rem;">
+              <div style="display: flex; justify-content: space-between; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <span style="color: var(--text-muted);">Indexing State</span>
+                <span class="badge badge-primary" id="hero-index-badge">Ready for Submission</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <span style="color: var(--text-muted);">Last Crawl Verification</span>
+                <strong id="hero-last-crawl" style="color: #ffffff;">--</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                <span style="color: var(--text-muted);">Dispatch Status</span>
+                <span class="badge badge-success">Active &amp; Ready</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">Indexing API Mode</span>
+                <strong style="color: var(--accent-cyan);">OAuth2 / Ping Broadcast</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SEO Health Score History & Velocity Tracker Section -->
+    <section class="container" style="margin-bottom: 3.5rem;">
+      <div class="glass-card glass-card-solid" style="padding: 2.25rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+              <div class="brand-icon" style="width: 36px; height: 36px; font-size: 1.15rem;">
+                <i class="ri-line-chart-line"></i>
+              </div>
+              <h2 style="font-size: 1.35rem; margin: 0;">SEO Health Score History &amp; Velocity Tracker</h2>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">
+              Longitudinal tracking of SEO scores across crawl checkpoints to quantify ranking velocity and structural improvements.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <select id="timeline-scope-select" class="form-control" style="width: auto; padding: 0.45rem 0.85rem; font-size: 0.82rem;" onchange="handleTimelineScopeChange()">
+              <option value="all">All Tracked Projects</option>
+              <option value="current" selected>Current Scanned Website</option>
+            </select>
+            <button type="button" class="btn btn-sm btn-glass" onclick="loadScoreTimeline()" title="Refresh Score Timeline">
+              <i class="ri-refresh-line"></i> Refresh Timeline
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Selection Tab Controls -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;">
+          <div style="display: inline-flex; background: rgba(15, 23, 42, 0.85); padding: 0.3rem; border-radius: var(--radius-md); border: 1px solid rgba(56, 189, 248, 0.2); gap: 0.3rem; flex-wrap: wrap;" id="timeline-metric-tabs">
+            <button type="button" class="btn btn-sm btn-primary" onclick="setTimelineMetric('overall')" id="tab-metric-overall">
+              <i class="ri-shield-check-line"></i> Overall Health
+            </button>
+            <button type="button" class="btn btn-sm btn-glass" onclick="setTimelineMetric('onPage')" id="tab-metric-onPage">
+              <i class="ri-file-code-line"></i> On-Page
+            </button>
+            <button type="button" class="btn btn-sm btn-glass" onclick="setTimelineMetric('performance')" id="tab-metric-performance">
+              <i class="ri-speed-line"></i> Speed &amp; Latency
+            </button>
+            <button type="button" class="btn btn-sm btn-glass" onclick="setTimelineMetric('crawlability')" id="tab-metric-crawlability">
+              <i class="ri-radar-line"></i> Crawlability
+            </button>
+            <button type="button" class="btn btn-sm btn-glass" onclick="setTimelineMetric('keywordsCount')" id="tab-metric-keywordsCount">
+              <i class="ri-key-2-line"></i> Keyword Volume
+            </button>
+          </div>
+
+          <div style="font-size: 0.82rem; color: var(--text-dim);" id="timeline-count-label">
+            Loaded 0 checkpoints
+          </div>
+        </div>
+
+        <!-- SVG Timeline & KPI Container -->
+        <div id="score-timeline-graph-container">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- User Project Crawl History Table (Scoped to Active Account) -->
+    <section class="container" style="margin-bottom: 5rem;">
+      <div class="glass-card glass-card-solid" style="padding: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="ri-history-line" style="color: var(--accent-blue);"></i> User Project Crawl History
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0;">
+              Active crawl projects &amp; extracted keyword records scoped to your account (<span class="badge badge-primary" id="history-user-pill">Active User</span>).
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="btn btn-sm btn-glass" onclick="loadUserCrawlHistory()" title="Refresh User Project History">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
+            <button class="btn btn-sm btn-glass admin-only" id="btn-admin-clear-history" onclick="clearAllUserHistory()" style="display: none; color: #f87171; border-color: rgba(239, 68, 68, 0.3);" title="Admin: Clear all project records">
+              <i class="ri-delete-bin-line"></i> Clear Records
+            </button>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="data-table" id="crawl-history-table">
+            <thead>
+              <tr>
+                <th>Scanned Target URL</th>
+                <th>SEO Health Score</th>
+                <th>Audited Source</th>
+                <th>Extracted Keywords</th>
+                <th>Timestamp</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="crawl-history-tbody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-dim); padding: 2rem;">
+                  <i class="ri-inbox-line" style="font-size: 1.8rem; display: block; margin-bottom: 0.5rem;"></i>
+                  No scanned projects yet. Enter a website URL above and click <strong>Crawl Website &amp; Extract Data</strong>.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="app-footer">
+    <div class="container footer-container">
+      <div class="footer-brand-col">
+        <div class="footer-brand-title">
+          <i class="ri-radar-fill"></i>
+          <span class="brand-app-name">INDEX MATRIX</span>
+        </div>
+        <p class="footer-tagline">
+          The enterprise-grade search intelligence and ultra-fast indexing suite.
+        </p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-nav-title">Platform Hubs</div>
+        <ul class="footer-links">
+          <li><a href="index.html"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+          <li><a href="indexer.html"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+          <li><a href="keywords.html"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+          <li><a href="console.html"><i class="ri-google-fill"></i> Google Console</a></li>
+          <li><a href="audit.html"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+          <li><a href="reports.html"><i class="ri-code-box-line"></i> Schema & Export</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-status-panel">
+        <div class="footer-nav-title">Engine Security &amp; Telemetry</div>
+        <div class="footer-status-pills">
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Indexing Engine Online</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Encrypted Session Vault</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Googlebot Webhook Stream Online</span>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          &copy; <span id="footer-year">2026</span> <span class="brand-app-name">INDEX MATRIX</span>. High-Performance Search Operations.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/pdf-parser.js"></script>
+  <script src="js/console-feeder.js"></script>
+  <script>
+    let attachedFileObject = null;
+
+    async function handleHeroFileChange(e) {
+      const file = e.target.files ? e.target.files[0] : null;
+      if (!file) return;
+
+      attachedFileObject = file;
+      document.getElementById('hero-file-name-display').textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB) - Parsing...`;
+      document.getElementById('file-attached-label').textContent = '⏳ Parsing Keywords...';
+      const removeBtn = document.getElementById('btn-hero-remove-file');
+      if (removeBtn) removeBtn.style.display = 'inline-flex';
+
+      if (window.PDFKeywordExtractor) {
+        try {
+          const res = await PDFKeywordExtractor.parseFile(file);
+          if (res && res.keywords && res.keywords.length > 0) {
+            const state = SEONexus.getState();
+            state.extractedKeywords = res.keywords;
+            state.primaryKeywords = res.keywords.slice(0, 5).map(k => k.term);
+            state.uploadedFileName = file.name;
+            state.uploadedFileSize = (file.size / 1024).toFixed(1) + ' KB';
+            state.uploadedFileDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            SEONexus.saveState(state);
+            document.getElementById('file-attached-label').textContent = `✓ ${res.keywords.length} Keywords Attached`;
+            document.getElementById('hero-file-name-display').textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            SEONexus.showToast(`Extracted ${res.keywords.length} keywords from ${file.name}!`, 'success');
+            renderDashboard();
+          } else {
+            document.getElementById('file-attached-label').textContent = '⚠️ Attached (No keywords found)';
+            document.getElementById('hero-file-name-display').textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            SEONexus.showToast(`File attached, but no text keywords found in ${file.name}.`, 'warning');
+          }
+        } catch (err) {
+          console.error('File parsing error:', err);
+          document.getElementById('file-attached-label').textContent = '❌ Parse Error';
+          SEONexus.showToast(`Failed to parse file: ${err.message}`, 'error');
+        }
+      }
+    }
+
+    function clearHeroFile() {
+      attachedFileObject = null;
+      const fileInput = document.getElementById('hero-file-input');
+      if (fileInput) fileInput.value = '';
+
+      document.getElementById('hero-file-name-display').textContent = 'No file attached. (Keywords will be auto-extracted from live body text).';
+      document.getElementById('file-attached-label').textContent = '';
+
+      const removeBtn = document.getElementById('btn-hero-remove-file');
+      if (removeBtn) removeBtn.style.display = 'none';
+
+      const state = SEONexus.getState();
+      state.uploadedFileName = '';
+      state.uploadedFileSize = '';
+      state.uploadedFileDate = '';
+      SEONexus.saveState(state);
+
+      SEONexus.showToast('Attached file detached.', 'info');
+    }
+
+    function renderDashboard() {
+      const state = SEONexus.getState();
+
+      if (state.targetUrl) {
+        document.getElementById('active-site-title').textContent = state.siteName || state.targetUrl;
+        const urlLink = document.getElementById('active-site-url');
+        urlLink.href = state.targetUrl;
+        document.getElementById('active-site-url-text').textContent = state.targetUrl;
+        document.getElementById('active-file-name').textContent = state.uploadedFileName || 'Live Body Extraction';
+
+        SEONexus.renderRadialGauge('score-overall-val', state.scores.overall || 0, 'Overall SEO Score', 'Live Crawl Health');
+        SEONexus.renderRadialGauge('score-onpage-val', state.scores.onPage || 0, 'On-Page Signals', 'Meta & Structure');
+        SEONexus.renderRadialGauge('score-perf-val', state.scores.performance || 0, 'Network Latency', state.auditDetails.loadTime ? `${state.auditDetails.loadTime} Response` : 'Load Speed');
+        SEONexus.renderRadialGauge('score-crawl-val', state.scores.crawlability || 0, 'Google Directives', 'Robots & Sitemaps');
+
+        document.getElementById('hero-last-crawl').textContent = state.scanTimestamp ? new Date(state.scanTimestamp).toLocaleTimeString() : '--';
+
+        const kwContainer = document.getElementById('hero-keywords-list');
+        kwContainer.innerHTML = '';
+        const keywords = (state.extractedKeywords || []).slice(0, 4);
+        
+        if (keywords.length === 0) {
+          kwContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 0.88rem;">No keywords extracted from this page. <a href="keywords.html" style="color: var(--accent-cyan);">Upload a PDF keyword file</a>.</div>`;
+        } else {
+          keywords.forEach(kw => {
+            const item = document.createElement('div');
+            item.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; background: rgba(15,23,42,0.8); border-radius: var(--radius-sm); border: 1px solid var(--card-border);';
+            
+            let intentBadge = 'badge-primary';
+            if (kw.intent === 'Commercial') intentBadge = 'badge-warning';
+            if (kw.intent === 'Transactional') intentBadge = 'badge-success';
+
+            item.innerHTML = `
+              <div>
+                <strong style="font-size: 0.88rem; color: #ffffff;">${kw.term}</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Occurrences: ${kw.count}x | Density: ${kw.density}</div>
+              </div>
+              <span class="badge ${intentBadge}">${kw.intent}</span>
+            `;
+            kwContainer.appendChild(item);
+          });
+        }
+      } else {
+        document.getElementById('active-site-title').textContent = 'No Website Scanned Yet';
+        const urlLink = document.getElementById('active-site-url');
+        if (urlLink) urlLink.removeAttribute('href');
+        document.getElementById('active-site-url-text').textContent = 'Enter URL above and click Crawl';
+        document.getElementById('active-file-name').textContent = 'None';
+        document.getElementById('hero-last-crawl').textContent = '--';
+        const kwContainer = document.getElementById('hero-keywords-list');
+        if (kwContainer) {
+          kwContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 0.88rem; padding: 1rem 0;">No active website. Paste a URL above and click Crawl to start.</div>';
+        }
+        SEONexus.renderRadialGauge('score-overall-val', 0, 'Overall SEO Score', 'Awaiting Scan');
+        SEONexus.renderRadialGauge('score-onpage-val', 0, 'On-Page Signals', 'Awaiting Scan');
+        SEONexus.renderRadialGauge('score-perf-val', 0, 'Network Latency', 'Awaiting Scan');
+        SEONexus.renderRadialGauge('score-crawl-val', 0, 'Google Directives', 'Awaiting Scan');
+      }
+
+      loadUserCrawlHistory();
+      loadScoreTimeline();
+    }
+
+    let currentTimelineMetric = 'overall';
+    let cachedTimelineData = [];
+
+    async function loadScoreTimeline() {
+      const scopeSelect = document.getElementById('timeline-scope-select');
+      const scope = scopeSelect ? scopeSelect.value : 'current';
+      const state = SEONexus.getState();
+      const targetUrl = (scope === 'current' && state.targetUrl) ? state.targetUrl : '';
+
+      cachedTimelineData = await SEONexus.getScoreTimeline(targetUrl);
+
+      const countLabel = document.getElementById('timeline-count-label');
+      if (countLabel) {
+        countLabel.textContent = `Loaded ${cachedTimelineData.length} snapshot checkpoint${cachedTimelineData.length === 1 ? '' : 's'}`;
+      }
+
+      SEONexus.renderScoreTimelineSvg('score-timeline-graph-container', cachedTimelineData, currentTimelineMetric);
+    }
+
+    function setTimelineMetric(metric) {
+      currentTimelineMetric = metric;
+      const metrics = ['overall', 'onPage', 'performance', 'crawlability', 'keywordsCount'];
+      metrics.forEach(m => {
+        const btn = document.getElementById(`tab-metric-${m}`);
+        if (btn) {
+          if (m === metric) {
+            btn.className = 'btn btn-sm btn-primary';
+          } else {
+            btn.className = 'btn btn-sm btn-glass';
+          }
+        }
+      });
+      SEONexus.renderScoreTimelineSvg('score-timeline-graph-container', cachedTimelineData, currentTimelineMetric);
+    }
+
+    function handleTimelineScopeChange() {
+      loadScoreTimeline();
+    }
+
+    async function loadUserCrawlHistory() {
+      const tbody = document.getElementById('crawl-history-tbody');
+      if (!tbody) return;
+
+      const userPill = document.getElementById('history-user-pill');
+      if (userPill) {
+        userPill.textContent = SEONexus.getCurrentUsername() || 'Active User';
+      }
+
+      const adminClearBtn = document.getElementById('btn-admin-clear-history');
+      if (adminClearBtn) {
+        adminClearBtn.style.display = SEONexus.getCurrentUserRole() === 'admin' ? 'inline-flex' : 'none';
+      }
+
+      const history = await SEONexus.syncUserHistoryFromServer();
+      renderHistoryTable(history);
+    }
+
+    function renderHistoryTable(history) {
+      const tbody = document.getElementById('crawl-history-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      function escH(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      }
+
+      if (!history || history.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-dim); padding: 2.5rem;">
+              <i class="ri-inbox-line" style="font-size: 2rem; display: block; margin-bottom: 0.5rem; color: var(--accent-cyan);"></i>
+              No scanned projects yet. Enter any website URL above and click <strong>Crawl</strong>!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const isAdmin = SEONexus.getCurrentUserRole() === 'admin';
+
+      history.forEach(item => {
+        const row = document.createElement('tr');
+        const kwsCount = item.keywordsCount || (item.keywords || []).length;
+        const timeStamp = item.submissionDate || (item.createdAt ? new Date(item.createdAt).toLocaleString() : '--');
+        const score = item.overallScore || item.scores?.overall || 0;
+        
+        let scoreBadge = 'badge-danger';
+        if (score >= 80) scoreBadge = 'badge-success';
+        else if (score >= 60) scoreBadge = 'badge-primary';
+        else if (score >= 40) scoreBadge = 'badge-warning';
+
+        const safeUrl = escH(item.url);
+        const safeId = escH(item.id || item.url);
+        const safeSiteName = escH(item.siteName || '');
+        const safeFileName = escH(item.uploadedFileName || 'Live Body Extraction');
+        const safeFileSize = escH(item.uploadedFileSize || 'Extracted');
+        const safeTimestamp = escH(timeStamp);
+
+        row.innerHTML = `
+          <td>
+            <div style="font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 0.4rem;">
+              <i class="ri-global-line" style="color: var(--accent-cyan);"></i>
+              <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; text-decoration: none;" title="Open URL in new tab">${safeUrl}</a>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">${safeSiteName}</span>
+          </td>
+          <td>
+            <span class="badge ${scoreBadge}">
+              <i class="ri-shield-check-line"></i> ${score}% Health
+            </span>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <i class="ri-file-text-fill" style="color: var(--accent-cyan); font-size: 1.1rem;"></i>
+              <div>
+                <strong style="font-size: 0.85rem; color: #ffffff;">${safeFileName}</strong>
+                <div style="font-size: 0.72rem; color: var(--text-dim);">${safeFileSize}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="badge badge-primary"><i class="ri-key-2-line"></i> ${kwsCount} Keywords</span>
+          </td>
+          <td style="color: var(--text-muted); font-size: 0.82rem;">
+            ${safeTimestamp}
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <button class="btn btn-sm btn-primary" onclick="loadHistoryItem('${safeId}')" title="Load this project into dashboard">
+                <i class="ri-arrow-right-line"></i> Load
+              </button>
+              <button class="btn btn-sm btn-glass admin-only" onclick="deleteHistoryItem('${safeId}')" title="Admin: Delete record" style="${isAdmin ? 'display: inline-flex;' : 'display: none;'} color: #f43f5e; border-color: rgba(239, 68, 68, 0.3);">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderHistory() {
+      loadUserCrawlHistory();
+    }
+
+    function loadHistoryItem(id) {
+      if (SEONexus.loadProjectFromHistory(id)) {
+        renderDashboard();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    async function deleteHistoryItem(id) {
+      const ok = await SEONexus.deleteProjectFromHistory(id);
+      if (ok) {
+        loadUserCrawlHistory();
+      }
+    }
+
+    async function clearAllUserHistory() {
+      if (SEONexus.getCurrentUserRole() !== 'admin') {
+        SEONexus.showToast('Only administrators can clear records.', 'error');
+        return;
+      }
+      if (!confirm('Are you sure you want to clear all project crawl records?')) return;
+
+      try {
+        const token = localStorage.getItem('index_matrix_token') || '';
+        const res = await fetch('/api/history/clear-all', { 
+          method: 'POST',
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          SEONexus.showToast('All crawl project records cleared from database.', 'info');
+        }
+      } catch (e) {}
+
+      await SEONexus.init();
+      loadUserCrawlHistory();
+    }
+
+    async function handleHeroScan(e) {
+      e.preventDefault();
+      const input = document.getElementById('hero-url-input');
+      const url = input.value.trim();
+      if (!url) return;
+
+      const submitBtn = document.getElementById('hero-scan-submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="ri-loader-4-line ri-spin"></i> <span>Crawling...</span>`;
+
+      try {
+        const liveResult = await SEONexus.analyzeUrl(url, attachedFileObject);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="ri-radar-line"></i> <span>Crawl</span>`;
+        if (liveResult) {
+          SEONexus.showToast(`Live crawled ${url}! Latency: ${liveResult.auditDetails.loadTime}`, 'success');
+          renderDashboard();
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="ri-radar-line"></i> <span>Crawl</span>`;
+      }
+    }
+
+    function quickScan(url) {
+      document.getElementById('hero-url-input').value = url;
+      document.getElementById('hero-scan-form').dispatchEvent(new Event('submit'));
+    }
+
+    window.addEventListener('seonexus:statechange', renderDashboard);
+    document.addEventListener('DOMContentLoaded', async () => {
+      const heroInput = document.getElementById('hero-url-input');
+      if (heroInput) {
+        heroInput.value = '';
+      }
+      await SEONexus.init();
+      renderDashboard();
+      loadUserCrawlHistory();
+    });
+  </script>
+</body>
+</html>

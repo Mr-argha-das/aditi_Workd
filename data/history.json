@@ -1,0 +1,1963 @@
+[
+  {
+    "id": "proj_1789547684830",
+    "url": "https://mytestsite.com",
+    "siteName": "My Test Site",
+    "uploadedFileName": "keywords.pdf",
+    "uploadedFileSize": "42.5 KB",
+    "uploadedFileDate": "Sep 4, 2026",
+    "keywordsCount": 15,
+    "keywords": [
+      {
+        "term": "cloud seo automation",
+        "count": 5,
+        "density": "2.4%",
+        "intent": "Commercial",
+        "difficulty": 45
+      }
+    ],
+    "submissionDate": "Sep 4, 2026",
+    "gscStatus": "Scanned",
+    "overallScore": 92,
+    "username": "nexus_2438",
+    "createdAt": "2026-09-16T08:34:44.833Z"
+  },
+  {
+    "id": "proj_1789527993838",
+    "url": "https://iufost2026.org/sites/default/files/webform/aeediidi20.pdf",
+    "siteName": "iufost2026.org",
+    "uploadedFileName": "live-web-scan.txt",
+    "uploadedFileSize": "Auto-Extracted",
+    "uploadedFileDate": "Sep 16, 2026",
+    "keywordsCount": 0,
+    "keywords": [],
+    "submissionDate": "Sep 16, 2026 at 08:36 AM",
+    "gscStatus": "Awaiting Live Scan",
+    "overallScore": 0,
+    "scores": {
+      "overall": 0,
+      "onPage": 0,
+      "performance": 0,
+      "crawlability": 0,
+      "mobile": 0
+    },
+    "auditDetails": {
+      "titleLength": 0,
+      "titleStatus": "warning",
+      "descLength": 0,
+      "descStatus": "warning",
+      "h1Count": 0,
+      "h1Text": "(Awaiting Scan)",
+      "h2Count": 0,
+      "h3Count": 0,
+      "canonical": "",
+      "canonicalStatus": "pending",
+      "robotsTxt": false,
+      "sitemapXml": false,
+      "sslSecure": false,
+      "loadTime": "--",
+      "fcp": "--",
+      "lcp": "--",
+      "cls": "--",
+      "imagesTotal": 0,
+      "imagesMissingAlt": 0,
+      "internalLinks": 0,
+      "externalLinks": 0,
+      "ogTags": {
+        "title": "",
+        "image": "",
+        "type": ""
+      }
+    },
+    "metaTitle": "Enter a URL above to perform a live scan",
+    "metaDescription": "Real live technical SEO diagnostics, Core Web Vitals, and keyword extraction will appear here.",
+    "primaryKeywords": [],
+    "username": "naina",
+    "createdAt": "2026-09-16T03:06:33.899Z"
+  },
+  {
+    "id": "proj_1789527434801",
+    "url": "https://mytestsite.com",
+    "siteName": "My Test Site",
+    "uploadedFileName": "keywords.pdf",
+    "uploadedFileSize": "42.5 KB",
+    "uploadedFileDate": "Sep 4, 2026",
+    "keywordsCount": 15,
+    "keywords": [
+      {
+        "term": "cloud seo automation",
+        "count": 5,
+        "density": "2.4%",
+        "intent": "Commercial",
+        "difficulty": 45
+      }
+    ],
+    "submissionDate": "Sep 4, 2026",
+    "gscStatus": "Scanned",
+    "overallScore": 92,
+    "username": "nexus_9098",
+    "createdAt": "2026-09-16T02:57:14.820Z"
+  },
+  {
+    "id": "proj_1789496208739",
+    "url": "https://mytestsite.com",
+    "siteName": "My Test Site",
+    "uploadedFileName": "keywords.pdf",
+    "uploadedFileSize": "42.5 KB",
+    "uploadedFileDate": "Sep 4, 2026",
+    "keywordsCount": 15,
+    "keywords": [
+      {
+        "term": "cloud seo automation",
+        "count": 5,
+        "density": "2.4%",
+        "intent": "Commercial",
+        "difficulty": 45
+      }
+    ],
+    "submissionDate": "Sep 4, 2026",
+    "gscStatus": "Scanned",
+    "overallScore": 92,
+    "username": "nexus_5745",
+    "createdAt": "2026-09-15T18:16:48.742Z"
+  },
+  {
+    "id": "proj_1789495129922",
+    "url": "https://mytestsite.com",
+    "siteName": "My Test Site",
+    "uploadedFileName": "keywords.pdf",
+    "uploadedFileSize": "42.5 KB",
+    "uploadedFileDate": "Sep 4, 2026",
+    "keywordsCount": 15,
+    "keywords": [
+      {
+        "term": "cloud seo automation",
+        "count": 5,
+        "density": "2.4%",
+        "intent": "Commercial",
+        "difficulty": 45
+      }
+    ],
+    "submissionDate": "Sep 4, 2026",
+    "gscStatus": "Scanned",
+    "overallScore": 92,
+    "username": "nexus_5880",
+    "createdAt": "2026-09-15T17:58:49.926Z"
+  },
+  {
+    "id": "proj_1789487538576",
+    "url": "https://iufost2026.org/sites/default/files/webform/aeediidi19.pdf",
+    "siteName": "iufost2026.org",
+    "uploadedFileName": "Live Web Body Extraction",
+    "uploadedFileSize": "16.0 KB",
+    "uploadedFileDate": "Sep 15, 2026",
+    "keywordsCount": 40,
+    "keywords": [
+      {
+        "term": "endobj obj",
+        "count": 94,
+        "density": "3.04%",
+        "volume": "42,300/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj endobj",
+        "count": 80,
+        "density": "2.59%",
+        "volume": "36,000/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj endobj obj",
+        "count": 79,
+        "density": "2.56%",
+        "volume": "11,850/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endobj obj endobj",
+        "count": 79,
+        "density": "2.56%",
+        "volume": "11,850/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj",
+        "count": 95,
+        "density": "3.07%",
+        "volume": "1,33,000/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endobj",
+        "count": 95,
+        "density": "3.07%",
+        "volume": "1,33,000/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj stream",
+        "count": 8,
+        "density": "0.26%",
+        "volume": "3,600/mo",
+        "difficulty": "High (72%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endobj obj stream",
+        "count": 8,
+        "density": "0.26%",
+        "volume": "1,200/mo",
+        "difficulty": "Medium (50%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endstream endobj",
+        "count": 7,
+        "density": "0.23%",
+        "volume": "3,150/mo",
+        "difficulty": "High (70%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endstream endobj obj",
+        "count": 7,
+        "density": "0.23%",
+        "volume": "1,050/mo",
+        "difficulty": "Medium (48%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "stream",
+        "count": 9,
+        "density": "0.29%",
+        "volume": "12,600/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "ml",
+        "count": 7,
+        "density": "0.23%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "jm",
+        "count": 7,
+        "density": "0.23%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endstream",
+        "count": 7,
+        "density": "0.23%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "cg",
+        "count": 7,
+        "density": "0.23%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj font",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "font mediabox",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "mediabox contents",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "contents structparents",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "structparents tabs",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "tabs parent",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "parent endobj",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj dw",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "dw endobj",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endobj obj font",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj font mediabox",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "font mediabox contents",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "mediabox contents structparents",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "contents structparents tabs",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "structparents tabs parent",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "tabs parent endobj",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "parent endobj obj",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endobj obj dw",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj dw endobj",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "dw endobj obj",
+        "count": 3,
+        "density": "0.10%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "yd",
+        "count": 6,
+        "density": "0.19%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "gj",
+        "count": 6,
+        "density": "0.19%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "nu",
+        "count": 6,
+        "density": "0.19%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "bw",
+        "count": 6,
+        "density": "0.19%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "ur",
+        "count": 6,
+        "density": "0.19%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      }
+    ],
+    "submissionDate": "Sep 15, 2026 at 09:22 PM",
+    "gscStatus": "Live Web Scanned (Ready to Feed GSC)",
+    "overallScore": 20,
+    "scores": {
+      "overall": 20,
+      "onPage": 21,
+      "performance": 65,
+      "crawlability": 95,
+      "mobile": 60,
+      "security": 65
+    },
+    "auditDetails": {
+      "titleLength": 0,
+      "titleStatus": "warning",
+      "descLength": 0,
+      "descStatus": "warning",
+      "h1Count": 0,
+      "h1Text": "(No H1 tag found on page)",
+      "h2Count": 0,
+      "h3Count": 0,
+      "canonical": "https://iufost2026.org/sites/default/files/webform/aeediidi19.pdf",
+      "canonicalStatus": "missing",
+      "robotsTxt": true,
+      "sitemapXml": true,
+      "sslSecure": true,
+      "loadTime": "2.44s",
+      "fcp": "1.46s",
+      "lcp": "3.17s",
+      "cls": "0.01",
+      "imagesTotal": 0,
+      "imagesMissingAlt": 0,
+      "internalLinks": 0,
+      "externalLinks": 0,
+      "discoveredLinks": [],
+      "hasViewport": false,
+      "viewportMeta": "",
+      "securityHeaders": {
+        "hsts": false,
+        "csp": false,
+        "xFrame": false,
+        "xContentType": true,
+        "compression": "none",
+        "serverSoftware": "Apache",
+        "contentTypeHeader": "application/pdf"
+      },
+      "ogTags": {
+        "title": "iufost2026.org",
+        "description": "(No meta description found on page)",
+        "image": "",
+        "siteName": "iufost2026.org",
+        "type": "website"
+      },
+      "twitterTags": {
+        "card": "summary_large_image",
+        "title": "iufost2026.org",
+        "description": "(No meta description found on page)",
+        "image": ""
+      }
+    },
+    "metaTitle": "(Missing Title Tag on iufost2026.org)",
+    "metaDescription": "(No meta description found on page)",
+    "primaryKeywords": [
+      "endobj obj",
+      "obj endobj",
+      "obj endobj obj",
+      "endobj obj endobj",
+      "obj"
+    ],
+    "username": "naina",
+    "createdAt": "2026-09-15T15:52:18.598Z"
+  },
+  {
+    "id": "proj_1789477989324",
+    "url": "https://iufost2026.org/system/files/webform/aeediidi2.pdf",
+    "siteName": "IUFoST - Log in",
+    "uploadedFileName": "Live Web Body Extraction",
+    "uploadedFileSize": "16.0 KB",
+    "uploadedFileDate": "Sep 15, 2026",
+    "keywordsCount": 40,
+    "keywords": [
+      {
+        "term": "iufost",
+        "count": 17,
+        "density": "5.70%",
+        "volume": "23,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "food",
+        "count": 13,
+        "density": "4.36%",
+        "volume": "18,200/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "scientific",
+        "count": 9,
+        "density": "3.02%",
+        "volume": "12,600/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "scientific information",
+        "count": 4,
+        "density": "1.34%",
+        "volume": "1,800/mo",
+        "difficulty": "High (64%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "food science",
+        "count": 4,
+        "density": "1.34%",
+        "volume": "1,800/mo",
+        "difficulty": "High (64%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "information bulletins",
+        "count": 3,
+        "density": "1.01%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "bulletins sibs",
+        "count": 3,
+        "density": "1.01%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "global food",
+        "count": 3,
+        "density": "1.01%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "scientific information bulletins",
+        "count": 3,
+        "density": "1.01%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "information bulletins sibs",
+        "count": 3,
+        "density": "1.01%",
+        "volume": "450/mo",
+        "difficulty": "Medium (40%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "science",
+        "count": 5,
+        "density": "1.68%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "global",
+        "count": 5,
+        "density": "1.68%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "world",
+        "count": 5,
+        "density": "1.68%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "fellows nomination",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "adhering body",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "science technology",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "news briefs",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "distance-assisted training",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "training programme",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "food safety",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "safety curricula",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "curricula initiative",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "initiative gfsci",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "scientific roundtable",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "roundtable discussions",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "discussions srds",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "world food",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "food congress",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "iufost world",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "overview criteria",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "lifetime achievement",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "900/mo",
+        "difficulty": "High (60%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "food science technology",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "distance-assisted training programme",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "global food safety",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "food safety curricula",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "safety curricula initiative",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "curricula initiative gfsci",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "scientific roundtable discussions",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "roundtable discussions srds",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "world food congress",
+        "count": 2,
+        "density": "0.67%",
+        "volume": "300/mo",
+        "difficulty": "Medium (38%)",
+        "intent": "Navigational"
+      }
+    ],
+    "submissionDate": "Sep 15, 2026 at 06:43 PM",
+    "gscStatus": "Live Web Scanned (Ready to Feed GSC)",
+    "overallScore": 85,
+    "scores": {
+      "overall": 85,
+      "onPage": 89,
+      "performance": 65,
+      "crawlability": 95,
+      "mobile": 95,
+      "security": 75
+    },
+    "auditDetails": {
+      "titleLength": 15,
+      "titleStatus": "warning",
+      "descLength": 61,
+      "descStatus": "warning",
+      "h1Count": 1,
+      "h1Text": "Log in",
+      "h2Count": 1,
+      "h3Count": 0,
+      "canonical": "https://iufost2026.org/user/login",
+      "canonicalStatus": "valid",
+      "robotsTxt": true,
+      "sitemapXml": true,
+      "sslSecure": true,
+      "loadTime": "3.63s",
+      "fcp": "2.18s",
+      "lcp": "4.71s",
+      "cls": "0.01",
+      "imagesTotal": 6,
+      "imagesMissingAlt": 0,
+      "internalLinks": 185,
+      "externalLinks": 6,
+      "discoveredLinks": [
+        {
+          "url": "https://iufost2026.org/",
+          "text": "IUFoST",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/about-iufost",
+          "text": "About IUFoST",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/about-iufost-forum",
+          "text": "About IUFoST Forum",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/board-directors-and-governance",
+          "text": "Board of Directors and Governance",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/board-directors-and-governance/governance",
+          "text": "Governance",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/about-iufost/guidelines-professional-behaviour",
+          "text": "Guidelines of Professional Behaviour",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/about-iufost/vision-and-mission",
+          "text": "Vision and Mission",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/news/iufost-governance-2024-2026",
+          "text": "IUFoST Governance 2024-2026",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/international-academy-food-science-and-technology-iafost",
+          "text": "Academy",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/academy/academy-council",
+          "text": "Academy Council",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/academy/academy-fellows",
+          "text": "Academy Fellows",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/academy/nomination-criteria-2026-fellows",
+          "text": "Nomination Criteria for Fellows",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/webform/nomination-form-academy-council-and-iufost-scientific-council-2026-2028",
+          "text": "Nomination Form for Academy Council and IUFoST ...",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/academy/voting-system",
+          "text": "Voting system",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/scientific-council",
+          "text": "Scientific Council",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/scientific-council/related-scientific-activity",
+          "text": "Related Scientific Activity",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/scientific-council/iufost-scientific-information-bulletins-sibs",
+          "text": "Scientific Information Bulletins (SIBs)",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/scientific-council/terms-reference",
+          "text": "Terms of Reference",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/iufost-international-community",
+          "text": "Membership",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/webform/application-form-adhering-body",
+          "text": "Application form for adhering body",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/membership/become-adhering-body",
+          "text": "Become an Adhering Body",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/membership/publicprivate-association-iufost",
+          "text": "Public/Private Association with IUFoST",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/membership/regional-bodies",
+          "text": "Regional Bodies",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources",
+          "text": "Resources",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/global-challenges-and-critical-needs-food-science-and-technology",
+          "text": "Global Challenges and the Critical Needs of Foo...",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/global-visions-role-food-science-and-technology-meet-societal-and-technological-challenges",
+          "text": "Global Visions for the Role of Food Science and...",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/special-interest-and-disciplinary-groups",
+          "text": "Special Interest and Disciplinary Groups",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/special-interest-and-disciplinary-groups/isfans",
+          "text": "ISFANS",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/special-interest-and-disciplinary-groups/isfe",
+          "text": "ISFE",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/special-interest-and-disciplinary-groups/isnff",
+          "text": "ISNFF",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/special-interest-and-disciplinary-groups/isopow",
+          "text": "ISOPOW",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/scientific-information-bulletins-sibs/scientific-information-briefs-special-series",
+          "text": "Scientific Information Briefs (Special Series)",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/sharing-science",
+          "text": "SHARING SCIENCE",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/resources/international-events",
+          "text": "IUFoST Sponsorship/Endorsement",
+          "type": "internal"
+        },
+        {
+          "url": "https://iufost2026.org/subscribe-iufost-news-briefs",
+          "text": "Subscribe to IUFoST News Briefs",
+          "type": "internal"
+        }
+      ],
+      "hasViewport": true,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "securityHeaders": {
+        "hsts": false,
+        "csp": false,
+        "xFrame": true,
+        "xContentType": true,
+        "compression": "gzip",
+        "serverSoftware": "Apache",
+        "contentTypeHeader": "text/html; charset=utf-8"
+      },
+      "ogTags": {
+        "title": "IUFoST - Log in",
+        "description": "Strengthening Global Food Science and Technology for Humanity",
+        "image": "",
+        "siteName": "iufost2026.org",
+        "type": "website"
+      },
+      "twitterTags": {
+        "card": "summary_large_image",
+        "title": "IUFoST - Log in",
+        "description": "Strengthening Global Food Science and Technology for Humanity",
+        "image": ""
+      }
+    },
+    "metaTitle": "IUFoST - Log in",
+    "metaDescription": "Strengthening Global Food Science and Technology for Humanity",
+    "primaryKeywords": [
+      "iufost",
+      "food",
+      "scientific",
+      "scientific information",
+      "food science"
+    ],
+    "username": "admin",
+    "createdAt": "2026-09-15T13:13:09.333Z"
+  },
+  {
+    "id": "proj_1789474063308",
+    "url": "https://iufost2026.org/sites/default/files/webform/aeediidi1.pdf",
+    "siteName": "iufost2026.org",
+    "uploadedFileName": "Live Web Body Extraction",
+    "uploadedFileSize": "16.0 KB",
+    "uploadedFileDate": "Sep 15, 2026",
+    "keywordsCount": 40,
+    "keywords": [
+      {
+        "term": "endobj obj",
+        "count": 67,
+        "density": "2.32%",
+        "volume": "30,150/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj endobj",
+        "count": 57,
+        "density": "1.97%",
+        "volume": "25,650/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj endobj obj",
+        "count": 56,
+        "density": "1.94%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endobj obj endobj",
+        "count": 56,
+        "density": "1.94%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj",
+        "count": 68,
+        "density": "2.35%",
+        "volume": "95,200/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endobj",
+        "count": 68,
+        "density": "2.35%",
+        "volume": "95,200/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "obj stream",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "2,700/mo",
+        "difficulty": "High (68%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endstream endobj",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "2,700/mo",
+        "difficulty": "High (68%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endobj obj stream",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "900/mo",
+        "difficulty": "Medium (46%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endstream endobj obj",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "900/mo",
+        "difficulty": "Medium (46%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "jj",
+        "count": 7,
+        "density": "0.24%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "jo",
+        "count": 7,
+        "density": "0.24%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "stream",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "ml",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "bj",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "de",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "uq",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "endstream",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "op",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "mt",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "sn",
+        "count": 6,
+        "density": "0.21%",
+        "volume": "8,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "dg",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "ca",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "rn",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "oq",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "uh",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "jy",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "ne",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "vm",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "zk",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "sx",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "k7",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "fm",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "tx",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "lv",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "hu",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "2l",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "ri",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "l6",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "mz",
+        "count": 5,
+        "density": "0.17%",
+        "volume": "7,000/mo",
+        "difficulty": "High (88%)",
+        "intent": "Navigational"
+      }
+    ],
+    "submissionDate": "Sep 15, 2026 at 05:37 PM",
+    "gscStatus": "Live Web Scanned (Ready to Feed GSC)",
+    "overallScore": 25,
+    "scores": {
+      "overall": 25,
+      "onPage": 26,
+      "performance": 82,
+      "crawlability": 95,
+      "mobile": 60,
+      "security": 65
+    },
+    "auditDetails": {
+      "titleLength": 0,
+      "titleStatus": "warning",
+      "descLength": 0,
+      "descStatus": "warning",
+      "h1Count": 0,
+      "h1Text": "(No H1 tag found on page)",
+      "h2Count": 0,
+      "h3Count": 0,
+      "canonical": "https://iufost2026.org/sites/default/files/webform/aeediidi1.pdf",
+      "canonicalStatus": "missing",
+      "robotsTxt": true,
+      "sitemapXml": true,
+      "sslSecure": true,
+      "loadTime": "1.43s",
+      "fcp": "0.86s",
+      "lcp": "1.86s",
+      "cls": "0.01",
+      "imagesTotal": 0,
+      "imagesMissingAlt": 0,
+      "internalLinks": 0,
+      "externalLinks": 0,
+      "discoveredLinks": [],
+      "hasViewport": false,
+      "viewportMeta": "",
+      "securityHeaders": {
+        "hsts": false,
+        "csp": false,
+        "xFrame": false,
+        "xContentType": true,
+        "compression": "none",
+        "serverSoftware": "Apache",
+        "contentTypeHeader": "application/pdf"
+      },
+      "ogTags": {
+        "title": "iufost2026.org",
+        "description": "(No meta description found on page)",
+        "image": "",
+        "siteName": "iufost2026.org",
+        "type": "website"
+      },
+      "twitterTags": {
+        "card": "summary_large_image",
+        "title": "iufost2026.org",
+        "description": "(No meta description found on page)",
+        "image": ""
+      }
+    },
+    "metaTitle": "(Missing Title Tag on iufost2026.org)",
+    "metaDescription": "(No meta description found on page)",
+    "primaryKeywords": [
+      "endobj obj",
+      "obj endobj",
+      "obj endobj obj",
+      "endobj obj endobj",
+      "obj"
+    ],
+    "username": "admin",
+    "createdAt": "2026-09-15T12:07:43.314Z"
+  },
+  {
+    "id": "proj_1789467540796",
+    "url": "https://airfixdispatch.com/",
+    "siteName": "Meridian Home Services — HVAC & Plumbing Done Right",
+    "uploadedFileName": "Live Web Body Extraction",
+    "uploadedFileSize": "16.0 KB",
+    "uploadedFileDate": "Sep 15, 2026",
+    "keywordsCount": 40,
+    "keywords": [
+      {
+        "term": "hvac",
+        "count": 39,
+        "density": "5.40%",
+        "volume": "54,600/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "service",
+        "count": 28,
+        "density": "3.88%",
+        "volume": "39,200/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "common",
+        "count": 21,
+        "density": "2.91%",
+        "volume": "29,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "heating cooling",
+        "count": 9,
+        "density": "1.25%",
+        "volume": "4,050/mo",
+        "difficulty": "High (74%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "assistance",
+        "count": 17,
+        "density": "2.35%",
+        "volume": "23,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "residential hvac",
+        "count": 7,
+        "density": "0.97%",
+        "volume": "3,150/mo",
+        "difficulty": "High (70%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "hvac system",
+        "count": 7,
+        "density": "0.97%",
+        "volume": "3,150/mo",
+        "difficulty": "High (70%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "common heating",
+        "count": 7,
+        "density": "0.97%",
+        "volume": "3,150/mo",
+        "difficulty": "High (70%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "system",
+        "count": 15,
+        "density": "2.08%",
+        "volume": "21,000/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "options",
+        "count": 15,
+        "density": "2.08%",
+        "volume": "21,000/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "service options",
+        "count": 6,
+        "density": "0.83%",
+        "volume": "2,700/mo",
+        "difficulty": "High (68%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "cooling",
+        "count": 13,
+        "density": "1.80%",
+        "volume": "18,200/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "heating",
+        "count": 13,
+        "density": "1.80%",
+        "volume": "18,200/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "residential",
+        "count": 12,
+        "density": "1.66%",
+        "volume": "16,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "repair",
+        "count": 11,
+        "density": "1.52%",
+        "volume": "15,400/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "service availability",
+        "count": 5,
+        "density": "0.69%",
+        "volume": "2,250/mo",
+        "difficulty": "High (66%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "common hvac",
+        "count": 5,
+        "density": "0.69%",
+        "volume": "2,250/mo",
+        "difficulty": "High (66%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "assistance options",
+        "count": 5,
+        "density": "0.69%",
+        "volume": "2,250/mo",
+        "difficulty": "High (66%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "common heating cooling",
+        "count": 5,
+        "density": "0.69%",
+        "volume": "750/mo",
+        "difficulty": "Medium (44%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "availability",
+        "count": 10,
+        "density": "1.39%",
+        "volume": "14,000/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "may",
+        "count": 10,
+        "density": "1.39%",
+        "volume": "14,000/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "location",
+        "count": 10,
+        "density": "1.39%",
+        "volume": "14,000/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "available",
+        "count": 9,
+        "density": "1.25%",
+        "volume": "12,600/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "ac furnace",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "1,800/mo",
+        "difficulty": "High (64%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "furnace heat",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "1,800/mo",
+        "difficulty": "High (64%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "heat pump",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "1,800/mo",
+        "difficulty": "High (64%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "installation replacement",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "1,800/mo",
+        "difficulty": "High (64%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "available assistance",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "1,800/mo",
+        "difficulty": "High (64%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "cooling concerns",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "1,800/mo",
+        "difficulty": "High (64%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "ac furnace heat",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "600/mo",
+        "difficulty": "Medium (42%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "furnace heat pump",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "600/mo",
+        "difficulty": "Medium (42%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "heating cooling concerns",
+        "count": 4,
+        "density": "0.55%",
+        "volume": "600/mo",
+        "difficulty": "Medium (42%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "provider",
+        "count": 8,
+        "density": "1.11%",
+        "volume": "11,200/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "needs",
+        "count": 7,
+        "density": "0.97%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "concerns",
+        "count": 7,
+        "density": "0.97%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "problems",
+        "count": 7,
+        "density": "0.97%",
+        "volume": "9,800/mo",
+        "difficulty": "High (90%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "hvac service",
+        "count": 3,
+        "density": "0.42%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "residential heating",
+        "count": 3,
+        "density": "0.42%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "location type",
+        "count": 3,
+        "density": "0.42%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      },
+      {
+        "term": "type service",
+        "count": 3,
+        "density": "0.42%",
+        "volume": "1,350/mo",
+        "difficulty": "High (62%)",
+        "intent": "Navigational"
+      }
+    ],
+    "submissionDate": "Sep 15, 2026 at 03:49 PM",
+    "gscStatus": "Live Web Scanned (Ready to Feed GSC)",
+    "overallScore": 96,
+    "scores": {
+      "overall": 96,
+      "onPage": 100,
+      "performance": 95,
+      "crawlability": 95,
+      "mobile": 95,
+      "security": 80
+    },
+    "auditDetails": {
+      "titleLength": 51,
+      "titleStatus": "good",
+      "descLength": 131,
+      "descStatus": "good",
+      "h1Count": 1,
+      "h1Text": "Need HVAC Help? Start With Your Problem.",
+      "h2Count": 6,
+      "h3Count": 41,
+      "canonical": "https://airfixdispatch.com/",
+      "canonicalStatus": "valid",
+      "robotsTxt": true,
+      "sitemapXml": true,
+      "sslSecure": true,
+      "loadTime": "0.45s",
+      "fcp": "0.27s",
+      "lcp": "0.59s",
+      "cls": "0.01",
+      "imagesTotal": 5,
+      "imagesMissingAlt": 3,
+      "internalLinks": 23,
+      "externalLinks": 0,
+      "discoveredLinks": [
+        {
+          "url": "https://airfixdispatch.com/",
+          "text": "(Link)",
+          "type": "internal"
+        },
+        {
+          "url": "https://airfixdispatch.com/#services",
+          "text": "Services",
+          "type": "internal"
+        },
+        {
+          "url": "https://airfixdispatch.com/#how-it-works",
+          "text": "How It Work",
+          "type": "internal"
+        },
+        {
+          "url": "https://airfixdispatch.com/#footer",
+          "text": "About",
+          "type": "internal"
+        },
+        {
+          "url": "https://airfixdispatch.com/#book",
+          "text": "Disclaimer",
+          "type": "internal"
+        },
+        {
+          "url": "https://airfixdispatch.com/#faq",
+          "text": "FAQ",
+          "type": "internal"
+        },
+        {
+          "url": "https://airfixdispatch.com/#why-us",
+          "text": "Why Us",
+          "type": "internal"
+        }
+      ],
+      "hasViewport": true,
+      "viewportMeta": "width=device-width",
+      "securityHeaders": {
+        "hsts": true,
+        "csp": false,
+        "xFrame": false,
+        "xContentType": true,
+        "compression": "br",
+        "serverSoftware": "Framer/bea9510",
+        "contentTypeHeader": "text/html"
+      },
+      "ogTags": {
+        "title": "Meridian Home Services — HVAC & Plumbing Done Right",
+        "description": "Licensed, insured HVAC and plumbing pros offering same-day repairs, installations, and 24/7 emergency service with upfront pricing.",
+        "image": "",
+        "siteName": "airfixdispatch.com",
+        "type": "website"
+      },
+      "twitterTags": {
+        "card": "summary_large_image",
+        "title": "Meridian Home Services — HVAC & Plumbing Done Right",
+        "description": "Licensed, insured HVAC and plumbing pros offering same-day repairs, installations, and 24/7 emergency service with upfront pricing.",
+        "image": ""
+      }
+    },
+    "metaTitle": "Meridian Home Services — HVAC & Plumbing Done Right",
+    "metaDescription": "Licensed, insured HVAC and plumbing pros offering same-day repairs, installations, and 24/7 emergency service with upfront pricing.",
+    "primaryKeywords": [
+      "hvac",
+      "service",
+      "common",
+      "heating cooling",
+      "assistance"
+    ],
+    "username": "admin",
+    "createdAt": "2026-09-15T10:19:00.820Z"
+  }
+]

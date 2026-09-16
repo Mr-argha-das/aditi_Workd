@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Tag, Schema JSON-LD &amp; Export Center - INDEX MATRIX</title>
+  <meta name="description" content="Generate production-ready Schema.org JSON-LD, robots.txt, XML sitemaps with injected keywords and export full technical SEO audit reports.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- Ambient Glow Spheres -->
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Sticky Glass Header Navigation -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" id="brand-logo-btn">
+        <div class="brand-icon">
+          <i class="ri-radar-fill"></i>
+        </div>
+        <span class="brand-app-name">INDEX MATRIX</span>
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+        <li><a href="indexer.html" class="nav-link" id="nav-indexer"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+        <li><a href="keywords.html" class="nav-link" id="nav-keywords"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+        <li><a href="console.html" class="nav-link" id="nav-console"><i class="ri-google-fill"></i> Google Console</a></li>
+        <li><a href="audit.html" class="nav-link" id="nav-audit"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+        <li><a href="reports.html" class="nav-link active" id="nav-reports"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="user-profile-badge" id="nav-user-badge">
+          <i class="ri-user-3-line"></i>
+          <span id="nav-username-display">Account</span>
+        </div>
+        <button type="button" class="btn-lock-session" onclick="lockUserSession()" title="Lock Platform Session">
+          <i class="ri-lock-line" style="color: var(--accent-cyan);"></i>
+          <span>Lock</span>
+        </button>
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" id="mobile-toggle-btn">
+          <i class="ri-menu-4-line"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <!-- Page Header Title -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div class="hero-pill" style="margin-bottom: 1rem;">
+        <i class="ri-code-s-slash-line" style="color: var(--accent-cyan);"></i>
+        <span>Production Code &amp; Schema.org Generator</span>
+      </div>
+      <h1 style="font-size: 2.4rem; margin-bottom: 0.6rem;">
+        Schema, Meta Tags &amp; <span class="text-gradient-blue">Export Center</span>
+      </h1>
+      <p style="color: var(--text-muted); max-width: 720px; margin: 0 auto; font-size: 1.05rem;">
+        Inject extracted keywords into verified Schema.org JSON-LD microdata, generate production-ready HTML meta tags, robots.txt, and download complete SEO reports.
+      </p>
+    </div>
+
+    <!-- Export Action Card -->
+    <div class="glass-card glass-card-solid" style="padding: 1.75rem 2rem; margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--accent-cyan); letter-spacing: 0.05em;">Current Target Website</span>
+        <h3 id="reports-target-url" style="font-size: 1.3rem;">No Website Scanned</h3>
+      </div>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="exportJsonConfig()">
+          <i class="ri-file-code-line"></i> Export JSON Config
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="printSeoReport()">
+          <i class="ri-printer-line"></i> View / Print Executive PDF Report
+        </button>
+      </div>
+    </div>
+
+    <!-- Code Generators Section -->
+    <div style="display: flex; flex-direction: column; gap: 2.5rem;">
+      <!-- 0. Zero-Code Universal 1-Line Auto-SEO Injector -->
+      <div class="glass-card glass-card-solid" style="padding: 2rem; border-color: rgba(56, 189, 248, 0.45);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+              <h2 style="font-size: 1.35rem;">⚡ Zero-Code 1-Line Auto-SEO Script</h2>
+              <span class="badge badge-success"><i class="ri-flashlight-fill"></i> No Manual HTML Edits</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Paste this 1 line of script into your website once. It dynamically injects all Schema.org structured data, keywords, and meta tags automatically whenever you update INDEX MATRIX!</p>
+          </div>
+          <button class="btn btn-sm btn-primary" onclick="copyBlock('code-pixel', '1-Line Auto-SEO Script copied to clipboard!')">
+            <i class="ri-file-copy-line"></i> Copy 1-Line Script
+          </button>
+        </div>
+
+        <div style="background: #040711; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md); overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; padding: 0.6rem 1rem; background: rgba(15, 23, 42, 0.9); font-size: 0.78rem; font-family: monospace; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+            <span>Universal HTML Embed Tag</span>
+            <span style="color: var(--accent-cyan);">Auto-Syncs with INDEX MATRIX</span>
+          </div>
+          <pre style="padding: 1.25rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;"><code id="code-pixel">&lt;script src="http://localhost:8080/seo-nexus-pixel.js" data-site="https://yourwebsite.com" async&gt;&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+
+      <!-- 1. Schema.org JSON-LD -->
+      <div class="glass-card glass-card-solid" style="padding: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; margin-bottom: 0.25rem;">1. Schema.org JSON-LD Structured Data</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Verified Schema graph with WebSite, Organization &amp; WebPage entities enriched with target keywords.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm btn-glass" onclick="downloadSnippet('code-schema', 'schema.json', 'application/json')">
+              <i class="ri-download-2-line"></i> Download .json
+            </button>
+            <button class="btn btn-sm btn-primary" onclick="copyBlock('code-schema', 'Schema JSON-LD copied to clipboard!')">
+              <i class="ri-file-copy-line"></i> Copy Schema Code
+            </button>
+          </div>
+        </div>
+
+        <div style="background: #040711; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md); overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; padding: 0.6rem 1rem; background: rgba(15, 23, 42, 0.9); font-size: 0.78rem; font-family: monospace; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+            <span>HTML &lt;head&gt; Embed</span>
+            <span style="color: var(--accent-emerald);">Type: application/ld+json</span>
+          </div>
+          <pre style="padding: 1.25rem; color: #34d399; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto; max-height: 350px;"><code id="code-schema">// Loading Schema...</code></pre>
+        </div>
+      </div>
+
+      <!-- 2. Meta Tags -->
+      <div class="glass-card glass-card-solid" style="padding: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; margin-bottom: 0.25rem;">2. Production HTML Meta &amp; OpenGraph Tags</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Complete Googlebot directives, canonical link, OpenGraph card tags, and keyword tags.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm btn-glass" onclick="downloadSnippet('code-meta', 'meta-tags.html', 'text/html')">
+              <i class="ri-download-2-line"></i> Download .html
+            </button>
+            <button class="btn btn-sm btn-primary" onclick="copyBlock('code-meta', 'Meta tags copied to clipboard!')">
+              <i class="ri-file-copy-line"></i> Copy Meta Tags
+            </button>
+          </div>
+        </div>
+
+        <div style="background: #040711; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md); overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; padding: 0.6rem 1rem; background: rgba(15, 23, 42, 0.9); font-size: 0.78rem; font-family: monospace; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+            <span>HTML &lt;head&gt; Meta Elements</span>
+            <span style="color: var(--accent-cyan);">Googlebot Verified</span>
+          </div>
+          <pre style="padding: 1.25rem; color: #60a5fa; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto; max-height: 350px;"><code id="code-meta">// Loading Meta Tags...</code></pre>
+        </div>
+      </div>
+
+      <!-- 3. Robots.txt & Sitemap.xml -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem;">
+        <div class="glass-card glass-card-solid" style="padding: 2rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h3 style="font-size: 1.2rem;">3. Custom Robots.txt</h3>
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn btn-sm btn-glass" onclick="downloadSnippet('code-robots', 'robots.txt', 'text/plain')">
+                <i class="ri-download-2-line"></i> .txt
+              </button>
+              <button class="btn btn-sm btn-glass" onclick="copyBlock('code-robots', 'Robots.txt copied!')">
+                <i class="ri-file-copy-line"></i> Copy
+              </button>
+            </div>
+          </div>
+          <div style="background: #040711; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md); overflow: hidden;">
+            <pre style="padding: 1rem; color: var(--accent-amber); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; overflow-x: auto; max-height: 220px;"><code id="code-robots">// Loading robots.txt...</code></pre>
+          </div>
+        </div>
+
+        <div class="glass-card glass-card-solid" style="padding: 2rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h3 style="font-size: 1.2rem;">4. XML Sitemap</h3>
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn btn-sm btn-glass" onclick="downloadSnippet('code-sitemap', 'sitemap.xml', 'application/xml')">
+                <i class="ri-download-2-line"></i> .xml
+              </button>
+              <button class="btn btn-sm btn-glass" onclick="copyBlock('code-sitemap', 'Sitemap XML copied!')">
+                <i class="ri-file-copy-line"></i> Copy
+              </button>
+            </div>
+          </div>
+          <div style="background: #040711; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md); overflow: hidden;">
+            <pre style="padding: 1rem; color: var(--accent-purple); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; overflow-x: auto; max-height: 220px;"><code id="code-sitemap">// Loading sitemap.xml...</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Glass Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="brand-icon footer-icon">
+            <i class="ri-radar-fill"></i>
+          </div>
+          <span class="brand-app-name">INDEX MATRIX</span>
+        </div>
+        <p class="footer-tagline">
+          Enterprise SEO intelligence, autonomous keyword ranking matrices, and high-speed search engine crawler dispatch engine.
+        </p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-nav-title">Platform Hubs</div>
+        <ul class="footer-links">
+          <li><a href="index.html"><i class="ri-dashboard-3-line"></i> Dashboard</a></li>
+          <li><a href="indexer.html"><i class="ri-speed-up-line"></i> Bot Indexer</a></li>
+          <li><a href="keywords.html"><i class="ri-file-text-line"></i> Keywords &amp; Files</a></li>
+          <li><a href="console.html"><i class="ri-google-fill"></i> Google Console</a></li>
+          <li><a href="audit.html"><i class="ri-shield-check-line"></i> SEO Audit</a></li>
+          <li><a href="reports.html"><i class="ri-code-box-line"></i> Schema &amp; Export</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-status-panel">
+        <div class="footer-nav-title">Engine Security &amp; Telemetry</div>
+        <div class="footer-status-pills">
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Indexing Engine Online</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Encrypted Session Vault</span>
+          </div>
+          <div class="status-indicator-pill">
+            <div class="status-pulse-dot"></div>
+            <span>Googlebot Webhook Stream Online</span>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          &copy; <span id="footer-year">2026</span> <span class="brand-app-name">INDEX MATRIX</span>. High-Performance Search Operations.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/pdf-parser.js"></script>
+  <script src="js/console-feeder.js"></script>
+  <script>
+    function renderReportsView() {
+      const state = SEONexus.getState();
+
+      if (!state.targetUrl) {
+        document.getElementById('reports-target-url').textContent = 'No Website Scanned Yet';
+        document.getElementById('code-pixel').textContent = `<!-- Scan a website on Dashboard to generate 1-line script tag -->`;
+        document.getElementById('code-schema').textContent = '// Scan a website on Dashboard to generate Schema JSON-LD with your real keywords';
+        document.getElementById('code-meta').textContent = '<!-- Scan a website on Dashboard to generate production HTML meta tags -->';
+        document.getElementById('code-robots').textContent = '# Scan a website to generate customized robots.txt';
+        document.getElementById('code-sitemap').textContent = '<!-- Scan a website to generate customized XML sitemap -->';
+        return;
+      }
+
+      document.getElementById('reports-target-url').textContent = state.targetUrl;
+
+      // 0. Universal 1-Line Pixel Script
+      const serverOrigin = window.location.origin;
+      const pixelTag = `<script src="${serverOrigin}/seo-nexus-pixel.js" data-site="${state.targetUrl}" async><\/script>`;
+      document.getElementById('code-pixel').textContent = pixelTag;
+
+      // 1. Schema
+      const schemaCode = GoogleConsoleFeeder.generateJsonLdSchema(state);
+      document.getElementById('code-schema').textContent = schemaCode;
+
+      // 2. Meta tags
+      const metaCode = GoogleConsoleFeeder.generateMetaTags(state);
+      document.getElementById('code-meta').textContent = metaCode;
+
+      // 3. Robots.txt
+      const robotsCode = GoogleConsoleFeeder.generateRobotsTxt(state);
+      document.getElementById('code-robots').textContent = robotsCode;
+
+      // 4. Sitemap.xml
+      const sitemapCode = GoogleConsoleFeeder.generateSitemapXml(state);
+      document.getElementById('code-sitemap').textContent = sitemapCode;
+    }
+
+    function copyBlock(elementId, msg) {
+      const state = SEONexus.getState();
+      if (!state.targetUrl) {
+        SEONexus.showToast('Please scan a website on the Dashboard first!', 'warning');
+        return;
+      }
+      const text = document.getElementById(elementId).textContent;
+      SEONexus.copyToClipboard(text, msg);
+    }
+
+    function exportJsonConfig() {
+      const state = SEONexus.getState();
+      if (!state.targetUrl) {
+        SEONexus.showToast('Please scan a website on the Dashboard first!', 'warning');
+        return;
+      }
+
+      const exportData = {
+        website: state.targetUrl,
+        siteName: state.siteName,
+        metaTitle: state.metaTitle,
+        metaDescription: state.metaDescription,
+        keywords: state.extractedKeywords,
+        scores: state.scores,
+        audit: state.auditDetails,
+        schemaJsonLd: GoogleConsoleFeeder.generateJsonLdSchema(state),
+        robotsTxt: GoogleConsoleFeeder.generateRobotsTxt(state),
+        sitemapXml: GoogleConsoleFeeder.generateSitemapXml(state),
+        exportedAt: new Date().toISOString()
+      };
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `index_matrix_config_${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      SEONexus.showToast('SEO configuration exported as JSON!', 'success');
+    }
+
+    function downloadSnippet(elementId, filename, mimeType) {
+      const state = SEONexus.getState();
+      if (!state.targetUrl) {
+        SEONexus.showToast('Please scan a website on the Dashboard first!', 'warning');
+        return;
+      }
+      const text = document.getElementById(elementId).textContent;
+      const blob = new Blob([text], { type: `${mimeType};charset=utf-8;` });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      SEONexus.showToast(`Downloaded ${filename}!`, 'success');
+    }
+
+    function printSeoReport() {
+      const state = SEONexus.getState();
+      if (!state.targetUrl) {
+        SEONexus.showToast('Please scan a website on the Dashboard first!', 'warning');
+        return;
+      }
+      SEONexus.openExecutiveReportModal();
+    }
+
+    window.addEventListener('seonexus:statechange', renderReportsView);
+    document.addEventListener('DOMContentLoaded', async () => {
+      await SEONexus.init();
+      renderReportsView();
+    });
+  </script>
+</body>
+</html>
