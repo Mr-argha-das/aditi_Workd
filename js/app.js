@@ -27,9 +27,6 @@
       }
     }
     keysToRemove.forEach(k => localStorage.removeItem(k));
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.clear();
-    }
   } catch (e) {}
 })();
 
@@ -141,12 +138,31 @@ const SEONexus = (() => {
     if (activeProjectState && (activeProjectState.targetUrl || activeProjectState.url)) {
       return activeProjectState;
     }
+    if (typeof sessionStorage !== 'undefined') {
+      try {
+        const stored = sessionStorage.getItem('index_matrix_active_state');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && (parsed.targetUrl || parsed.url)) {
+            activeProjectState = parsed;
+            return activeProjectState;
+          }
+        }
+      } catch (e) {}
+    }
     return blankState;
   }
 
   function saveState(newState) {
     try {
       activeProjectState = newState;
+      if (typeof sessionStorage !== 'undefined') {
+        if (newState && (newState.targetUrl || newState.url)) {
+          sessionStorage.setItem('index_matrix_active_state', JSON.stringify(newState));
+        } else {
+          sessionStorage.removeItem('index_matrix_active_state');
+        }
+      }
       window.dispatchEvent(new CustomEvent('seonexus:statechange', { detail: newState }));
 
       const token = getAuthToken();
@@ -320,6 +336,9 @@ const SEONexus = (() => {
 
     if (activeProjectState && (activeProjectState.id === projectId || activeProjectState.targetUrl === projectId || activeProjectState.url === projectId)) {
       activeProjectState = blankState;
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.removeItem('index_matrix_active_state');
+      }
       window.dispatchEvent(new CustomEvent('seonexus:statechange', { detail: blankState }));
       const token = getAuthToken();
       fetch('/api/project/active', {
@@ -348,6 +367,19 @@ const SEONexus = (() => {
   }
 
   async function init() {
+    // Pre-populate immediately from tab session storage for instantaneous rendering
+    if (typeof sessionStorage !== 'undefined') {
+      try {
+        const stored = sessionStorage.getItem('index_matrix_active_state');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && (parsed.targetUrl || parsed.url)) {
+            activeProjectState = parsed;
+          }
+        }
+      } catch (e) {}
+    }
+
     if (initPromise) return initPromise;
     initPromise = (async () => {
       try {
@@ -368,20 +400,23 @@ const SEONexus = (() => {
                 metaDescription: p.metaDescription || (p.auditDetails?.description || ''),
                 scores: p.scores || { overall: p.overallScore || 0 }
               };
-            } else {
+              if (typeof sessionStorage !== 'undefined') {
+                sessionStorage.setItem('index_matrix_active_state', JSON.stringify(activeProjectState));
+              }
+            } else if (!activeProjectState || (!activeProjectState.targetUrl && !activeProjectState.url)) {
               activeProjectState = blankState;
             }
-          } else {
-            activeProjectState = blankState;
           }
 
           await syncUserHistoryFromServer();
           await fetchCredentials();
-        } else {
+        } else if (!activeProjectState || (!activeProjectState.targetUrl && !activeProjectState.url)) {
           activeProjectState = blankState;
         }
       } catch (e) {
-        activeProjectState = blankState;
+        if (!activeProjectState || (!activeProjectState.targetUrl && !activeProjectState.url)) {
+          activeProjectState = blankState;
+        }
       } finally {
         window.dispatchEvent(new CustomEvent('seonexus:statechange', { detail: getState() }));
       }

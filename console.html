@@ -3,8 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Search Console &amp; Indexing API Feeder - INDEX MATRIX</title>
+  <!-- SEO Meta Tags -->
+  <title>Google Search Console &amp; Indexing API Feeder — INDEX MATRIX</title>
   <meta name="description" content="Feed website URLs and extracted keyword lists directly into Google Search Console, trigger Indexing API payloads, and inspect Googlebot crawl status.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#020617">
+  <link rel="canonical" href="https://www.indexmetrix.com/console.html">
+
+  <!-- Vector Favicons & Touch Icons -->
+  <link rel="icon" type="image/svg+xml" href="/logo-icon.svg">
+  <link rel="alternate icon" type="image/png" sizes="192x192" href="/logo-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-192.png">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="INDEX MATRIX">
+  <meta property="og:url" content="https://www.indexmetrix.com/console.html">
+  <meta property="og:title" content="Google Search Console &amp; Indexing API Feeder — INDEX MATRIX">
+  <meta property="og:description" content="Feed website URLs and extracted keyword lists directly into Google Search Console, trigger Indexing API payloads, and inspect Googlebot crawl status.">
+  <meta property="og:image" content="https://www.indexmetrix.com/logo-highres.png">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@indexmetrix">
+  <meta name="twitter:title" content="Google Search Console &amp; Indexing API Feeder — INDEX MATRIX">
+  <meta name="twitter:description" content="Feed website URLs and extracted keyword lists directly into Google Search Console, trigger Indexing API payloads, and inspect Googlebot crawl status.">
+  <meta name="twitter:image" content="https://www.indexmetrix.com/logo-highres.png">
+
   <script src="/js/device-gatekeeper.js"></script>
   
   <!-- Fonts & Icons -->
@@ -15,7 +40,6 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 </head>
 <body>
 
@@ -786,6 +810,30 @@
     window.addEventListener('seonexus:statechange', renderConsoleView);
     document.addEventListener('DOMContentLoaded', async () => {
       await SEONexus.init();
+
+      // Auto-fill from URL query parameter if passed from Dashboard or other pages
+      const params = new URLSearchParams(window.location.search);
+      const urlParam = params.get('url');
+      if (urlParam) {
+        let cleanParam = urlParam.trim();
+        if (!/^https?:\/\//i.test(cleanParam)) {
+          cleanParam = 'https://' + cleanParam;
+        }
+        const urlInput = document.getElementById('console-url-input');
+        if (urlInput) urlInput.value = cleanParam;
+
+        const curState = SEONexus.getState();
+        if (!curState.targetUrl || curState.targetUrl !== cleanParam) {
+          let siteHost = cleanParam;
+          try { siteHost = new URL(cleanParam).hostname; } catch (e) {}
+          SEONexus.saveState({
+            ...curState,
+            targetUrl: cleanParam,
+            siteName: siteHost
+          });
+        }
+      }
+
       renderConsoleView();
     });
   </script>

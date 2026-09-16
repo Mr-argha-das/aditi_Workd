@@ -3,8 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INDEX MATRIX - Real Live Website Scanner & Google Search Console Feeder</title>
-  <meta name="description" content="Scan any website, upload keyword PDF documents, and feed Google Search Console with real live crawl data, Indexing API payloads, and Schema.org structured entities.">
+  <!-- SEO Meta Tags -->
+  <title>INDEX MATRIX — Enterprise Search Engine Crawler &amp; Google Console Feeder</title>
+  <meta name="description" content="Scan any live website, upload keyword datasets, and feed Google Search Console with real-time crawl data, Indexing API payloads, and Schema.org structured entities.">
+  <meta name="keywords" content="SEO crawler, Google Search Console feeder, Indexing API, website auditor, Core Web Vitals, Schema.org generator, bot indexer">
+  <meta name="author" content="INDEX MATRIX">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#020617">
+  <link rel="canonical" href="https://www.indexmetrix.com/">
+
+  <!-- Vector Favicons & Touch Icons -->
+  <link rel="icon" type="image/svg+xml" href="/logo-icon.svg">
+  <link rel="alternate icon" type="image/png" sizes="192x192" href="/logo-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-192.png">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="INDEX MATRIX">
+  <meta property="og:url" content="https://www.indexmetrix.com/">
+  <meta property="og:title" content="INDEX MATRIX — Enterprise Search Engine Crawler &amp; Google Console Feeder">
+  <meta property="og:description" content="Scan any live website, upload keyword datasets, and feed Google Search Console with real-time crawl data, Indexing API payloads, and Schema.org structured entities.">
+  <meta property="og:image" content="https://www.indexmetrix.com/logo-highres.png">
+  <meta property="og:image:width" content="2048">
+  <meta property="og:image:height" content="2048">
+  <meta property="og:image:alt" content="INDEX MATRIX Vector Logo &amp; SEO Engine">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@indexmetrix">
+  <meta name="twitter:url" content="https://www.indexmetrix.com/">
+  <meta name="twitter:title" content="INDEX MATRIX — Enterprise Search Engine Crawler &amp; Google Console Feeder">
+  <meta name="twitter:description" content="Scan any live website, upload keyword datasets, and feed Google Search Console with real-time crawl data, Indexing API payloads, and Schema.org structured entities.">
+  <meta name="twitter:image" content="https://www.indexmetrix.com/logo-highres.png">
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.indexmetrix.com/#organization",
+        "name": "INDEX MATRIX",
+        "url": "https://www.indexmetrix.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.indexmetrix.com/logo.svg",
+          "caption": "INDEX MATRIX Logo"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.indexmetrix.com/#website",
+        "url": "https://www.indexmetrix.com/",
+        "name": "INDEX MATRIX",
+        "publisher": { "@id": "https://www.indexmetrix.com/#organization" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://www.indexmetrix.com/?scan={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "@id": "https://www.indexmetrix.com/#application",
+        "name": "INDEX MATRIX SEO Crawler & Feeder",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    ]
+  }
+  </script>
+
   <script src="/js/device-gatekeeper.js"></script>
   
   <!-- Fonts & Icons -->
@@ -15,7 +91,6 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
   
   <!-- PDF.js for in-browser client fallback -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -179,10 +254,10 @@
               <i class="ri-file-upload-line"></i>
               <span>Upload Keywords</span>
             </a>
-            <a href="console.html" class="btn btn-primary" id="btn-open-console">
+            <button type="button" class="btn btn-primary" id="btn-open-console" onclick="feedToGoogleConsole()">
               <i class="ri-google-fill"></i>
               <span>Feed to Google Console</span>
-            </a>
+            </button>
           </div>
         </div>
 
@@ -748,6 +823,17 @@
       }
     }
 
+    function feedToGoogleConsole() {
+      const inputVal = (document.getElementById('hero-url-input')?.value || '').trim();
+      const state = SEONexus.getState();
+      const target = inputVal || state.targetUrl || '';
+      if (target) {
+        window.location.href = `console.html?url=${encodeURIComponent(target)}`;
+      } else {
+        window.location.href = 'console.html';
+      }
+    }
+
     function quickScan(url) {
       document.getElementById('hero-url-input').value = url;
       document.getElementById('hero-scan-form').dispatchEvent(new Event('submit'));
@@ -755,11 +841,12 @@
 
     window.addEventListener('seonexus:statechange', renderDashboard);
     document.addEventListener('DOMContentLoaded', async () => {
-      const heroInput = document.getElementById('hero-url-input');
-      if (heroInput) {
-        heroInput.value = '';
-      }
       await SEONexus.init();
+      const state = SEONexus.getState();
+      const heroInput = document.getElementById('hero-url-input');
+      if (heroInput && !heroInput.value && state.targetUrl) {
+        heroInput.value = state.targetUrl;
+      }
       renderDashboard();
       loadUserCrawlHistory();
     });

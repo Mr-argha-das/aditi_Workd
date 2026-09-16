@@ -751,6 +751,28 @@ app.get('/seo-nexus-pixel.js', (req, res) => {
   return res.sendFile(path.join(__dirname, 'seo-nexus-pixel.js'));
 });
 
+// 8. Official robots.txt Endpoint
+app.get('/robots.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400');
+  const robotsPath = path.join(__dirname, 'robots.txt');
+  if (fs.existsSync(robotsPath)) {
+    return res.sendFile(robotsPath);
+  }
+  return res.send(`User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\nSitemap: https://www.indexmetrix.com/sitemap.xml\n`);
+});
+
+// 9. Official XML Sitemap Endpoint
+app.get('/sitemap.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400');
+  const sitemapPath = path.join(__dirname, 'sitemap.xml');
+  if (fs.existsSync(sitemapPath)) {
+    return res.sendFile(sitemapPath);
+  }
+  return res.status(404).send('Not Found');
+});
+
 app.get('/api/pixel/config', async (req, res) => {
   const targetUrl = (req.query.url || '').trim();
   if (!targetUrl) {
@@ -839,7 +861,9 @@ app.use((req, res, next) => {
       reqPath.startsWith('/css/') ||
       reqPath.startsWith('/js/') ||
       reqPath === '/seo-nexus-pixel.js' ||
-      reqPath === '/favicon.ico'
+      reqPath === '/favicon.ico' ||
+      reqPath === '/robots.txt' ||
+      reqPath.startsWith('/logo')
     ) {
       return next();
     }
@@ -864,12 +888,15 @@ app.use((req, res, next) => {
     return res.redirect('/');
   }
 
-  // 1. Allow public static assets
+  // 1. Allow public static assets, discoverability files, and brand logos
   if (
     reqPath.startsWith('/css/') ||
     reqPath.startsWith('/js/') ||
     reqPath === '/seo-nexus-pixel.js' ||
-    reqPath === '/favicon.ico'
+    reqPath === '/favicon.ico' ||
+    reqPath === '/robots.txt' ||
+    reqPath === '/sitemap.xml' ||
+    reqPath.startsWith('/logo')
   ) {
     return next();
   }
@@ -877,8 +904,15 @@ app.use((req, res, next) => {
   // 1b. Mobile Device Restriction:
   // Mobile devices (phones & tablets) are strictly restricted to the /about.html overview.
   // Interactive tools, dashboards, and login pages are not accessible on mobile.
+  // Ensure search engine crawler bots requesting discoverability files are not redirected.
   if (isMobileUserAgent(req)) {
-    if (!reqPath.startsWith('/api/') && !reqPath.startsWith('/admin/api/')) {
+    if (
+      !reqPath.startsWith('/api/') && 
+      !reqPath.startsWith('/admin/api/') &&
+      reqPath !== '/robots.txt' &&
+      reqPath !== '/sitemap.xml' &&
+      !reqPath.startsWith('/logo')
+    ) {
       return res.redirect('/about.html');
     }
   }
@@ -2378,6 +2412,28 @@ app.get('/audit.html', (req, res) => {
 
 app.get('/reports.html', (req, res) => {
   return renderHtmlFile(path.join(__dirname, 'reports.html'), res);
+});
+
+// Brand Logos & Favicons
+const ALLOWED_PUBLIC_ROOT_ASSETS = new Set([
+  'logo.svg',
+  'logo-icon.svg',
+  'logo-192.png',
+  'logo-512.png',
+  'logo-highres.png',
+  'favicon.ico'
+]);
+
+app.get('/:asset', (req, res, next) => {
+  const asset = req.params.asset;
+  if (ALLOWED_PUBLIC_ROOT_ASSETS.has(asset)) {
+    const filePath = path.join(__dirname, asset);
+    if (fs.existsSync(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400');
+      return res.sendFile(filePath);
+    }
+  }
+  return next();
 });
 
 // Strictly serve only public assets (never server scripts or database files)
