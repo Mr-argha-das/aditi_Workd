@@ -5,10 +5,10 @@
       "includeFiles": "{*.html,admin/**,css/**,js/**,data/**}"
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/api/index.js"
+      "src": "/(.*)",
+      "dest": "/api/index.js"
     }
   ]
 }

@@ -738,6 +738,10 @@ app.get('/api/auth/check', (req, res) => {
 
 // 6. Public Login Page Route
 app.get('/login.html', (req, res) => {
+  const host = (req.headers.host || '').toLowerCase();
+  if (host.includes('admin') || process.env.ADMIN_PORTAL_ONLY === 'true') {
+    return res.redirect('/');
+  }
   return renderHtmlFile(path.join(__dirname, 'login.html'), res);
 });
 
@@ -823,6 +827,43 @@ app.use((req, res, next) => {
     return next();
   }
 
+  // 0b. Dedicated Admin Host Controller:
+  // When accessing the dedicated admin portal host (e.g. index-metrix-admin.vercel.app),
+  // the entire domain serves the Admin Control Center at root /.
+  // Regular customer pages, user login forms (/login.html), and tools do not exist here.
+  const host = (req.headers.host || '').toLowerCase();
+  const isAdminHost = host.includes('admin') || process.env.ADMIN_PORTAL_ONLY === 'true';
+  if (isAdminHost) {
+    // Allow static assets
+    if (
+      reqPath.startsWith('/css/') ||
+      reqPath.startsWith('/js/') ||
+      reqPath === '/seo-nexus-pixel.js' ||
+      reqPath === '/favicon.ico'
+    ) {
+      return next();
+    }
+
+    // Allow admin API endpoints
+    if (reqPath.startsWith('/admin/api/')) {
+      return next();
+    }
+
+    // Root request & legacy admin paths: serve admin control center directly at /
+    if (reqPath === '/' || reqPath === '/admin' || reqPath === '/admin/' || reqPath === '/admin/admin.html') {
+      if (!isAdminAccessAllowed(req)) {
+        return res.status(404).type('text/plain').send('Not Found');
+      }
+      if (reqPath !== '/') {
+        return res.redirect('/');
+      }
+      return renderHtmlFile(path.join(__dirname, 'admin', 'admin.html'), res);
+    }
+
+    // Any other page (/login.html, /index.html, etc.) on the admin domain redirects to /
+    return res.redirect('/');
+  }
+
   // 1. Allow public static assets
   if (
     reqPath.startsWith('/css/') ||
@@ -839,21 +880,6 @@ app.use((req, res, next) => {
   if (isMobileUserAgent(req)) {
     if (!reqPath.startsWith('/api/') && !reqPath.startsWith('/admin/api/')) {
       return res.redirect('/about.html');
-    }
-  }
-
-  // 1c. Admin portal: When accessing dedicated admin portal host, root serves admin directly!
-  const host = (req.headers.host || '').toLowerCase();
-  const isAdminHost = host.includes('admin') || process.env.ADMIN_PORTAL_ONLY === 'true';
-  if (isAdminHost) {
-    if (reqPath === '/' || reqPath === '/index.html') {
-      if (!isAdminAccessAllowed(req)) {
-        return res.status(404).type('text/plain').send('Not Found');
-      }
-      return renderHtmlFile(path.join(__dirname, 'admin', 'admin.html'), res);
-    }
-    if (reqPath === '/admin' || reqPath === '/admin/' || reqPath === '/admin/admin.html') {
-      return res.redirect('/');
     }
   }
 
