@@ -307,6 +307,9 @@
       if (pingRes && pingRes.ok && pingData.success) {
         const hubStatus = pingData.googleWebSub ? pingData.googleWebSub.status : 204;
         appendLog('GOOGLE_OK', `✅ Google WebSub Hub accepted publication ping (HTTP ${hubStatus} from Google Frontend). Googlebot crawler queued!`, 'tag-ok', 'text-ok');
+        if (pingData.speedyIndex && pingData.speedyIndex.success) {
+          appendLog('SPEEDY_OK', `⚡ SpeedyIndex Google Crawler: Task #${pingData.speedyIndex.task_id} registered! Googlebot force-crawl queued.`, 'tag-ok', 'text-ok');
+        }
       } else {
         appendLog('GOOGLE_NOTE', `Google WebSub Hub responded with HTTP ${pingRes ? pingRes.status : 'Notice'}: ${pingData.error || 'Broadcast completed.'}`, 'tag-sys', 'text-dim');
       }
@@ -530,6 +533,9 @@
 
         if (pingRes.ok && pingData.success) {
           appendLog('BATCH_OK', `✅ [${i + 1}/${urls.length}] Dispatched to Googlebot + Bingbot + DuckDuckGo + Yahoo + Yandex + IndexNow: ${target}`, 'tag-ok', 'text-ok');
+          if (pingData.speedyIndex && pingData.speedyIndex.success) {
+            appendLog('SPEEDY_OK', `⚡ [${i + 1}/${urls.length}] SpeedyIndex Google Crawler Task #${pingData.speedyIndex.task_id} registered!`, 'tag-ok', 'text-ok');
+          }
         } else if (pingRes.status === 429) {
           appendLog('RATE_LIMIT', `⚠️ [${i + 1}/${urls.length}] Rate limiter active: ${pingData.error || 'Too many requests'}. Pausing 5s...`, 'tag-sys', 'text-dim');
           await new Promise(r => setTimeout(r, 5000));

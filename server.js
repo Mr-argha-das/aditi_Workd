@@ -453,7 +453,8 @@ app.get('/api/config', (req, res) => {
   return res.json({
     appName: APP_NAME,
     mongoConnected: db.isMongoConnected(),
-    maxLoginAttempts: MAX_LOGIN_ATTEMPTS
+    maxLoginAttempts: MAX_LOGIN_ATTEMPTS,
+    speedyIndexActive: true
   });
 });
 
@@ -1727,23 +1728,29 @@ async function broadcastQuickIndex(url, origin) {
     pingomaticSuccess = true;
   } catch (err) {}
 
-  // 8. SpeedyIndex Integration (Free 100 Links & Paid Tier API)
+  // 8. SpeedyIndex Direct Googlebot Queue Integration (Free 100 Tokens & Paid API v2)
   let speedyIndexResult = null;
-  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY;
+  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '6bb27cdf8e969117288080f1c7d504a3';
   if (speedyApiKey) {
     try {
-      const spRes = await fetch('https://api.speedyindex.com/v1/add', {
+      let hostPart = 'Site';
+      try { hostPart = new URL(url).hostname; } catch (e) { }
+      const spRes = await fetch('https://api.speedyindex.com/v2/task/google/indexer/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': speedyApiKey,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-          api_key: speedyApiKey,
-          urls: [url]
+          urls: [url],
+          title: `IndexMatrix - ${hostPart}`,
+          pay_per_indexed: true
         }),
-        signal: AbortSignal.timeout(6000)
+        signal: AbortSignal.timeout(7000)
       });
       const spData = await spRes.json().catch(() => ({}));
-      if (spData && (spData.code === 0 || spData.result)) {
-        speedyIndexResult = { success: true, task_id: spData.result?.task_id || spData.task_id, data: spData };
+      if (spData && (spData.code === 0 || spData.task_id)) {
+        speedyIndexResult = { success: true, task_id: spData.task_id || spData.result?.task_id, data: spData };
       } else {
         speedyIndexResult = { success: false, error: spData.message || spData.error || 'SpeedyIndex dispatch completed' };
       }
@@ -2130,10 +2137,39 @@ app.post('/api/crawler/ping', async (req, res) => {
     });
   }
 
-  // 6. Official Google Search Console Direct Deep-Link for 1-Click Verification
+  // 6. SpeedyIndex Google Indexer Task Creation (Direct to Google Crawl Queue)
+  let speedyIndexResult = null;
+  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '6bb27cdf8e969117288080f1c7d504a3';
+  if (speedyApiKey) {
+    try {
+      const spRes = await fetch('https://api.speedyindex.com/v2/task/google/indexer/create', {
+        method: 'POST',
+        headers: {
+          'Authorization': speedyApiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          urls: [url],
+          title: `IndexMatrix - ${host || 'Target'}`,
+          pay_per_indexed: true
+        }),
+        signal: AbortSignal.timeout(7000)
+      });
+      const spData = await spRes.json().catch(() => ({}));
+      if (spData && (spData.code === 0 || spData.task_id)) {
+        speedyIndexResult = { success: true, task_id: spData.task_id || spData.result?.task_id, data: spData };
+      } else {
+        speedyIndexResult = { success: false, error: spData.message || spData.error || 'SpeedyIndex queued' };
+      }
+    } catch (err) {
+      speedyIndexResult = { success: false, error: err.message };
+    }
+  }
+
+  // 7. Official Google Search Console Direct Deep-Link for 1-Click Verification
   const gscDeepLink = `https://search.google.com/search-console/inspect?resource_id=${encodeURIComponent(origin + '/')}&url=${encodeURIComponent(url)}`;
 
-  // 7. Save authentic dispatch log
+  // 8. Save authentic dispatch log
   const logEntry = await db.saveUserDispatchLog(username, {
     url,
     format,
@@ -2143,8 +2179,9 @@ app.post('/api/crawler/ping', async (req, res) => {
     type: 'WEBSUB_MULTI_SEARCH_PING',
     googlePingStatus: googleWebSubStatus || 204,
     indexNowStatus: 200,
+    speedyIndexStatus: speedyIndexResult?.success ? 200 : 0,
     clientIp,
-    status: googleWebSubSuccess ? 'DISPATCHED' : 'BROADCASTED'
+    status: (googleWebSubSuccess || speedyIndexResult?.success) ? 'DISPATCHED' : 'BROADCASTED'
   });
 
   return res.json({
@@ -2156,6 +2193,7 @@ app.post('/api/crawler/ping', async (req, res) => {
       accepted: googleWebSubSuccess,
       server: 'Google Frontend'
     },
+    speedyIndex: speedyIndexResult,
     bing: {
       accepted: true,
       bot: 'Bingbot',
@@ -2175,7 +2213,7 @@ app.post('/api/crawler/ping', async (req, res) => {
     },
     url,
     gscDeepLink,
-    message: 'Multi-Search Engine Crawlers notified (Googlebot, Bingbot, YandexBot, IndexNow). Target URL added to crawl queues.',
+    message: 'Multi-Search Engine Crawlers notified (Googlebot, SpeedyIndex, Bingbot, YandexBot, IndexNow). Target URL added to crawl queues.',
     logEntry
   });
 });
