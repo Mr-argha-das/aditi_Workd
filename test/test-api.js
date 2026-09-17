@@ -298,10 +298,11 @@ async function runTests() {
     headers: { 'Content-Type': 'application/json', 'Cookie': userCookieHeader },
     body: JSON.stringify({ url: 'https://example.com' })
   });
-  assert([401, 403].includes(gscUnauthRes.status), `Expected 401 or 403, got ${gscUnauthRes.status}`);
+  assert.strictEqual(gscUnauthRes.status, 401);
   const gscUnauthData = await gscUnauthRes.json();
+  assert.strictEqual(gscUnauthData.requiresCredentials, true);
   assert.strictEqual(gscUnauthData.success, false);
-  console.log(`✓ Authentic Google Indexing response verified: HTTP ${gscUnauthRes.status} (No fake 200 masking).`);
+  console.log('✓ Authentic Google Indexing response verified: 401 Unauthorized (No fake 200 masking).');
 
   // Test 19: Authentic IndexNow protocol endpoint (/api/indexnow/publish)
   console.log('\nTest 19: Testing authentic IndexNow endpoint (/api/indexnow/publish)...');

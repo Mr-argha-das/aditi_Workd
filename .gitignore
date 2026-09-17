@@ -10,6 +10,8 @@ data/global-gsc.json
 # Vercel & Archives
 .vercel/
 *.zip
+index-matrix/
+WhatsApp Image*
 
 # Logs & temp
 *.log
@@ -17,7 +19,3 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
-.env*
-WhatsApp Image*
-.vercel
-generate_logo*.js
