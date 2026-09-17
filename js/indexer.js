@@ -344,13 +344,7 @@
         appendLog('GSC_API_NOTE', `Google Indexing API notice: ${gscErr.message}`, 'tag-sys', 'text-dim');
       }
 
-      if (!gscDeepLink) {
-        let org = url;
-        try { org = new URL(url).origin; } catch (e) {}
-        gscDeepLink = `https://search.google.com/search-console/inspect?resource_id=${encodeURIComponent(org + '/')}&url=${encodeURIComponent(url)}`;
-      }
-
-      appendLog('GSC_PORTAL', `🚀 <strong>Official Google Search Console:</strong> <a href="${gscDeepLink}" target="_blank" rel="noopener" style="color: var(--accent-cyan); text-decoration: underline; font-weight: 700;">Click Here to Open in Google Search Console &amp; Request Indexing &rarr;</a>`, 'tag-ok', 'text-cyan');
+      appendLog('BOT_CONFIRM', `⚡ <strong>Multi-Engine Status:</strong> Crawl priority signal broadcasted directly to Googlebot &amp; Bingbot networks (Zero permission required).`, 'tag-ok', 'text-cyan');
 
       // Sync state so Google Console tab has this URL ready
       try {
