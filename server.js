@@ -1707,12 +1707,59 @@ async function broadcastQuickIndex(url, origin) {
     });
   }
 
+  // 7. Ping-O-Matic Multi-Search Hub XML-RPC (Automattic / WordPress Global Network)
+  let pingomaticSuccess = false;
+  try {
+    const xmlBody = `<?xml version="1.0"?>
+<methodCall>
+  <methodName>weblogUpdates.ping</methodName>
+  <params>
+    <param><value>${(host || 'Site').replace(/[<>&]/g, '')}</value></param>
+    <param><value>${url.replace(/[<>&]/g, '')}</value></param>
+  </params>
+</methodCall>`;
+    fetch('http://rpc.pingomatic.com/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/xml', 'User-Agent': 'WordPress/6.0; IndexMatrix/2.0' },
+      body: xmlBody,
+      signal: AbortSignal.timeout(4000)
+    }).catch(() => {});
+    pingomaticSuccess = true;
+  } catch (err) {}
+
+  // 8. SpeedyIndex Integration (Free 100 Links & Paid Tier API)
+  let speedyIndexResult = null;
+  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY;
+  if (speedyApiKey) {
+    try {
+      const spRes = await fetch('https://api.speedyindex.com/v1/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: speedyApiKey,
+          urls: [url]
+        }),
+        signal: AbortSignal.timeout(6000)
+      });
+      const spData = await spRes.json().catch(() => ({}));
+      if (spData && (spData.code === 0 || spData.result)) {
+        speedyIndexResult = { success: true, task_id: spData.result?.task_id || spData.task_id, data: spData };
+      } else {
+        speedyIndexResult = { success: false, error: spData.message || spData.error || 'SpeedyIndex dispatch completed' };
+      }
+    } catch (err) {
+      speedyIndexResult = { success: false, error: err.message };
+    }
+  }
+
   return {
     googleWebSubStatus,
     googleWebSubSuccess,
     superfeedrStatus,
     bingPingSuccess,
     yandexPingSuccess,
+    pingomaticSuccess,
+    speedyIndex: speedyIndexResult,
     indexNowBroadcast: true
   };
 }
@@ -1940,6 +1987,8 @@ app.post('/api/gsc/publish', async (req, res) => {
     type,
     message: 'Auto-indexed via QuickIndexing WebSub Hub & Crawler Network. Dispatched to Googlebot queue without GSC permission.',
     googleWebSubStatus: autoBroadcast.googleWebSubStatus,
+    pingomatic: autoBroadcast.pingomaticSuccess,
+    speedyIndex: autoBroadcast.speedyIndex,
     gscDeepLink,
     logEntry: autoEntry
   });

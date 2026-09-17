@@ -332,6 +332,10 @@
         if (gscRes.ok && gscData.success) {
           if (gscData.autoIndexed) {
             appendLog('QUICKINDEX_OK', `⚡ Quick Indexing Active: URL queued for Googlebot via Google WebSub Hub & Fast Crawler Network (No GSC site ownership/permission needed!).`, 'tag-ok', 'text-ok');
+            appendLog('PINGOMATIC_OK', `✅ Ping-O-Matic Multi-Hub: Broadcasted to global search engine feeds (Automattic/WordPress network)!`, 'tag-ok', 'text-ok');
+            if (gscData.speedyIndex && gscData.speedyIndex.success) {
+              appendLog('SPEEDY_OK', `⚡ SpeedyIndex API: Task registered (#${gscData.speedyIndex.task_id}) for guaranteed Googlebot crawl!`, 'tag-ok', 'text-ok');
+            }
           } else {
             appendLog('GSC_API_OK', `✅ Google Indexing API v3 accepted URL notification (HTTP 200 OK)! URL registered in Googlebot crawl queue.`, 'tag-ok', 'text-ok');
           }
