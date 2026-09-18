@@ -129,6 +129,7 @@ let UserModel = null;
 let HistoryModel = null;
 let DispatchLogModel = null;
 let LoginEventModel = null;
+let RelayLinkModel = null;
 
 async function initMongoSchemas() {
   if (!mongoose) return;
@@ -200,10 +201,24 @@ async function initMongoSchemas() {
     createdAt: { type: Date, default: Date.now, index: true }
   });
 
+  const RelayLinkSchema = new mongoose.Schema({
+    id: { type: String, required: true, unique: true },
+    url: { type: String, required: true, index: true },
+    title: { type: String, default: '' },
+    domain: { type: String, default: '' },
+    submittedAt: { type: String, default: () => new Date().toISOString() },
+    lastPing: { type: String, default: () => new Date().toISOString() },
+    botPingCount: { type: Number, default: 1 },
+    status: { type: String, default: 'RELAYED' },
+    source: { type: String, default: 'standalone' },
+    createdAt: { type: Date, default: Date.now, index: true }
+  });
+
   UserModel = mongoose.models.User || mongoose.model('User', UserSchema);
   HistoryModel = mongoose.models.History || mongoose.model('History', HistorySchema);
   DispatchLogModel = mongoose.models.DispatchLog || mongoose.model('DispatchLog', DispatchLogSchema);
   LoginEventModel = mongoose.models.LoginEvent || mongoose.model('LoginEvent', LoginEventSchema);
+  RelayLinkModel = mongoose.models.RelayLink || mongoose.model('RelayLink', RelayLinkSchema);
 }
 
 async function connectDb() {
@@ -909,10 +924,62 @@ async function getScoreTimeline(username, targetUrl) {
    ========================================================================== */
 async function saveRelayLinks(links) {
   if (!Array.isArray(links) || links.length === 0) return [];
-  const existing = readJsonFile(RELAY_LINKS_FILE, []);
   const now = new Date().toISOString();
   const added = [];
 
+  // 1. Primary: MongoDB Cloud Persistence (Survives all deployments, serverless cold starts & git updates)
+  if (isMongoConnected && RelayLinkModel) {
+    try {
+      for (const item of links) {
+        if (!item || !item.url) continue;
+        let hostname = '';
+        try { hostname = new URL(item.url).hostname; } catch (e) { hostname = item.url; }
+
+        const existingDoc = await RelayLinkModel.findOne({ url: item.url });
+        if (existingDoc) {
+          existingDoc.botPingCount = (existingDoc.botPingCount || 1) + 1;
+          existingDoc.lastPing = now;
+          if (item.title && (!existingDoc.title || existingDoc.title === existingDoc.url)) {
+            existingDoc.title = item.title;
+          }
+          await existingDoc.save();
+          added.push(existingDoc.toObject());
+        } else {
+          const docId = crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(8).toString('hex');
+          const created = await RelayLinkModel.create({
+            id: docId,
+            url: item.url,
+            title: item.title || hostname,
+            domain: hostname,
+            submittedAt: now,
+            lastPing: now,
+            botPingCount: 1,
+            status: 'RELAYED',
+            source: item.source || 'standalone'
+          });
+          added.push(created.toObject());
+        }
+      }
+
+      // Also mirror to local file for fast caching
+      const existing = readJsonFile(RELAY_LINKS_FILE, []);
+      for (const a of added) {
+        const idx = existing.findIndex(e => e.url === a.url);
+        if (idx !== -1) {
+          existing[idx] = a;
+        } else {
+          existing.unshift(a);
+        }
+      }
+      writeJsonFile(RELAY_LINKS_FILE, existing.slice(0, 500));
+      return added;
+    } catch (err) {
+      console.warn('MongoDB saveRelayLinks warning, falling back to local file:', err.message);
+    }
+  }
+
+  // 2. Fallback: Local JSON File Storage
+  const existing = readJsonFile(RELAY_LINKS_FILE, []);
   for (const item of links) {
     if (!item || !item.url) continue;
     let hostname = '';
@@ -943,18 +1010,45 @@ async function saveRelayLinks(links) {
     }
   }
 
-  // Keep latest 250 relay links in the public hub directory
-  const trimmed = existing.slice(0, 250);
+  const trimmed = existing.slice(0, 500);
   writeJsonFile(RELAY_LINKS_FILE, trimmed);
   return added;
 }
 
-async function getRelayLinks(limit = 50) {
+async function getRelayLinks(limit = 100) {
+  if (isMongoConnected && RelayLinkModel) {
+    try {
+      const docs = await RelayLinkModel.find().sort({ submittedAt: -1 }).limit(limit);
+      if (docs && docs.length > 0) {
+        return docs.map(d => d.toObject());
+      }
+    } catch (e) {
+      console.warn('MongoDB getRelayLinks warning:', e.message);
+    }
+  }
   const list = readJsonFile(RELAY_LINKS_FILE, []);
   return list.slice(0, limit);
 }
 
 async function getRelayStats() {
+  if (isMongoConnected && RelayLinkModel) {
+    try {
+      const totalLinks = await RelayLinkModel.countDocuments();
+      const latest = await RelayLinkModel.findOne().sort({ submittedAt: -1 });
+      const pingsAgg = await RelayLinkModel.aggregate([
+        { $group: { _id: null, total: { $sum: '$botPingCount' } } }
+      ]);
+      const totalPings = (pingsAgg && pingsAgg[0]?.total) || totalLinks;
+      return {
+        totalLinks,
+        totalPings,
+        lastUpdated: latest?.lastPing || latest?.submittedAt || new Date().toISOString()
+      };
+    } catch (e) {
+      console.warn('MongoDB getRelayStats warning:', e.message);
+    }
+  }
+
   const list = readJsonFile(RELAY_LINKS_FILE, []);
   const totalPings = list.reduce((acc, curr) => acc + (curr.botPingCount || 1), 0);
   return {
@@ -965,6 +1059,11 @@ async function getRelayStats() {
 }
 
 async function clearRelayLinks() {
+  if (isMongoConnected && RelayLinkModel) {
+    try {
+      await RelayLinkModel.deleteMany({});
+    } catch (e) {}
+  }
   writeJsonFile(RELAY_LINKS_FILE, []);
   return true;
 }
