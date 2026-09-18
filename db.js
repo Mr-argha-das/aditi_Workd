@@ -964,6 +964,11 @@ async function getRelayStats() {
   };
 }
 
+async function clearRelayLinks() {
+  writeJsonFile(RELAY_LINKS_FILE, []);
+  return true;
+}
+
 module.exports = {
   connectDb,
   hashPassword,
@@ -994,5 +999,6 @@ module.exports = {
   saveRelayLinks,
   getRelayLinks,
   getRelayStats,
+  clearRelayLinks,
   isMongoConnected: () => isMongoConnected
 };

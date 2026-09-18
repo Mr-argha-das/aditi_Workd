@@ -2533,6 +2533,16 @@ app.get('/api/seo/relay/directory', async (req, res) => {
   }
 });
 
+// Clear Public Crawl Relay Directory
+app.post('/api/seo/relay/clear', async (req, res) => {
+  try {
+    await db.clearRelayLinks();
+    return res.json({ success: true, message: 'Feed Hub crawl directory cleared successfully.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // 4. QuickIndexing-Style Crawl Relay Ingestion & 4-Pillar Dispatch API
 app.post('/api/seo/relay/dispatch', async (req, res) => {
   const { url, urls, sitemapUrl, title } = req.body;

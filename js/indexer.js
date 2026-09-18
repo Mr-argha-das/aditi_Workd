@@ -310,13 +310,15 @@
     appendLog('FEED_START', `Ingesting <strong>${urls.length} URL(s)</strong> into Feed Hub &amp; Search Bot Pipelines`, 'tag-sys', 'text-cyan');
     appendLog('TIME_STAMP', `Batch initiated at: <strong>${readableDate}</strong>`, 'tag-sys', 'text-dim');
 
-    // Update real-time metrics strip
-    document.getElementById('diag-format').innerHTML = urls.length === 1 
-      ? `<span style="color: #38bdf8;">1 Target URL</span>` 
-      : `<span style="color: #38bdf8;">${urls.length} URLs Batch</span>`;
-    document.getElementById('diag-http').innerHTML = `<span style="color: #34d399;"><i class="ri-loader-4-line ri-spin"></i> Ingesting...</span>`;
-    document.getElementById('diag-robots').innerHTML = `<span style="color: #fb923c;"><i class="ri-loader-4-line ri-spin"></i> Syncing...</span>`;
-    document.getElementById('diag-pipeline').innerHTML = `<span style="color: #38bdf8;">Active</span>`;
+    // Optional diag metrics update if elements exist
+    const dFormat = document.getElementById('diag-format');
+    if (dFormat) dFormat.innerHTML = urls.length === 1 ? `<span style="color: #38bdf8;">1 Target URL</span>` : `<span style="color: #38bdf8;">${urls.length} URLs Batch</span>`;
+    const dHttp = document.getElementById('diag-http');
+    if (dHttp) dHttp.innerHTML = `<span style="color: #34d399;"><i class="ri-loader-4-line ri-spin"></i> Ingesting...</span>`;
+    const dRobots = document.getElementById('diag-robots');
+    if (dRobots) dRobots.innerHTML = `<span style="color: #fb923c;"><i class="ri-loader-4-line ri-spin"></i> Syncing...</span>`;
+    const dPipeline = document.getElementById('diag-pipeline');
+    if (dPipeline) dPipeline.innerHTML = `<span style="color: #38bdf8;">Active</span>`;
 
     try {
       // Step 1: Dispatch all URLs simultaneously to Feed Hub Relay
@@ -374,7 +376,7 @@
         confirmCard.style.display = 'block';
         if (confirmTitle) confirmTitle.textContent = `🎉 ${totalIngested} URL${totalIngested > 1 ? 's' : ''} Successfully Listed in Feed Hub!`;
         if (confirmSubtitle) {
-          confirmSubtitle.innerHTML = `All <strong>${totalIngested} links</strong> are now live in the Feed Hub HTML directory &amp; RSS feed with <code style="color: #4ade80;">&lt;meta robots="index, follow"&gt;</code> and queued for Googlebot, Bingbot &amp; Yandex.`;
+          confirmSubtitle.innerHTML = `All <strong>${totalIngested} links</strong> are now live in the Feed Hub directory &amp; RSS feed and queued for search engine crawlers.`;
         }
         confirmCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
@@ -385,10 +387,10 @@
       // Step 4: Refresh Dispatched URL Vault
       await loadHistoryLogs();
 
-      // Update metrics strip
-      document.getElementById('diag-http').innerHTML = `<span style="color: #34d399;"><i class="ri-check-line"></i> 200 OK Live</span>`;
-      document.getElementById('diag-robots').innerHTML = `<span style="color: #34d399;"><i class="ri-check-line"></i> Live in Feed Hub</span>`;
-      document.getElementById('diag-pipeline').innerHTML = `<span style="color: #34d399; font-weight: 700;"><i class="ri-checkbox-circle-fill"></i> Broadcast Complete</span>`;
+      // Update metrics strip if present
+      if (dHttp) dHttp.innerHTML = `<span style="color: #34d399;"><i class="ri-check-line"></i> 200 OK Live</span>`;
+      if (dRobots) dRobots.innerHTML = `<span style="color: #34d399;"><i class="ri-check-line"></i> Live in Feed Hub</span>`;
+      if (dPipeline) dPipeline.innerHTML = `<span style="color: #34d399; font-weight: 700;"><i class="ri-checkbox-circle-fill"></i> Broadcast Complete</span>`;
       document.getElementById('log-status').textContent = 'Complete';
 
       appendLog('COMPLETE', `Search engine pipeline executed. Live signals recorded in Feed Hub and Dispatched URL Vault.`, 'tag-ok', 'text-cyan');
@@ -402,7 +404,7 @@
 
     } catch (err) {
       appendLog('DISPATCH_ERROR', `Broadcast warning: ${err.message}`, 'tag-warn', 'text-danger');
-      document.getElementById('diag-pipeline').innerHTML = `<span style="color: #f87171;"><i class="ri-close-circle-line"></i> Error</span>`;
+      if (dPipeline) dPipeline.innerHTML = `<span style="color: #f87171;"><i class="ri-close-circle-line"></i> Error</span>`;
       document.getElementById('log-status').textContent = 'Error';
       btn.disabled = false;
       btn.innerHTML = `<i class="ri-send-plane-fill"></i> <span>Retry Feeding to Feed Hub</span>`;
@@ -665,31 +667,28 @@
     if (!tbody) return;
 
     try {
-      const res = await fetch('/api/seo/relay/directory?limit=25');
+      const res = await fetch('/api/seo/relay/directory?limit=50');
       const data = await res.json();
       if (!data.success || !Array.isArray(data.links) || data.links.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-dim);">No URLs relayed yet. Submit any URL above to ingest into the public directory.</td></tr>`;
-        if (summary) summary.textContent = '0 Relayed URLs';
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-dim);"><i class="ri-inbox-line" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--accent-cyan);"></i>No links in Feed Hub yet. Paste multiple URLs above to feed them!</td></tr>`;
+        if (summary) summary.textContent = '0 Links Fed';
         return;
       }
 
-      if (summary && data.stats) {
-        summary.textContent = `${data.stats.totalLinks || data.links.length} Relayed URLs (${data.stats.totalPings || 0} Signals)`;
+      if (summary) {
+        summary.textContent = `${data.links.length} Link${data.links.length > 1 ? 's' : ''} Fed`;
       }
 
       tbody.innerHTML = data.links.map(item => `
         <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.15s;">
-          <td style="padding: 0.85rem 1rem; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          <td style="padding: 0.85rem 1rem; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
             <a href="${encodeURI(item.url)}" target="_blank" rel="follow" style="color: #ffffff; text-decoration: none; font-weight: 600;" title="${item.url}">
-              ${item.title && item.title !== item.url ? item.title : item.url}
+              <i class="ri-link" style="color: var(--accent-cyan); font-size: 0.85rem; margin-right: 0.35rem;"></i>${item.url}
             </a>
-            <div style="font-size: 0.75rem; color: var(--text-dim); font-family: monospace; overflow: hidden; text-overflow: ellipsis;">
-              ${item.url}
-            </div>
           </td>
           <td style="padding: 0.85rem 1rem;">
             <span class="badge" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; font-size: 0.74rem;">
-              <i class="ri-global-line"></i> ${item.domain || 'web'}
+              ${item.domain || 'web'}
             </span>
           </td>
           <td style="padding: 0.85rem 1rem;">
@@ -701,14 +700,26 @@
             ${new Date(item.submittedAt || Date.now()).toLocaleDateString()} ${new Date(item.submittedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </td>
           <td style="padding: 0.85rem 1rem; text-align: right;">
-            <a href="${encodeURI(item.url)}" target="_blank" rel="follow" class="btn btn-sm btn-glass" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;">
-              <i class="ri-external-link-line"></i> Visit
+            <a href="${encodeURI(item.url)}" target="_blank" rel="follow" class="btn btn-sm btn-glass" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;">
+              <i class="ri-external-link-line"></i> Open
             </a>
           </td>
         </tr>
       `).join('');
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 1.5rem; color: var(--text-dim);">Directory loaded. Standby for live submissions.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 1.5rem; color: var(--text-dim);">Ready for submissions.</td></tr>`;
+    }
+  }
+
+  async function clearFeedHub() {
+    if (!confirm('Are you sure you want to clear all links from the Feed Hub?')) return;
+    try {
+      const res = await fetch('/api/seo/relay/clear', { method: 'POST' });
+      if (res.ok) {
+        await loadRelayDirectory();
+      }
+    } catch (e) {
+      alert('Failed to clear Feed Hub: ' + e.message);
     }
   }
 
@@ -717,6 +728,7 @@
   window.updateUrlCounter = updateUrlCounter;
   window.clearUrlInput = clearUrlInput;
   window.pasteFromClipboard = pasteFromClipboard;
+  window.clearFeedHub = clearFeedHub;
   window.openGscFromIndexer = openGscFromIndexer;
   window.lockUserSession = lockSession;
   window.copyTerminalLogs = copyTerminalLogs;
