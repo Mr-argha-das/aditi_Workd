@@ -13,13 +13,16 @@ Allow: /css/
 Allow: /js/
 Allow: /logo*
 Allow: /favicon.ico
+Allow: /*.txt
+Allow: /api/seo/
+Allow: /indexing-hub.html
+Allow: /indexing-feed.xml
 
 # Disallow internal application APIs, admin portal, device restriction warning, and data files
 Disallow: /device-restricted.html
 Disallow: /device-restricted
 Disallow: /admin/
 Disallow: /admin
-Disallow: /api/
 Disallow: /data/
 
 # Dedicated Googlebot Directives
@@ -30,9 +33,13 @@ Allow: /login.html
 Allow: /css/
 Allow: /js/
 Allow: /logo*
+Allow: /*.txt
+Allow: /api/seo/
+Allow: /indexing-hub.html
+Allow: /indexing-feed.xml
 Disallow: /admin/
 Disallow: /admin
-Disallow: /api/
+Disallow: /data/
 Crawl-delay: 0
 
 # Image Crawlers
@@ -44,9 +51,13 @@ Allow: /images/
 # Bingbot
 User-agent: Bingbot
 Allow: /
+Allow: /*.txt
+Allow: /api/seo/
+Allow: /indexing-hub.html
+Allow: /indexing-feed.xml
 Disallow: /admin/
 Disallow: /admin
-Disallow: /api/
+Disallow: /data/
 
 # Host & Sitemap Declaration
 Host: https://www.indexmetrix.com

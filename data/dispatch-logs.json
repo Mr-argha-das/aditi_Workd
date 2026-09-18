@@ -1,5 +1,19 @@
 [
   {
+    "url": "https://craftpeak.site/page-alpha",
+    "format": "Relay Batch (3 URLs)",
+    "timestamp": "2026-09-18T05:01:59.573Z",
+    "readableTime": "18/9/2026, 10:31:59 am",
+    "loadTime": "5021ms",
+    "type": "CRAWL_RELAY_DISPATCH",
+    "googlePingStatus": 204,
+    "indexNowStatus": 200,
+    "clientIp": "::ffff:127.0.0.1",
+    "status": "DISPATCHED",
+    "username": "anonymous_dispatcher",
+    "id": "log_1789707719594_m5kjo"
+  },
+  {
     "url": "https://example.com",
     "format": "Webpage",
     "timestamp": "2026-09-16T08:34:49.400Z",

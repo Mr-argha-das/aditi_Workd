@@ -128,96 +128,43 @@
         </div>
       </div>
 
-      <!-- Mode Switcher Tabs: Single vs Batch -->
-      <div style="display: inline-flex; background: rgba(15, 23, 42, 0.85); padding: 0.35rem; border-radius: var(--radius-md); border: 1px solid rgba(56, 189, 248, 0.2); gap: 0.4rem; margin-bottom: 1.75rem;">
-        <button type="button" class="btn btn-sm btn-primary" id="btn-mode-single" onclick="switchIndexerMode('single')" style="padding: 0.5rem 1.1rem;">
-          <i class="ri-link"></i> Single URL Dispatch
-        </button>
-        <button type="button" class="btn btn-sm btn-glass" id="btn-mode-batch" onclick="switchIndexerMode('batch')" style="padding: 0.5rem 1.1rem;">
-          <i class="ri-list-check-2"></i> Multi-URL &amp; XML Sitemap Batch
-        </button>
-      </div>
-
-      <!-- Mode 1: Single URL Form -->
+      <!-- Unified Multi-URL & Sitemap Feed Hub Form -->
       <form id="indexer-form" onsubmit="executeBotDispatch(event)">
-        <div style="margin-bottom: 1.5rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-size: 0.88rem; font-weight: 700; color: var(--text-main);">
-            <span><i class="ri-global-line" style="color: var(--accent-cyan);"></i> Target Document / Webpage URL</span>
-            <span style="color: var(--accent-cyan); font-size: 0.78rem; font-weight: 600;" id="live-rate-status"><i class="ri-pulse-line"></i> Live Network Stream</span>
-          </div>
-          <div class="url-scan-box" style="margin-bottom: 1.5rem;">
-            <div class="url-scan-prefix">
-              <i class="ri-link"></i>
+        <div style="margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-size: 0.88rem; font-weight: 700; color: var(--text-main); flex-wrap: wrap; gap: 0.5rem;">
+            <span style="display: flex; align-items: center; gap: 0.4rem;">
+              <i class="ri-links-line" style="color: var(--accent-cyan);"></i> 
+              <span>Target URLs or XML Sitemap</span>
+              <span style="font-size: 0.76rem; font-weight: normal; color: var(--text-muted);">(Paste multiple URLs at the same time, 1 per line)</span>
+            </span>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <button type="button" class="btn btn-sm btn-glass" onclick="clearUrlInput()" style="padding: 0.2rem 0.55rem; font-size: 0.75rem;" title="Clear input">
+                <i class="ri-close-line"></i> Clear
+              </button>
+              <button type="button" class="btn btn-sm btn-glass" onclick="pasteFromClipboard()" style="padding: 0.2rem 0.55rem; font-size: 0.75rem;" title="Paste from clipboard">
+                <i class="ri-clipboard-line"></i> Paste
+              </button>
+              <span id="url-counter-badge" class="badge badge-primary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">0 URLs Entered</span>
             </div>
-            <input 
-              type="url" 
-              id="target-url-input" 
-              class="url-scan-input" 
-              placeholder="https://domain.com/document.pdf or any live webpage URL" 
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-              required
-            >
           </div>
+          <textarea 
+            id="target-urls-input" 
+            class="form-control" 
+            rows="6" 
+            placeholder="Paste single or multiple URLs to feed simultaneously (one per line):&#10;https://craftpeak.site/&#10;https://craftpeak.site/about&#10;https://craftpeak.site/services&#10;https://example.com/sitemap.xml"
+            oninput="updateUrlCounter()"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; line-height: 1.6; padding: 1rem 1.25rem; background: rgba(8, 14, 28, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md);"
+            required
+          ></textarea>
         </div>
 
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
           <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; padding: 1.15rem 1.75rem; font-size: 1.05rem; font-weight: 700; border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);">
             <i class="ri-send-plane-fill"></i>
-            <span>Dispatch to Google (SpeedyIndex + WebSub), Bing &amp; Multi-Engine Crawlers</span>
+            <span id="submit-btn-text">Feed All URLs to Feed Hub &amp; Broadcast to Googlebot, Bingbot &amp; Crawlers</span>
           </button>
         </div>
       </form>
-
-      <!-- Mode 2: Multi-URL & XML Sitemap Batch Queue Form (Collapsible) -->
-      <div id="indexer-batch-wrapper" style="display: none; margin-bottom: 1.5rem;">
-        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
-            <label class="form-label" style="margin: 0; font-size: 0.88rem; font-weight: 700; color: var(--accent-cyan);">
-              <i class="ri-file-code-line"></i> Quick Sitemap XML Importer
-            </label>
-            <span style="font-size: 0.75rem; color: var(--text-dim);">Auto-extracts child URLs from sitemap.xml</span>
-          </div>
-          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
-            <input 
-              type="url" 
-              id="sitemap-url-input" 
-              class="form-control" 
-              style="flex: 1; min-width: 260px; padding: 0.75rem 1rem;" 
-              placeholder="https://example.com/sitemap.xml"
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-            >
-            <button type="button" class="btn btn-sm btn-glass" onclick="importSitemapToBatch()" id="btn-import-sitemap" style="padding: 0.75rem 1.25rem;">
-              <i class="ri-download-cloud-2-line"></i> Import URLs
-            </button>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 1.5rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-size: 0.88rem; font-weight: 700; color: var(--text-main);">
-            <span><i class="ri-list-unordered" style="color: var(--accent-cyan);"></i> Batch URL Queue (1 URL per line)</span>
-            <span id="batch-count-badge" class="badge badge-primary">0 URLs in Queue</span>
-          </div>
-          <textarea 
-            id="batch-urls-textarea" 
-            class="form-control" 
-            rows="6" 
-            placeholder="https://example.com/page-1&#10;https://example.com/page-2&#10;https://example.com/whitepaper.pdf"
-            oninput="updateBatchCount()"
-            style="font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; line-height: 1.6; padding: 1rem 1.25rem; background: rgba(8, 14, 28, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-md);"
-          ></textarea>
-        </div>
-
-        <button type="button" id="btn-start-batch" class="btn btn-primary" onclick="runBatchDispatch()" style="width: 100%; padding: 1.15rem 1.75rem; font-size: 1.05rem; font-weight: 700; border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);">
-          <i class="ri-play-list-add-line"></i>
-          <span>Start Sequential Batch Crawler Broadcast</span>
-        </button>
-      </div>
 
       <!-- Real-Time Metrics Strip -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08);">
@@ -230,13 +177,92 @@
           <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; font-family: 'JetBrains Mono', monospace;" id="diag-http">--</div>
         </div>
         <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.18); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
-          <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Crawl Directives</div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; font-family: 'JetBrains Mono', monospace;" id="diag-robots">--</div>
+          <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Feed Hub Status</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; font-family: 'JetBrains Mono', monospace;" id="diag-robots">Ready to Ingest</div>
         </div>
         <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.18); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
           <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Bot Pipeline</div>
           <div style="font-size: 1.05rem; font-weight: 700; color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace;" id="diag-pipeline">Standing By</div>
         </div>
+      </div>
+    </div>
+
+    <!-- Clean Broadcast Confirmation Card (Rendered After Submit) -->
+    <div id="relay-confirmation-card" class="glass-card glass-card-solid" style="display: none; padding: 1.75rem 2rem; margin-bottom: 2.25rem; border: 1.5px solid rgba(34, 197, 94, 0.4); background: rgba(15, 23, 42, 0.9); box-shadow: 0 10px 40px rgba(15, 23, 42, 0.7);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(34, 197, 94, 0.2); color: #4ade80; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+            <i class="ri-checkbox-circle-fill"></i>
+          </div>
+          <div>
+            <h3 style="font-size: 1.25rem; margin: 0; color: #ffffff;" id="confirm-title">Broadcast Successful</h3>
+            <p style="margin: 0.25rem 0 0; font-size: 0.88rem; color: #94a3b8;" id="confirm-subtitle">
+              Target URLs successfully fed into Feed Hub &amp; queued for Googlebot, Bingbot &amp; Search Engine Crawlers.
+            </p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+          <a href="/api/seo/indexing-hub.html" target="_blank" class="btn btn-sm btn-glass" style="color: var(--accent-cyan);" title="View Public Crawl Relay Directory">
+            <i class="ri-external-link-line"></i> View Feed Hub Directory
+          </a>
+          <a href="/api/seo/indexing-feed.xml" target="_blank" class="btn btn-sm btn-glass" style="color: #fb923c;" title="View Live RSS 2.0 Feed">
+            <i class="ri-rss-fill"></i> Live RSS Feed
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Feed Hub Directory Card (Shows Ingested Links in Real Time) -->
+    <div class="glass-card glass-card-solid" style="padding: 1.75rem 2rem; margin-bottom: 2.25rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="brand-icon" style="width: 38px; height: 38px; font-size: 1.2rem; background: rgba(251, 146, 60, 0.15); color: #fb923c; border-color: rgba(251, 146, 60, 0.3);">
+            <i class="ri-rss-fill"></i>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <h3 style="font-size: 1.25rem; margin: 0; color: #ffffff;">Feed Hub &bull; Live Crawl Directory</h3>
+              <span id="relay-stats-summary" class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.75rem; padding: 0.2rem 0.6rem;">0 Links</span>
+            </div>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">
+              All URLs listed below are published in the semantic HTML crawl hub &amp; RSS feed with <code style="color: var(--accent-cyan);">&lt;meta robots="index, follow"&gt;</code> for Googlebot &amp; search spiders.
+            </span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <a href="/api/seo/indexing-hub.html" target="_blank" class="btn btn-sm btn-glass" style="color: var(--accent-cyan);" title="Open Raw Semantic HTML Hub Directory">
+            <i class="ri-external-link-line"></i> HTML Hub
+          </a>
+          <a href="/api/seo/indexing-feed.xml" target="_blank" class="btn btn-sm btn-glass" style="color: #fb923c;" title="Open Live RSS 2.0 XML Feed">
+            <i class="ri-rss-line"></i> RSS Feed
+          </a>
+          <button type="button" class="btn btn-sm btn-glass" onclick="loadRelayDirectory()" title="Refresh Feed Hub Links">
+            <i class="ri-refresh-line"></i> Refresh Hub
+          </button>
+        </div>
+      </div>
+
+      <!-- Feed Hub Links Table -->
+      <div style="overflow-x: auto; max-height: 420px; overflow-y: auto;">
+        <table class="history-table" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="padding: 0.85rem 1rem; text-align: left; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Relayed Target Link</th>
+              <th style="padding: 0.85rem 1rem; text-align: left; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Host / Domain</th>
+              <th style="padding: 0.85rem 1rem; text-align: left; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Bot Signals</th>
+              <th style="padding: 0.85rem 1rem; text-align: left; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Time Added</th>
+              <th style="padding: 0.85rem 1rem; text-align: right; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Direct Link</th>
+            </tr>
+          </thead>
+          <tbody id="relay-directory-body">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-dim);">
+                <i class="ri-loader-4-line ri-spin"></i> Loading Feed Hub links...
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -305,11 +331,10 @@
   <script src="js/indexer.js?v=2.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Auto-load history on page load in wide layout
+      // Auto-load history and relay directory on page load
       setTimeout(() => {
-        if (typeof loadHistoryLogs === 'function') {
-          loadHistoryLogs();
-        }
+        if (typeof loadHistoryLogs === 'function') loadHistoryLogs();
+        if (typeof loadRelayDirectory === 'function') loadRelayDirectory();
       }, 300);
     });
   </script>

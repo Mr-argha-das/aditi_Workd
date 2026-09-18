@@ -51,6 +51,7 @@ const HISTORY_FILE = path.join(DATA_DIR, 'history.json');
 const LOGS_FILE = path.join(DATA_DIR, 'dispatch-logs.json');
 const LOGIN_EVENTS_FILE = path.join(DATA_DIR, 'login-events.json');
 const GLOBAL_GSC_FILE = path.join(DATA_DIR, 'global-gsc.json');
+const RELAY_LINKS_FILE = path.join(DATA_DIR, 'relay-links.json');
 
 if (!fs.existsSync(DATA_DIR)) {
   try {
@@ -903,6 +904,66 @@ async function getScoreTimeline(username, targetUrl) {
   return timeline;
 }
 
+/* ==========================================================================
+   Tool 3.5: Public Crawl Relay Hub Store (Deduplicated Public Ingestion)
+   ========================================================================== */
+async function saveRelayLinks(links) {
+  if (!Array.isArray(links) || links.length === 0) return [];
+  const existing = readJsonFile(RELAY_LINKS_FILE, []);
+  const now = new Date().toISOString();
+  const added = [];
+
+  for (const item of links) {
+    if (!item || !item.url) continue;
+    let hostname = '';
+    try { hostname = new URL(item.url).hostname; } catch (e) { hostname = item.url; }
+
+    const idx = existing.findIndex(e => e.url === item.url);
+    if (idx !== -1) {
+      existing[idx].botPingCount = (existing[idx].botPingCount || 1) + 1;
+      existing[idx].lastPing = now;
+      if (item.title && (!existing[idx].title || existing[idx].title === existing[idx].url)) {
+        existing[idx].title = item.title;
+      }
+      added.push(existing[idx]);
+    } else {
+      const entry = {
+        id: crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(8).toString('hex'),
+        url: item.url,
+        title: item.title || hostname,
+        domain: hostname,
+        submittedAt: now,
+        lastPing: now,
+        botPingCount: 1,
+        status: 'RELAYED',
+        source: item.source || 'standalone'
+      };
+      existing.unshift(entry);
+      added.push(entry);
+    }
+  }
+
+  // Keep latest 250 relay links in the public hub directory
+  const trimmed = existing.slice(0, 250);
+  writeJsonFile(RELAY_LINKS_FILE, trimmed);
+  return added;
+}
+
+async function getRelayLinks(limit = 50) {
+  const list = readJsonFile(RELAY_LINKS_FILE, []);
+  return list.slice(0, limit);
+}
+
+async function getRelayStats() {
+  const list = readJsonFile(RELAY_LINKS_FILE, []);
+  const totalPings = list.reduce((acc, curr) => acc + (curr.botPingCount || 1), 0);
+  return {
+    totalLinks: list.length,
+    totalPings,
+    lastUpdated: list[0]?.lastPing || list[0]?.submittedAt || new Date().toISOString()
+  };
+}
+
 module.exports = {
   connectDb,
   hashPassword,
@@ -930,5 +991,8 @@ module.exports = {
   clearActiveProject,
   getGscCredentials,
   saveGscCredentials,
+  saveRelayLinks,
+  getRelayLinks,
+  getRelayStats,
   isMongoConnected: () => isMongoConnected
 };
