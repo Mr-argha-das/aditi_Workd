@@ -294,12 +294,24 @@
       return;
     }
 
+    // Queue all concrete URLs through the bounded backend queue in one request.
+    if (urls.length && urls.every(u => !u.toLowerCase().endsWith('.xml') && !u.includes('sitemap'))) {
+      const bulkRes = await fetch('/api/index/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urls })
+      });
+      const bulkData = await bulkRes.json().catch(() => ({}));
+      if (!bulkRes.ok || !bulkData.success) throw new Error(bulkData.error || `Bulk queue HTTP ${bulkRes.status}`);
+      appendLog('QUEUE_OK', `Queued <strong>${bulkData.accepted || 0}</strong> URL(s) for bounded validation/PDF analysis.`, 'tag-ok', 'text-ok');
+    }
+
     const sitemapCandidates = urls.filter(u => u.toLowerCase().endsWith('.xml') || u.includes('sitemap'));
     const regularUrls = urls.filter(u => !u.toLowerCase().endsWith('.xml') && !u.includes('sitemap'));
 
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
-    btn.innerHTML = `<i class="ri-loader-4-line ri-spin"></i> <span>Feeding ${urls.length} URL(s) to Feed Hub &amp; Pinging Bots...</span>`;
+    btn.innerHTML = `<i class="ri-loader-4-line ri-spin"></i> <span>Feeding ${urls.length} URL(s) to validation &amp; discovery queue...</span>`;
 
     document.getElementById('log-status').textContent = 'Feeding...';
     document.getElementById('log-stream').innerHTML = '';
@@ -307,7 +319,7 @@
     const now = new Date();
     const readableDate = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
 
-    appendLog('FEED_START', `Ingesting <strong>${urls.length} URL(s)</strong> into Feed Hub &amp; Search Bot Pipelines`, 'tag-sys', 'text-cyan');
+    appendLog('FEED_START', `Ingesting <strong>${urls.length} URL(s)</strong> into technical validation &amp; discovery pipeline`, 'tag-sys', 'text-cyan');
     appendLog('TIME_STAMP', `Batch initiated at: <strong>${readableDate}</strong>`, 'tag-sys', 'text-dim');
 
     // Optional diag metrics update if elements exist
@@ -338,22 +350,22 @@
       }
 
       const totalIngested = relayData.totalSubmitted || urls.length;
-      appendLog('FEEDHUB_OK', `🎉 Successfully listed <strong>${totalIngested} URL(s)</strong> in Feed Hub Directory (/api/seo/indexing-hub.html)!`, 'tag-ok', 'text-ok');
-      appendLog('RSS_OK', `✅ Live RSS 2.0 Feed updated (/api/seo/indexing-feed.xml) with outbound indexable links.`, 'tag-ok', 'text-ok');
+      appendLog('FEEDHUB_OK', `Accepted <strong>${totalIngested} URL(s)</strong> into the validation/discovery workflow.`, 'tag-ok', 'text-ok');
+      appendLog('RSS_OK', `✅ Public relay feed updated; this is a discovery signal, not proof of indexing.`, 'tag-ok', 'text-ok');
 
       if (relayData.pillars) {
         if (relayData.pillars.googlebotProbe) {
           const gp = relayData.pillars.googlebotProbe;
-          appendLog('GOOGLE_OK', `✅ Google WebSub Hub pinged (HTTP ${gp.googleWebSubStatus || 204}). Live probe HTTP ${gp.targetProbeStatus || 200}.`, 'tag-ok', 'text-ok');
+          appendLog('GOOGLE_OK', `Technical probe HTTP ${gp.targetProbeStatus || 'N/A'}; Googlebot crawl is not independently verified.`, 'tag-ok', 'text-ok');
           if (gp.speedyIndex && gp.speedyIndex.success) {
-            appendLog('SPEEDY_OK', `⚡ SpeedyIndex Google Crawler Task #${gp.speedyIndex.taskId || gp.speedyIndex.task_id} registered!`, 'tag-ok', 'text-cyan');
+            appendLog('SPEEDY_OK', `⚡ External provider task #${gp.speedyIndex.taskId || gp.speedyIndex.task_id} accepted.`, 'tag-ok', 'text-cyan');
           }
         }
         if (relayData.pillars.indexNowGateway) {
-          appendLog('INDEXNOW_OK', `✅ Verified IndexNow signature broadcasted from our host for all URLs!`, 'tag-ok', 'text-ok');
+          appendLog('INDEXNOW_OK', `ℹ️ IndexNow requires target-domain key ownership; no third-party bypass is claimed.`, 'tag-ok', 'text-ok');
         }
         if (relayData.pillars.bingYandexRelay) {
-          appendLog('SPIDERS_OK', `✅ Bingbot, YandexBot and Ping-O-Matic network notified!`, 'tag-ok', 'text-cyan');
+          appendLog('SPIDERS_OK', `ℹ️ Public relay/discovery surfaces updated.`, 'tag-ok', 'text-cyan');
         }
       }
 
@@ -374,9 +386,9 @@
       const confirmSubtitle = document.getElementById('confirm-subtitle');
       if (confirmCard) {
         confirmCard.style.display = 'block';
-        if (confirmTitle) confirmTitle.textContent = `🎉 ${totalIngested} URL${totalIngested > 1 ? 's' : ''} Successfully Listed in Feed Hub!`;
+        if (confirmTitle) confirmTitle.textContent = `🎉 ${totalIngested} URL${totalIngested > 1 ? 's' : ''} Accepted`;
         if (confirmSubtitle) {
-          confirmSubtitle.innerHTML = `All <strong>${totalIngested} links</strong> are now live in the Feed Hub directory &amp; RSS feed and queued for search engine crawlers.`;
+          confirmSubtitle.innerHTML = `All <strong>${totalIngested} links</strong> entered the technical validation/discovery workflow. Search-engine crawl/indexing remains unverified.`;
         }
         confirmCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
@@ -390,16 +402,16 @@
       // Update metrics strip if present
       if (dHttp) dHttp.innerHTML = `<span style="color: #34d399;"><i class="ri-check-line"></i> 200 OK Live</span>`;
       if (dRobots) dRobots.innerHTML = `<span style="color: #34d399;"><i class="ri-check-line"></i> Live in Feed Hub</span>`;
-      if (dPipeline) dPipeline.innerHTML = `<span style="color: #34d399; font-weight: 700;"><i class="ri-checkbox-circle-fill"></i> Broadcast Complete</span>`;
+      if (dPipeline) dPipeline.innerHTML = `<span style="color: #34d399; font-weight: 700;"><i class="ri-checkbox-circle-fill"></i> Validation Complete</span>`;
       document.getElementById('log-status').textContent = 'Complete';
 
-      appendLog('COMPLETE', `Search engine pipeline executed. Live signals recorded in Feed Hub and Dispatched URL Vault.`, 'tag-ok', 'text-cyan');
+      appendLog('COMPLETE', `Validation/discovery pipeline executed. Crawl and index status will be monitored separately.`, 'tag-ok', 'text-cyan');
 
       // Re-enable button
       btn.disabled = false;
-      btn.innerHTML = `<i class="ri-check-line"></i> <span>All ${totalIngested} URLs Listed &amp; Broadcasted! Feed More?</span>`;
+      btn.innerHTML = `<i class="ri-check-line"></i> <span>All ${totalIngested} URLs queued for validation! Feed More?</span>`;
       setTimeout(() => {
-        btn.innerHTML = `<i class="ri-send-plane-fill"></i> <span>Feed All URLs to Feed Hub &amp; Broadcast to Googlebot, Bingbot &amp; Crawlers</span>`;
+        btn.innerHTML = `<i class="ri-send-plane-fill"></i> <span>Validate &amp; Queue All URLs for Discovery</span>`;
       }, 5000);
 
     } catch (err) {
@@ -511,7 +523,7 @@
     document.getElementById('log-status').textContent = 'Batch Running';
     document.getElementById('log-stream').innerHTML = '';
 
-    appendLog('BATCH_START', `Initiating sequential multi-engine crawler broadcast for ${urls.length} URLs`, 'tag-sys', 'text-cyan');
+    appendLog('BATCH_START', `Initiating sequential validation/discovery processing for ${urls.length} URLs`, 'tag-sys', 'text-cyan');
 
     // Ingest entire batch into Public Crawl Relay Hub immediately
     try {
@@ -572,9 +584,9 @@
       await new Promise(r => setTimeout(r, 1200));
     }
 
-    appendLog('BATCH_COMPLETE', `🎉 Sequential batch broadcast complete for all ${urls.length} queued URLs!`, 'tag-ok', 'text-cyan');
+    appendLog('BATCH_COMPLETE', `Sequential validation queue completed for all ${urls.length} URLs.`, 'tag-ok', 'text-cyan');
     btn.disabled = false;
-    btn.innerHTML = `<i class="ri-play-list-add-line"></i> <span>Start Sequential Batch Crawler Broadcast</span>`;
+    btn.innerHTML = `<i class="ri-play-list-add-line"></i> <span>Start Sequential Validation Queue</span>`;
     document.getElementById('log-status').textContent = 'Batch Complete';
 
     loadHistoryLogs();
