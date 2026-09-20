@@ -1934,7 +1934,7 @@ app.post('/api/gsc/publish', async (req, res) => {
           loadTime,
           type: 'QUICKINDEX_AUTO',
           googlePingStatus: autoBroadcast.googleWebSubStatus || 200,
-          indexNowStatus: indexNowReport?.accepted ? 200 : 0,
+          indexNowStatus: 0,
           clientIp,
           status: 'DISPATCHED'
         });
@@ -2773,7 +2773,7 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     loadTime: probeLatency,
     type: 'CRAWL_RELAY_DISPATCH',
     googlePingStatus: googleWebSubStatus || 204,
-    indexNowStatus: 200,
+    indexNowStatus: 0,
     clientIp: getClientIp(req),
     status: 'DISPATCHED'
   });
