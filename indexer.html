@@ -98,7 +98,7 @@
         Fast Multi-Engine &amp; <span class="text-gradient-blue">Bot Indexer</span>
       </h1>
       <p style="color: var(--text-muted); max-width: 760px; margin: 0 auto; font-size: 1.05rem; line-height: 1.6;">
-        Paste any live webpage or PDF document URL to broadcast instant real-time pings across Googlebot, SpeedyIndex Queue, Bingbot, Yahoo, DuckDuckGo, Yandex, and IndexNow networks.
+        Validate live URLs and PDFs, queue discovery signals, analyze documents, and monitor crawl/index evidence without treating submissions as guaranteed indexing.
       </p>
     </div>
 
@@ -134,7 +134,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-size: 0.88rem; font-weight: 700; color: var(--text-main); flex-wrap: wrap; gap: 0.5rem;">
             <span style="display: flex; align-items: center; gap: 0.4rem;">
               <i class="ri-links-line" style="color: var(--accent-cyan);"></i> 
-              <span>Target URLs or XML Sitemap</span>
+              <span>Target URLs, PDF URLs or XML Sitemap</span>
               <span style="font-size: 0.76rem; font-weight: normal; color: var(--text-muted);">(Paste multiple URLs at the same time, 1 per line)</span>
             </span>
             <div style="display: flex; align-items: center; gap: 0.4rem;">
@@ -161,7 +161,7 @@
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
           <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; padding: 1.15rem 1.75rem; font-size: 1.05rem; font-weight: 700; border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);">
             <i class="ri-send-plane-fill"></i>
-            <span id="submit-btn-text">Feed All URLs to Feed Hub &amp; Broadcast to Googlebot, Bingbot &amp; Crawlers</span>
+            <span id="submit-btn-text">Validate &amp; Submit URLs to Discovery Queue</span>
           </button>
         </div>
       </form>
@@ -175,9 +175,9 @@
             <i class="ri-checkbox-circle-fill"></i>
           </div>
           <div>
-            <h3 style="font-size: 1.25rem; margin: 0; color: #ffffff;" id="confirm-title">Broadcast Successful</h3>
+            <h3 style="font-size: 1.25rem; margin: 0; color: #ffffff;" id="confirm-title">Submission Complete</h3>
             <p style="margin: 0.25rem 0 0; font-size: 0.88rem; color: #94a3b8;" id="confirm-subtitle">
-              Target URLs successfully fed into Feed Hub &amp; queued for Googlebot, Bingbot &amp; Search Engine Crawlers.
+              URLs were accepted into the technical validation and discovery workflow. Crawl and index status is monitored separately.
             </p>
           </div>
         </div>
@@ -341,7 +341,7 @@
             <div class="dot dot-3"></div>
           </div>
           <div class="terminal-title">
-            <i class="ri-terminal-box-line"></i> Bot Broadcast Log &amp; Dispatch Stamp
+            <i class="ri-terminal-box-line"></i> Discovery &amp; Processing Log
           </div>
           <div class="terminal-actions">
             <button type="button" class="btn-term-action" onclick="copyTerminalLogs()" title="Copy all logs to clipboard">
@@ -368,7 +368,7 @@
         <div class="history-header">
           <div class="history-title">
             <i class="ri-time-line" style="color: var(--accent-cyan);"></i>
-            <span>Dispatched URL Vault</span>
+            <span>URL Processing Vault</span>
             <span id="history-user-label" class="badge badge-primary" style="font-size: 0.72rem; margin-left: 0.5rem;">Current User</span>
           </div>
           <div class="history-tools">
