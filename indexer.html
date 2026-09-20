@@ -293,6 +293,13 @@
         </div>
       </div>
       <div id="index-monitor-queue" style="display:flex; gap:1.25rem; flex-wrap:wrap; font-size:0.85rem; color:#cbd5e1; margin-bottom:1rem;"></div>
+      <div style="display:flex; gap:0.6rem; margin-bottom:0.4rem; flex-wrap:wrap;">
+        <input id="index-monitor-url" type="text" placeholder="Paste 1 URL (Validate) or many URLs separated by space/newline (Enqueue)…"
+          style="flex:1; min-width:260px; background:rgba(2,6,23,0.8); border:1px solid rgba(148,163,184,0.25); border-radius:0.6rem; color:#e2e8f0; padding:0.55rem 0.8rem; font-size:0.85rem; outline:none;">
+        <button type="button" class="btn btn-sm btn-glass" onclick="monitorValidate()" title="Immediate technical check, no queue"><i class="ri-search-line"></i> Validate</button>
+        <button type="button" class="btn btn-sm btn-glass" onclick="monitorEnqueue()" title="Add to discovery queue"><i class="ri-play-list-add-line"></i> Enqueue</button>
+      </div>
+      <div id="index-monitor-msg" style="font-size:0.82rem; color:#94a3b8; margin-bottom:1rem; min-height:1.2em;"></div>
       <div style="overflow-x:auto;">
         <table style="width:100%; border-collapse:collapse; font-size:0.82rem; color:#cbd5e1;">
           <thead>
@@ -345,6 +352,44 @@
       } catch (e) {
         hEl.textContent = 'monitor unavailable: ' + e.message;
       }
+    }
+    function monitorAuthHeaders() {
+      const h = { 'Content-Type': 'application/json' };
+      try { const t = localStorage.getItem('index_matrix_token'); if (t) h['Authorization'] = 'Bearer ' + t; } catch (e) {}
+      return h;
+    }
+    async function monitorValidate() {
+      const inp = document.getElementById('index-monitor-url');
+      const msg = document.getElementById('index-monitor-msg');
+      const url = (inp.value || '').trim().split(/\s+/).filter(Boolean)[0] || '';
+      if (!url) { msg.textContent = 'Paste a URL first.'; return; }
+      msg.textContent = 'Validating… (technical check, no queue)';
+      try {
+        const r = await fetch('/api/index/validate', { method: 'POST', headers: monitorAuthHeaders(), body: JSON.stringify({ url }) });
+        const j = await r.json();
+        if (!r.ok || !j.ok) { msg.textContent = 'Validate failed: ' + (j.error || r.status); return; }
+        const rec = j.record || {};
+        let extra = '';
+        if (rec.pdf && rec.pdf.isPdf) extra += ' · PDF ' + rec.pdf.classification;
+        if (rec.validation && rec.validation.robots) extra += ' · robots:' + rec.validation.robots.state;
+        if (rec.validation && rec.validation.httpStatus) extra += ' · HTTP ' + rec.validation.httpStatus;
+        msg.textContent = 'Validate done → ' + rec.state + extra;
+        refreshIndexMonitor();
+      } catch (e) { msg.textContent = 'Validate error: ' + e.message; }
+    }
+    async function monitorEnqueue() {
+      const inp = document.getElementById('index-monitor-url');
+      const msg = document.getElementById('index-monitor-msg');
+      const urls = [...new Set((inp.value || '').split(/\s+/).map(x => x.trim()).filter(Boolean))];
+      if (!urls.length) { msg.textContent = 'Paste at least one URL first.'; return; }
+      msg.textContent = 'Enqueuing ' + urls.length + ' URL(s)…';
+      try {
+        const r = await fetch('/api/index/bulk', { method: 'POST', headers: monitorAuthHeaders(), body: JSON.stringify({ urls }) });
+        const j = await r.json();
+        if (!r.ok || !j.ok) { msg.textContent = 'Enqueue failed: ' + (j.error || r.status); return; }
+        msg.textContent = 'Queued → accepted:' + j.counts.accepted + ' rejected:' + j.counts.rejected + ' duplicates:' + j.counts.duplicates + '. Watch the table update below.';
+        refreshIndexMonitor();
+      } catch (e) { msg.textContent = 'Enqueue error: ' + e.message; }
     }
     setInterval(refreshIndexMonitor, 5000);
     document.addEventListener('DOMContentLoaded', refreshIndexMonitor);
