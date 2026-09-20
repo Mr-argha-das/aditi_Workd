@@ -257,6 +257,52 @@
         <button type="button" class="btn btn-sm btn-glass" onclick="loadIndexQueueMonitor()"><i class="ri-refresh-line"></i></button>
       </div>
     </div>
+
+    <!-- Operations Overview -->
+    <section class="glass-card glass-card-solid" style="padding:1.5rem 2rem;margin-bottom:1.25rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <div>
+          <h3 style="margin:0;color:#fff;"><i class="ri-dashboard-3-line" style="color:var(--accent-cyan);"></i> Index Operations Center</h3>
+          <p style="margin:.35rem 0 0;color:var(--text-dim);font-size:.78rem;">Technical validation, PDF analysis, discovery queue and evidence-based status in one place.</p>
+        </div>
+        <button class="btn btn-sm btn-glass" type="button" onclick="refreshOperationsCenter()"><i class="ri-refresh-line"></i> Refresh</button>
+      </div>
+      <div id="ops-stat-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.75rem;">
+        <div class="glass-card" style="padding:1rem;"><div style="font-size:.72rem;color:var(--text-dim);">TRACKED</div><strong id="op-total" style="font-size:1.45rem;color:#fff;">0</strong></div>
+        <div class="glass-card" style="padding:1rem;"><div style="font-size:.72rem;color:var(--text-dim);">VALIDATED</div><strong id="op-validated" style="font-size:1.45rem;color:#fff;">0</strong></div>
+        <div class="glass-card" style="padding:1rem;"><div style="font-size:.72rem;color:var(--text-dim);">DISCOVERY PENDING</div><strong id="op-discovery" style="font-size:1.45rem;color:#fff;">0</strong></div>
+        <div class="glass-card" style="padding:1rem;"><div style="font-size:.72rem;color:var(--text-dim);">CRAWL CHECKED</div><strong id="op-crawl" style="font-size:1.45rem;color:#fff;">0</strong></div>
+        <div class="glass-card" style="padding:1rem;"><div style="font-size:.72rem;color:var(--text-dim);">INDEXED</div><strong id="op-indexed" style="font-size:1.45rem;color:#fff;">0</strong></div>
+        <div class="glass-card" style="padding:1rem;"><div style="font-size:.72rem;color:var(--text-dim);">UNKNOWN</div><strong id="op-unknown" style="font-size:1.45rem;color:#fff;">0</strong></div>
+      </div>
+    </section>
+
+    <!-- PDF Analyzer -->
+    <section class="glass-card glass-card-solid" style="padding:1.5rem 2rem;margin-bottom:1.25rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <h3 style="margin:0;color:#fff;"><i class="ri-file-pdf-2-line" style="color:#fb7185;"></i> PDF Analyzer</h3>
+          <p style="margin:.35rem 0 0;color:var(--text-dim);font-size:.78rem;">Check a PDF before submission: validity, pages, text extraction, size and SHA-256.</p>
+        </div>
+        <label class="btn btn-sm btn-primary" style="cursor:pointer;">
+          <i class="ri-upload-cloud-2-line"></i> Analyze PDF
+          <input id="pdf-analyzer-file" type="file" accept=".pdf,application/pdf" style="display:none" onchange="analyzePdfFile(event)">
+        </label>
+      </div>
+      <div id="pdf-analysis-result" style="display:none;margin-top:1rem;"></div>
+    </section>
+
+    <!-- Queue -->
+    <section class="glass-card glass-card-solid" style="padding:1.5rem 2rem;margin-bottom:1.25rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <h3 style="margin:0;color:#fff;"><i class="ri-stack-line" style="color:var(--accent-cyan);"></i> Processing Queue</h3>
+          <span id="index-queue-stats" style="font-size:.78rem;color:var(--text-dim);">Queue loading...</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-glass" onclick="loadIndexQueueMonitor()"><i class="ri-refresh-line"></i> Refresh</button>
+      </div>
+      <div id="queue-progress" style="height:5px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden;margin-top:1rem;"><div id="queue-progress-bar" style="height:100%;width:0%;background:var(--accent-cyan);transition:width .4s;"></div></div>
+    </section>
     <!-- Evidence-Based Index Status Monitor -->
     <div class="glass-card glass-card-solid" style="padding:1.75rem 2rem;margin-bottom:2.25rem;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
