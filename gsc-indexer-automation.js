@@ -1,53 +1,54 @@
 /**
- * Google Search Console & Indexing API CLI Feeder Automation Script
- * 
- * Usage:
- * 1. Place your Google Cloud Service Account key as 'service-account.json' in this directory (Optional)
- * 2. Run: node gsc-indexer-automation.js https://yourwebsite.com URL_UPDATED
+ * INDEX MATRIX - Google Indexing API payload helper.
+ *
+ * This script validates the target and prepares a payload. It does not claim
+ * that Google received, crawled, or indexed the URL. The official Indexing API
+ * is intended for eligible content/properties and requires real credentials.
  */
-
 const fs = require('fs');
 
 const targetUrl = process.argv[2];
 const actionType = process.argv[3] || 'URL_UPDATED';
 
 if (!targetUrl) {
-  console.log('====================================================');
-  console.log('INDEX MATRIX - Google Search Console CLI Indexer v2.0');
-  console.log('====================================================');
-  console.error('\x1b[31mError: Please specify a website URL to index.\x1b[0m');
-  console.log('\nUsage:');
-  console.log('  node gsc-indexer-automation.js <URL> [ACTION]');
-  console.log('\nExample:');
-  console.log('  node gsc-indexer-automation.js https://yourwebsite.com URL_UPDATED');
-  console.log('====================================================');
+  console.error('Usage: node gsc-indexer-automation.js <URL> [URL_UPDATED|URL_DELETED]');
   process.exit(1);
 }
 
-console.log('====================================================');
-console.log('INDEX MATRIX - Google Search Console CLI Indexer v2.0');
-console.log('====================================================');
-console.log(`Target URL: ${targetUrl}`);
-console.log(`Action: ${actionType}`);
-console.log(`Timestamp: ${new Date().toISOString()}`);
-console.log('----------------------------------------------------');
-
-const payload = JSON.stringify({
-  url: targetUrl,
-  type: actionType,
-  notifyTime: new Date().toISOString()
-}, null, 2);
-
-console.log('[1/4] Preparing Google Indexing API v3 request payload...');
-console.log(payload);
-
-console.log('[2/4] Verifying Google Cloud Service Account credentials...');
-if (fs.existsSync('./service-account.json')) {
-  console.log('✓ Found service-account.json');
-} else {
-  console.log('ℹ Note: Place your Google Cloud service-account.json here for automated OAuth2 signing.');
+let parsed;
+try { parsed = new URL(targetUrl); } catch (e) {
+  console.error('Invalid URL:', targetUrl);
+  process.exit(1);
+}
+if (!['http:', 'https:'].includes(parsed.protocol)) {
+  console.error('Only HTTP/HTTPS URLs are supported.');
+  process.exit(1);
 }
 
-console.log('[3/4] Ready to dispatch to https://indexing.googleapis.com/v3/urlNotifications:publish');
-console.log('[4/4] Googlebot crawl schedule notification prepared successfully.');
+if (!['URL_UPDATED', 'URL_DELETED'].includes(actionType)) {
+  console.error('Action must be URL_UPDATED or URL_DELETED.');
+  process.exit(1);
+}
+
+const payload = {
+  url: parsed.toString(),
+  type: actionType,
+  notifyTime: new Date().toISOString()
+};
+
+console.log('====================================================');
+console.log('INDEX MATRIX - Google Indexing API Payload Helper');
+console.log('====================================================');
+console.log('Target URL:', payload.url);
+console.log('Action:', payload.type);
+console.log('Timestamp:', payload.notifyTime);
+console.log('----------------------------------------------------');
+console.log('[1/3] Payload prepared:');
+console.log(JSON.stringify(payload, null, 2));
+console.log('[2/3] Credential check:');
+console.log(fs.existsSync('./service-account.json')
+  ? 'service-account.json found. Real API delivery still requires eligible content/property and correct OAuth scopes.'
+  : 'service-account.json not found. No Google API request was sent.');
+console.log('[3/3] Delivery status: NOT_SENT_BY_THIS_HELPER');
+console.log('Note: payload preparation is not proof of Google discovery, crawl, or indexing.');
 console.log('====================================================');
