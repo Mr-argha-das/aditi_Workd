@@ -22,6 +22,7 @@ const path = require('path');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const db = require('./db');
+const indexStatus = require('./index-status');
 
 let pdfParseLib = null;
 try {
@@ -2615,6 +2616,16 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
   const ingestedItems = await db.saveRelayLinks(itemsToIngest);
   const currentStats = await db.getRelayStats();
 
+  // Evidence-based status tracking: submission is not discovery/crawl/indexing proof.
+  for (const targetUrl of validUrls) {
+    try {
+      const type = /\.pdf(?:$|[?#])/i.test(targetUrl) ? 'PDF' : 'URL';
+      indexStatus.markReceived(targetUrl, { type });
+      indexStatus.markValidated(targetUrl, { type });
+      indexStatus.markDiscoverySubmitted(targetUrl, ['relay-hub', ...(sitemapUrl ? ['sitemap-source'] : []), 'speedyindex']);
+    } catch (statusErr) { console.warn('Index status tracking warning:', statusErr.message); }
+  }
+
   // Pillar 1: Googlebot Probe & SpeedyIndex Queue
   let googleWebSubStatus = 204;
   let googleWebSubSuccess = false;
@@ -2670,8 +2681,10 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     });
     probeStatus = probeRes.status;
     probeLatency = `${Date.now() - probeStart}ms`;
+    try { indexStatus.markCrawlChecked(primaryUrl, { httpStatus: probeRes.status, finalUrl: probeRes.url || primaryUrl, contentType: probeRes.headers.get('content-type') || null, googlebotUserAgent: true }); indexStatus.markUnknownIndex(primaryUrl); } catch (statusErr) { console.warn('Index status crawl tracking warning:', statusErr.message); }
   } catch (e) {
     probeLatency = `${Date.now() - probeStart}ms`;
+    try { indexStatus.markCrawlChecked(primaryUrl, { httpStatus: null, finalUrl: primaryUrl, googlebotUserAgent: true }); indexStatus.markUnknownIndex(primaryUrl, 'Server-side Googlebot-like probe failed; search-engine crawl/index status remains unknown.'); } catch (statusErr) { console.warn('Index status crawl tracking warning:', statusErr.message); }
   }
 
   // Pillar 2: Relay Crawl Hub (Live Publication Verified)
@@ -3125,6 +3138,32 @@ app.get('/:asset', (req, res, next) => {
     }
   }
   return next();
+});
+
+// Observable indexing status API.
+app.get('/api/index/status', (req, res) => {
+  const url = typeof req.query.url === 'string' ? req.query.url.trim() : '';
+  if (url) {
+    const record = indexStatus.get(url);
+    if (!record) return res.status(404).json({ success: false, error: 'URL has no INDEX MATRIX status record yet.' });
+    return res.json({ success: true, record, semantics: {
+      discovered: 'Only set when independent discovery evidence is recorded.',
+      crawled: 'A server-side fetch is never treated as proof of a search-engine crawl.',
+      indexed: 'UNKNOWN until independent index evidence is available.'
+    }});
+  }
+  return res.json({ success: true, stats: indexStatus.stats(), records: indexStatus.list({
+    limit: parseInt(req.query.limit,10) || 100,
+    status: typeof req.query.status === 'string' ? req.query.status : ''
+  })});
+});
+
+app.get('/api/index/status/:encodedUrl', (req,res) => {
+  try {
+    const record=indexStatus.get(decodeURIComponent(req.params.encodedUrl));
+    if(!record) return res.status(404).json({success:false,error:'URL not found in status store.'});
+    return res.json({success:true,record});
+  } catch(e) { return res.status(400).json({success:false,error:'Invalid encoded URL.'}); }
 });
 
 // Strictly serve only public assets (never server scripts or database files)
