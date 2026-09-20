@@ -249,6 +249,33 @@
       </div>
     </div>
 
+
+    <!-- Evidence-Based Index Status Monitor -->
+    <div class="glass-card glass-card-solid" style="padding:1.75rem 2rem;margin-bottom:2.25rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <div>
+          <h3 style="margin:0;color:#fff;"><i class="ri-radar-line" style="color:var(--accent-cyan);"></i> Index Status Monitor</h3>
+          <span id="index-status-stats" style="font-size:.8rem;color:var(--text-muted);">Loading status...</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-glass" onclick="loadIndexStatusMonitor()"><i class="ri-refresh-line"></i> Refresh</button>
+      </div>
+      <div style="overflow:auto;max-height:420px;">
+        <table class="history-table" style="width:100%;border-collapse:collapse;">
+          <thead><tr>
+            <th style="padding:.75rem;text-align:left;font-size:.72rem;color:var(--text-dim);">URL</th>
+            <th style="padding:.75rem;text-align:left;font-size:.72rem;color:var(--text-dim);">DISCOVERY</th>
+            <th style="padding:.75rem;text-align:left;font-size:.72rem;color:var(--text-dim);">CRAWL</th>
+            <th style="padding:.75rem;text-align:left;font-size:.72rem;color:var(--text-dim);">INDEX</th>
+            <th style="padding:.75rem;text-align:left;font-size:.72rem;color:var(--text-dim);">UPDATED</th>
+          </tr></thead>
+          <tbody id="index-status-body"><tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--text-dim);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+      <p style="margin:.9rem 0 0;font-size:.75rem;color:var(--text-dim);">
+        Submitted/discovery states are actions recorded by INDEX MATRIX. A server-side fetch is not treated as proof of Googlebot crawl, and INDEXED remains unknown until independent evidence exists.
+      </p>
+    </div>
+
     <!-- Expansive 2-Column Command Center Grid -->
     <div class="indexer-main-grid">
       
