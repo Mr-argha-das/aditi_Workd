@@ -524,8 +524,10 @@
       if (relayRes.ok && relayData.success && relayData.pillars) {
         renderPillarReport(relayData);
         appendLog('RELAY_BATCH', `✅ Public Crawl Relay Hub: Ingested ${urls.length} batch URLs into live HTML directory &amp; RSS feed!`, 'tag-ok', 'text-ok');
-        appendLog('INDEXNOW_GATEWAY', `⚡ Verified IndexNow Key signed &amp; broadcasted from our host for batch URLs!`, 'tag-ok', 'text-cyan');
+        appendLog('INDEXNOW_GATEWAY', `⚡ Discovery relay submitted for batch URLs; IndexNow requires target-domain key ownership.`, 'tag-ok', 'text-cyan');
         loadRelayDirectory();
+    loadIndexStatusMonitor();
+    setInterval(loadIndexStatusMonitor, 10000);
       }
     } catch (rErr) {
       console.warn('Batch relay ingestion warning:', rErr.message);
@@ -548,7 +550,7 @@
         const pingData = await pingRes.json().catch(() => ({}));
 
         if (pingRes.ok && pingData.success) {
-          appendLog('BATCH_OK', `✅ [${i + 1}/${urls.length}] Dispatched to Googlebot + Bingbot + DuckDuckGo + Yahoo + Yandex + IndexNow: ${target}`, 'tag-ok', 'text-ok');
+          appendLog('BATCH_OK', `✅ [${i + 1}/${urls.length}] Discovery signals submitted; crawler/index status remains pending: ${target}`, 'tag-ok', 'text-ok');
           if (pingData.speedyIndex && pingData.speedyIndex.success) {
             appendLog('SPEEDY_OK', `⚡ [${i + 1}/${urls.length}] SpeedyIndex Google Crawler Task #${pingData.speedyIndex.task_id} registered!`, 'tag-ok', 'text-ok');
           }
@@ -624,7 +626,7 @@
       const d1 = document.getElementById('pillar-1-desc');
       if (b1) b1.textContent = p1.status || 'ACTIVE';
       if (s1) s1.innerHTML = `<span style="color: #4ade80;">HTTP ${p1.targetProbeStatus || 200}</span> <span style="font-size: 0.8rem; color: #94a3b8;">(${p1.targetLatency || '1.1s'})</span>`;
-      if (d1) d1.textContent = p1.message || 'Google WebSub Hub acknowledged.';
+      if (d1) d1.textContent = p1.message || 'Server-side probe completed; this is not proof of Googlebot crawl.';
     }
 
     if (p2) {
@@ -642,7 +644,7 @@
       const d3 = document.getElementById('pillar-3-desc');
       if (b3) b3.textContent = p3.status || 'VERIFIED';
       if (s3) s3.innerHTML = `<span style="color: #a78bfa;">Key Signed</span> <span style="font-size: 0.75rem; color: #94a3b8;">(${p3.hostedKey ? p3.hostedKey.slice(0, 8) + '...' : 'Verified'})</span>`;
-      if (d3) d3.textContent = p3.message || 'Verified IndexNow signature broadcasted from our host.';
+      if (d3) d3.textContent = p3.message || 'IndexNow is only applicable when the target domain can verify the required key.';
     }
 
     if (p4) {
@@ -650,12 +652,12 @@
       const s4 = document.getElementById('pillar-4-status');
       const d4 = document.getElementById('pillar-4-desc');
       if (b4) b4.textContent = p4.status || 'SIGNALED';
-      if (s4) s4.innerHTML = `<span style="color: #34d399;">Spiders Notified</span>`;
-      if (d4) d4.textContent = p4.message || 'Bingbot, YandexBot & RSS feed syndication active.';
+      if (s4) s4.innerHTML = `<span style="color: #34d399;">Discovery signals sent</span>`;
+      if (d4) d4.textContent = p4.message || 'Relay/feed signals are not proof of crawler access or indexing.';
     }
 
     const ts = document.getElementById('report-timestamp');
-    if (ts) ts.innerHTML = `Broadcast Completed &bull; ${new Date().toLocaleTimeString()} &bull; <span style="color: #38bdf8;">Verified Host Relay Active</span>`;
+    if (ts) ts.innerHTML = `Discovery submission completed &bull; ${new Date().toLocaleTimeString()} &bull; <span style="color: #38bdf8;">Status monitoring active</span>`;
 
     container.style.display = 'block';
     container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -723,6 +725,58 @@
     }
   }
 
+
+  /* ==========================================================================
+     Observable Index Status Monitor
+     ========================================================================== */
+  function statusBadge(status) {
+    const map = {
+      RECEIVED: 'Received',
+      DISCOVERY_SUBMITTED: 'Discovery submitted',
+      DISCOVERY_PENDING: 'Discovery pending',
+      DISCOVERED: 'Discovered',
+      FETCH_CHECKED: 'Fetch checked',
+      FETCH_CHECKED_NOT_GOOGLEBOT_EVIDENCE: 'Fetch checked',
+      INDEXED: 'Indexed',
+      NOT_INDEXED: 'Not indexed',
+      UNKNOWN: 'Unknown'
+    };
+    return map[status] || status || 'Unknown';
+  }
+
+  async function loadIndexStatusMonitor() {
+    const body = document.getElementById('index-status-body');
+    const stats = document.getElementById('index-status-stats');
+    if (!body) return;
+    try {
+      const res = await fetch('/api/index/status?limit=100');
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Status API error');
+      const s = data.stats || {};
+      if (stats) stats.textContent = `${s.total || 0} tracked • ${s.discoveryPending || 0} pending • ${s.unknownIndex || 0} index status unknown`;
+      const rows = Array.isArray(data.records) ? data.records : [];
+      if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--text-dim);">No tracked URLs yet.</td></tr>';
+        return;
+      }
+      body.innerHTML = rows.map(r => {
+        const discovery = r.discoveryStatus || 'NOT_SUBMITTED';
+        const crawl = r.crawlStatus || 'UNKNOWN';
+        const index = r.indexStatus || 'UNKNOWN';
+        const safeUrl = String(r.url || '').replace(/"/g, '&quot;');
+        return `<tr style="border-bottom:1px solid rgba(255,255,255,.05)">
+          <td style="padding:.75rem;max-width:390px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${safeUrl}">${safeUrl}</td>
+          <td style="padding:.75rem"><span class="badge badge-primary">${statusBadge(discovery)}</span></td>
+          <td style="padding:.75rem"><span class="badge">${statusBadge(crawl)}</span></td>
+          <td style="padding:.75rem"><span class="badge">${statusBadge(index)}</span></td>
+          <td style="padding:.75rem;color:var(--text-dim);font-size:.75rem">${r.updatedAt ? new Date(r.updatedAt).toLocaleString() : '-'}</td>
+        </tr>`;
+      }).join('');
+    } catch (e) {
+      body.innerHTML = '<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:#fca5a5;">Status monitor unavailable.</td></tr>';
+    }
+  }
+
   // Expose global methods
   window.executeBotDispatch = executeBotDispatch;
   window.updateUrlCounter = updateUrlCounter;
@@ -743,6 +797,7 @@
   window.runBatchDispatch = runBatchDispatch;
   window.renderPillarReport = renderPillarReport;
   window.loadRelayDirectory = loadRelayDirectory;
+  window.loadIndexStatusMonitor = loadIndexStatusMonitor;
 
   document.addEventListener('DOMContentLoaded', () => {
     loadConfig();
