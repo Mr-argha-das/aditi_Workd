@@ -2621,8 +2621,7 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     try {
       const type = /\.pdf(?:$|[?#])/i.test(targetUrl) ? 'PDF' : 'URL';
       indexStatus.markReceived(targetUrl, { type });
-      indexStatus.markValidated(targetUrl, { type });
-      indexStatus.markDiscoverySubmitted(targetUrl, ['relay-hub', ...(sitemapUrl ? ['sitemap-source'] : []), 'speedyindex']);
+      indexStatus.markDiscoverySubmitted(targetUrl, ['relay-hub']);
     } catch (statusErr) { console.warn('Index status tracking warning:', statusErr.message); }
   }
 
