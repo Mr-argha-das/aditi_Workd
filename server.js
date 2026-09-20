@@ -23,6 +23,7 @@ const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const db = require('./db');
 const indexStatus = require('./index-status');
+const indexEngine = require('./index-engine');
 
 let pdfParseLib = null;
 try {
@@ -1738,7 +1739,7 @@ async function broadcastQuickIndex(url, origin) {
 
   // 8. SpeedyIndex Direct Googlebot Queue Integration (Free 100 Tokens & Paid API v2)
   let speedyIndexResult = null;
-  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '6bb27cdf8e969117288080f1c7d504a3';
+  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '';
   if (speedyApiKey) {
     try {
       let hostPart = 'Site';
@@ -2621,7 +2622,7 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     try {
       const type = /\.pdf(?:$|[?#])/i.test(targetUrl) ? 'PDF' : 'URL';
       indexStatus.markReceived(targetUrl, { type });
-      indexStatus.markDiscoverySubmitted(targetUrl, ['relay-hub']);
+      indexEngine.enqueue(targetUrl);
     } catch (statusErr) { console.warn('Index status tracking warning:', statusErr.message); }
   }
 
@@ -3137,6 +3138,28 @@ app.get('/:asset', (req, res, next) => {
     }
   }
   return next();
+});
+
+// Full URL validation, PDF analysis and bounded queue API.
+app.post('/api/index/validate', async (req,res)=>{
+ const raw=Array.isArray(req.body?.urls)?req.body.urls:(req.body?.url?[req.body.url]:[]);
+ const urls=[...new Set(raw.filter(x=>typeof x==='string').map(x=>x.trim()).filter(Boolean))].slice(0,100);
+ if(!urls.length)return res.status(400).json({success:false,error:'Provide at least one URL.'});
+ const jobs=urls.map(url=>indexEngine.enqueue(url));
+ indexEngine.pump({status:indexStatus,pdfParse:pdfParseLib}).catch(e=>console.error('Index queue pump:',e.message));
+ return res.json({success:true,count:jobs.length,jobs});
+});
+
+app.get('/api/index/queue',(req,res)=>res.json({success:true,stats:indexEngine.stats(),jobs:indexEngine.list(parseInt(req.query.limit,10)||100)}));
+
+app.post('/api/index/pdf-analyze', upload.single('file'), async (req,res)=>{
+ if(!req.file)return res.status(400).json({success:false,error:'PDF file is required.'});
+ const analysis=await indexEngine.analyzePdf(req.file.buffer,pdfParseLib);
+ return res.json({success:true,fileName:req.file.originalname,analysis});
+});
+
+app.get('/api/index/health', async (req,res)=>{
+ return res.json({success:true,service:'INDEX MATRIX',queue:indexEngine.stats(),statusStore:indexStatus.stats(),limits:{maxRemoteFetchBytes:35*1024*1024,queueConcurrency:process.env.INDEX_QUEUE_CONCURRENCY||2}});
 });
 
 // Observable indexing status API.
