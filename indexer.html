@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- SEO Meta Tags -->
   <title>Fast Document &amp; Bot Indexer — INDEX MATRIX</title>
-  <meta name="description" content="Instant URL and hosted document bot indexer with role-based rate limiting, terminal log stamps, and multi-engine webhook broadcasts.">
+  <meta name="description" content="URL/PDF validation, discovery queue and honest index-status monitor. Submitted != Discovered != Crawled != Indexed.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="theme-color" content="#020617">
   <link rel="canonical" href="https://www.indexmetrix.com/indexer.html">
@@ -20,14 +20,14 @@
   <meta property="og:site_name" content="INDEX MATRIX">
   <meta property="og:url" content="https://www.indexmetrix.com/indexer.html">
   <meta property="og:title" content="Fast Document &amp; Bot Indexer — INDEX MATRIX">
-  <meta property="og:description" content="Instant URL and hosted document bot indexer with role-based rate limiting, terminal log stamps, and multi-engine webhook broadcasts.">
+  <meta property="og:description" content="URL/PDF validation, discovery queue and honest index-status monitor. Submitted != Discovered != Crawled != Indexed.">
   <meta property="og:image" content="https://www.indexmetrix.com/logo-highres.png">
 
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@indexmetrix">
   <meta name="twitter:title" content="Fast Document &amp; Bot Indexer — INDEX MATRIX">
-  <meta name="twitter:description" content="Instant URL and hosted document bot indexer with role-based rate limiting, terminal log stamps, and multi-engine webhook broadcasts.">
+  <meta name="twitter:description" content="URL/PDF validation, discovery queue and honest index-status monitor. Submitted != Discovered != Crawled != Indexed.">
   <meta name="twitter:image" content="https://www.indexmetrix.com/logo-highres.png">
 
   <script src="/js/device-gatekeeper.js"></script>
@@ -98,7 +98,7 @@
         Fast Multi-Engine &amp; <span class="text-gradient-blue">Bot Indexer</span>
       </h1>
       <p style="color: var(--text-muted); max-width: 760px; margin: 0 auto; font-size: 1.05rem; line-height: 1.6;">
-        Paste any live webpage or PDF document URL to broadcast instant real-time pings across Googlebot, SpeedyIndex Queue, Bingbot, Yahoo, DuckDuckGo, Yandex, and IndexNow networks.
+        Paste any live webpage or PDF URL to validate it and broadcast discovery pings. Pinging never guarantees crawling or indexing — track honest per-URL status below.
       </p>
     </div>
 
@@ -177,7 +177,7 @@
           <div>
             <h3 style="font-size: 1.25rem; margin: 0; color: #ffffff;" id="confirm-title">Broadcast Successful</h3>
             <p style="margin: 0.25rem 0 0; font-size: 0.88rem; color: #94a3b8;" id="confirm-subtitle">
-              Target URLs successfully fed into Feed Hub &amp; queued for Googlebot, Bingbot &amp; Search Engine Crawlers.
+              Target URLs listed in the local Feed Hub directory. Listing is NOT crawl or indexing evidence.
             </p>
           </div>
         </div>
@@ -274,11 +274,87 @@
           </div>
         </div>
 
+
+    <!-- Index Engine Monitor: honest per-URL status (Submitted != Discovered != Crawled != Indexed) -->
+    <div class="glass-card glass-card-solid" style="padding: 1.75rem 2rem; margin-bottom: 2.25rem;" id="index-monitor-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="brand-icon" style="width: 38px; height: 38px; font-size: 1.2rem; background: rgba(34,197,94,0.15); color: #4ade80; border-color: rgba(34,197,94,0.3);">
+            <i class="ri-radar-line"></i>
+          </div>
+          <div>
+            <h3 style="font-size: 1.15rem; margin: 0; color: #fff;">Index Engine Monitor</h3>
+            <p style="margin: 0.2rem 0 0; font-size: 0.8rem; color: #94a3b8;">Honest pipeline status: Submission, Discovery, Crawl and Index are tracked separately. UNKNOWN means not verified — never a guess.</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.6rem; align-items:center;">
+          <span id="index-monitor-health" style="font-size:0.8rem; color:#94a3b8;">checking…</span>
+          <button type="button" class="btn btn-sm btn-glass" onclick="refreshIndexMonitor()" title="Refresh now"><i class="ri-refresh-line"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="index-monitor-queue" style="display:flex; gap:1.25rem; flex-wrap:wrap; font-size:0.85rem; color:#cbd5e1; margin-bottom:1rem;"></div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.82rem; color:#cbd5e1;">
+          <thead>
+            <tr style="text-align:left; color:#94a3b8; border-bottom:1px solid rgba(255,255,255,0.1);">
+              <th style="padding:0.5rem;">URL</th>
+              <th style="padding:0.5rem;">Submission</th>
+              <th style="padding:0.5rem;">Discovery</th>
+              <th style="padding:0.5rem;">Crawl</th>
+              <th style="padding:0.5rem;">Index</th>
+              <th style="padding:0.5rem;">Detail</th>
+            </tr>
+          </thead>
+          <tbody id="index-monitor-body">
+            <tr><td colspan="6" style="padding:0.75rem; color:#64748b;">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+    async function refreshIndexMonitor() {
+      const qEl = document.getElementById('index-monitor-queue');
+      const bEl = document.getElementById('index-monitor-body');
+      const hEl = document.getElementById('index-monitor-health');
+      try {
+        const [hq, hs] = await Promise.all([
+          fetch('/api/index/queue?limit=5').then(r => r.json()),
+          fetch('/api/index/status?limit=25').then(r => r.json())
+        ]);
+        const w = (hq && hq.pending + hq.running + hq.completed + hq.failed) || 0;
+        qEl.innerHTML = '<span>Pending: <b>' + (hq.pending||0) + '</b></span><span>Running: <b>' + (hq.running||0) + '</b></span>' +
+          '<span>Completed: <b style="color:#4ade80;">' + (hq.completed||0) + '</b></span><span>Failed: <b style="color:#fb7185;">' + (hq.failed||0) + '</b></span>';
+        hEl.textContent = 'queue jobs tracked: ' + w;
+        const rows = (hs && hs.rows) || [];
+        if (!rows.length) { bEl.innerHTML = '<tr><td colspan="6" style="padding:0.75rem; color:#64748b;">No URLs tracked yet. Validate or enqueue a URL to begin.</td></tr>'; return; }
+        bEl.innerHTML = rows.map(r => {
+          const v = r.validation || {}, d = r.discovery || {}, c = r.crawl || {}, ix = r.index || {};
+          const short = (r.normalizedUrl || r.url || '').length > 60 ? (r.normalizedUrl||r.url||'').slice(0,57)+'…' : (r.normalizedUrl||r.url||'');
+          let detail = v.httpStatus ? ('HTTP '+v.httpStatus) : (r.lastError || r.state);
+          if (r.pdf && r.pdf.isPdf) detail += ' · PDF ' + (r.pdf.classification||'') + ' · ' + (r.pdf.textLength||0) + ' chars';
+          else if (r.pdf && r.pdf.classification === 'NOT_A_PDF') detail += ' · not a PDF';
+          if (v.robots && v.robots.state) detail += ' · robots:' + v.robots.state;
+          return '<tr style="border-bottom:1px solid rgba(255,255,255,0.06);">' +
+            '<td style="padding:0.5rem; max-width:280px; overflow:hidden; text-overflow:ellipsis;" title="' + ((r.normalizedUrl||'').replace(/"/g,'&quot;')) + '">' + short + '</td>' +
+            '<td style="padding:0.5rem;">' + (r.state||'?') + '</td>' +
+            '<td style="padding:0.5rem;">' + (d.state||'?') + '</td>' +
+            '<td style="padding:0.5rem;">' + (c.state||'?') + '</td>' +
+            '<td style="padding:0.5rem;">' + (ix.state||'?') + '</td>' +
+            '<td style="padding:0.5rem; color:#94a3b8;">' + detail + '</td></tr>';
+        }).join('');
+      } catch (e) {
+        hEl.textContent = 'monitor unavailable: ' + e.message;
+      }
+    }
+    setInterval(refreshIndexMonitor, 5000);
+    document.addEventListener('DOMContentLoaded', refreshIndexMonitor);
+    </script>
+
         <div class="terminal-stream wide-stream" id="log-stream">
           <div class="log-row">
             <span class="log-time">[00:00:00]</span>
             <span class="tag-sys">[SYSTEM]</span>
-            <span class="text-dim"><span class="brand-app-name">INDEX MATRIX</span> engine standing by. Paste your target URL above to broadcast to search engine bots.</span>
+            <span class="text-dim"><span class="brand-app-name">INDEX MATRIX</span> engine standing by. Paste your target URL above to validate and broadcast discovery pings. Pings never guarantee indexing.</span>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node test/test-api.js && node test/test-pdf-scan.js && node test/test-ui-pages.js",
+    "test": "node test/test-api.js && node test/test-pdf-scan.js && node test/test-ui-pages.js && node test/test-index-engine.js",
     "test:pdf": "node test/test-pdf-scan.js",
     "test:api": "node test/test-api.js"
   },

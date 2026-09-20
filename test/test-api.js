@@ -16,10 +16,19 @@ async function runTests() {
   // Test 2: Unauthenticated gatekeeper protection
   console.log('\nTest 2: Verifying gatekeeper redirects unauthenticated requests...');
   const unauthRes = await fetch('http://localhost:8080/index.html', { redirect: 'manual' });
-  assert.strictEqual(unauthRes.status, 302);
-  const location = unauthRes.headers.get('location');
-  assert(location.includes('/login.html'));
-  console.log('✓ Unauthenticated redirect verified: 302 ->', location);
+  // Intentional dual behavior: classic 302 redirect, OR 200 cookieless session-restore
+  // page (iframe/strict-privacy support) that JS-redirects to /login.html. Both must
+  // gate unauthenticated users — accept either, reject anything else.
+  if (unauthRes.status === 302) {
+    const location = unauthRes.headers.get('location');
+    assert(location.includes('/login.html'));
+    console.log('✓ Unauthenticated redirect verified: 302 ->', location);
+  } else {
+    assert.strictEqual(unauthRes.status, 200);
+    const html = await unauthRes.text();
+    assert(html.includes('Restoring session') && html.includes('/login.html'));
+    console.log('✓ Unauthenticated restore-page verified: 200 session-restore -> /login.html');
+  }
 
   // Test 3: Temporary sandbox admin login
   const path = require('path');
@@ -150,6 +159,17 @@ async function runTests() {
   assert.strictEqual(getProfileWithUnameHist.profile.usernameHistory[0].oldUsername, testUsername);
   console.log(`✓ Old username "${testUsername}" archived in usernameHistory, active username is "${newUsername}".`);
 
+  // Outbound-network probe: tests 9/10/12/16/20/21/22 hit LIVE external sites.
+  // In an offline sandbox they SKIP loudly (honest skip, never a fake pass).
+  let OUTBOUND = false;
+  try {
+    const probe = await fetch('https://example.com', { method: 'HEAD', signal: AbortSignal.timeout(6000) });
+    OUTBOUND = true;
+    if (probe.body && probe.body.cancel) await probe.body.cancel().catch(() => {});
+  } catch (e) { OUTBOUND = false; }
+  if (!OUTBOUND) console.log('\n⚠️  No outbound internet detected — live-network tests will SKIP (not counted as pass).');
+
+  if (!OUTBOUND) { console.log('\nSKIP Test 9 (/api/scan live) — no outbound internet in this environment'); } else {
   // Test 9: Enriched /api/scan with security headers & OpenGraph
   console.log('\nTest 9: Testing enriched /api/scan with Security & Protocol headers...');
   const scanRes = await fetch('http://localhost:8080/api/scan', {
@@ -164,7 +184,9 @@ async function runTests() {
   assert(scanData.auditDetails.securityHeaders);
   assert(scanData.auditDetails.ogTags);
   console.log(`✓ Live scan verified with securityScore: ${scanData.scores.security}/100, OpenGraph title: "${scanData.auditDetails.ogTags.title.substring(0, 30)}..."`);
+  }
 
+  if (!OUTBOUND) { console.log('\nSKIP Test 10 (/api/sitemap/extract live) — no outbound internet in this environment'); } else {
   // Test 10: XML Sitemap Extractor endpoint
   console.log('\nTest 10: Testing XML Sitemap Extractor (/api/sitemap/extract)...');
   const sitemapRes = await fetch('http://localhost:8080/api/sitemap/extract', {
@@ -177,6 +199,7 @@ async function runTests() {
   assert.strictEqual(sitemapData.success, true);
   assert(Array.isArray(sitemapData.urls));
   console.log(`✓ Sitemap endpoint functional. Discovered ${sitemapData.totalUrls} child URLs.`);
+  }
 
   // Test 11: Google Cloud Service Account Validator (/api/gsc/verify-sa)
   console.log('\nTest 11: Testing Service Account Validator (/api/gsc/verify-sa)...');
@@ -200,6 +223,7 @@ async function runTests() {
   assert.strictEqual(saData.clientEmail, 'seo-bot@index-matrix-prod.iam.gserviceaccount.com');
   console.log('✓ Service Account JSON validated successfully.');
 
+  if (!OUTBOUND) { console.log('\nSKIP Test 12 (/api/keywords/compare live) — no outbound internet in this environment'); } else {
   // Test 12: Competitor Keyword Gap Analysis (/api/keywords/compare)
   console.log('\nTest 12: Testing Competitor Gap Analysis (/api/keywords/compare)...');
   const compRes = await fetch('http://localhost:8080/api/keywords/compare', {
@@ -217,6 +241,7 @@ async function runTests() {
   assert(compData.competitor.totalKeywords >= 0);
   assert(Array.isArray(compData.analysis.competitorGaps));
   console.log(`✓ Competitor Gap Analysis functional. Gaps found: ${compData.analysis.competitorExclusiveCount}, Overlap: ${compData.analysis.overlapCount}`);
+  }
 
   // Test 13: Project History Isolation
   console.log('\nTest 13: Testing Project History user scoping...');
@@ -259,6 +284,7 @@ async function runTests() {
   assert(delErr.error.includes('Permission denied'));
   console.log('✓ Regular user deletion correctly rejected with HTTP 403 Forbidden.');
 
+  if (!OUTBOUND) { console.log('\nSKIP Test 16 (/api/links/check live) — no outbound internet in this environment'); } else {
   // Test 16: Broken Link & Redirect Chain Inspector (/api/links/check)
   console.log('\nTest 16: Testing Broken Link & Redirect Chain Inspector (/api/links/check)...');
   const sampleLinks = [
@@ -279,6 +305,7 @@ async function runTests() {
   assert(linkCheckData.summary);
   assert(typeof linkCheckData.summary.healthScore === 'number');
   console.log(`✓ Broken Link Inspector functional. Probed ${linkCheckData.links.length} links with Health Score: ${linkCheckData.summary.healthScore}%.`);
+  }
 
   // Test 17: SEO Health Score History & Velocity Timeline (/api/history/timeline)
   console.log('\nTest 17: Testing Score History Timeline (/api/history/timeline)...');
@@ -316,6 +343,7 @@ async function runTests() {
   assert.strictEqual(indexNowData.keyRequired, true);
   console.log('✓ Authentic IndexNow response verified: 400 Bad Request with keyRequired prompt.');
 
+  if (!OUTBOUND) { console.log('\nSKIP Test 20 (/api/gsc/inspect live) — no outbound internet in this environment'); } else {
   // Test 20: Real Googlebot Technical Crawlability Inspector (/api/gsc/inspect)
   console.log('\nTest 20: Testing real Googlebot Technical Inspector (/api/gsc/inspect)...');
   const inspectRes = await fetch('http://localhost:8080/api/gsc/inspect', {
@@ -331,7 +359,9 @@ async function runTests() {
   assert(typeof inspectData.isIndexable === 'boolean');
   assert(typeof inspectData.robotsTxt === 'object');
   console.log(`✓ Real Googlebot Inspector verified: HTTP ${inspectData.httpStatus}, Crawled as: ${inspectData.crawledAs}, Indexable: ${inspectData.isIndexable}.`);
+  }
 
+  if (!OUTBOUND) { console.log('\nSKIP Test 21 (/api/crawler/ping dead-url live) — no outbound internet in this environment'); } else {
   // Test 21: Dead URL should be rejected before Google Search Console link generation
   console.log('\nTest 21: Testing dead URL rejection before GSC deep-link generation...');
   const deadPingRes = await fetch('http://localhost:8080/api/crawler/ping', {
@@ -344,7 +374,9 @@ async function runTests() {
   assert.strictEqual(deadPingData.success, false);
   assert.strictEqual(deadPingData.gscDeepLink, null);
   console.log('✓ Dead URL rejected before GSC deep-link generation: 404 Not Found blocked.');
+  }
 
+  if (!OUTBOUND) { console.log('\nSKIP Test 22 (/api/crawler/ping live) — no outbound internet in this environment'); } else {
   // Test 22: 1-Click Google WebSub Hub Crawler Ping (/api/crawler/ping) - No JSON key required
   console.log('\nTest 22: Testing 1-Click Google WebSub Crawler Ping (/api/crawler/ping)...');
   const pingRes = await fetch('http://localhost:8080/api/crawler/ping', {
@@ -361,6 +393,7 @@ async function runTests() {
   assert.strictEqual(gscLink.searchParams.get('url'), 'https://example.com');
   assert.strictEqual(gscLink.searchParams.get('resource_id'), 'https://example.com/');
   console.log(`✓ 1-Click Google WebSub Ping verified: Status ${pingData.status} (Google Frontend hub), Deep-link: ${pingData.gscDeepLink}.`);
+  }
 
   // Cleanup: Remove temporary test user and test records to prevent test pollution
   try {

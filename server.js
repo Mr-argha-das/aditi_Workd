@@ -22,6 +22,8 @@ const path = require('path');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const db = require('./db');
+const indexEngine = require('./index-engine');
+const indexStatus = require('./index-status');
 
 let pdfParseLib = null;
 try {
@@ -244,6 +246,15 @@ function verifySessionToken(token) {
   }
 }
 
+/* Session cookie builder: uses SameSite=None; Secure on HTTPS (needed when the app is
+   served through an HTTPS proxy / embedded preview), falls back to Lax on plain HTTP. */
+function buildSessionCookie(req, token, maxAgeSeconds) {
+  const proto = (req.headers['x-forwarded-proto'] || req.protocol || 'http').split(',')[0].trim();
+  const isSecure = proto === 'https' || req.secure;
+  const sameSite = isSecure ? 'None; Secure' : 'Lax';
+  return `index_matrix_session=${token}; Path=/; HttpOnly; SameSite=${sameSite}; Max-Age=${maxAgeSeconds}`;
+}
+
 function getAuthenticatedUser(req) {
   const cookies = parseCookies(req);
   const cookieToken = cookies['index_matrix_session'] || cookies['parasite_session'];
@@ -256,6 +267,12 @@ function getAuthenticatedUser(req) {
   if (authHeader) {
     const token = authHeader.startsWith('Bearer ') ? authHeader.substring(7).trim() : authHeader.trim();
     const payload = verifySessionToken(token);
+    if (payload) return payload;
+  }
+
+  // Cookie-less navigation fallback: signed session token passed as ?st= on page GETs
+  if (req.method === 'GET' && req.query && typeof req.query.st === 'string' && req.query.st) {
+    const payload = verifySessionToken(req.query.st.trim());
     if (payload) return payload;
   }
 
@@ -588,7 +605,7 @@ app.post('/api/auth/login', checkLoginRateLimit, async (req, res) => {
     const token = generateSessionToken(verifiedUser.username, verifiedUser.role, days);
     const maxAgeSeconds = days * 24 * 60 * 60;
 
-    res.setHeader('Set-Cookie', `index_matrix_session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAgeSeconds}`);
+    res.setHeader('Set-Cookie', buildSessionCookie(req, token, maxAgeSeconds));
 
     let destination = '/index.html';
     if (redirect && typeof redirect === 'string') {
@@ -628,7 +645,7 @@ app.post('/api/auth/register', checkRegistrationRateLimit, async (req, res) => {
     const token = generateSessionToken(newUser.username, newUser.role, 7);
     const maxAgeSeconds = 7 * 24 * 60 * 60;
 
-    res.setHeader('Set-Cookie', `index_matrix_session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAgeSeconds}`);
+    res.setHeader('Set-Cookie', buildSessionCookie(req, token, maxAgeSeconds));
 
     return res.json({
       success: true,
@@ -653,7 +670,7 @@ app.post('/api/auth/logout', (req, res) => {
     db.saveLoginEvent(user.username, 'logout', getClientIp(req), req.headers['user-agent'] || '').catch(() => { });
     userPresenceMap.delete(user.username);
   }
-  res.setHeader('Set-Cookie', 'index_matrix_session=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0');
+  res.setHeader('Set-Cookie', buildSessionCookie(req, '', 0));
   return res.json({ success: true, message: 'Logged out successfully' });
 });
 
@@ -750,6 +767,29 @@ app.get('/api/pixel/config', async (req, res) => {
 /* ==========================================================================
    Gatekeeper Middleware: Strict Allowlist & Route Protection
    ========================================================================== */
+function sendSessionRestorePage(res, returnUrl) {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
+  return res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${APP_NAME}</title>
+<style>body{margin:0;background:#050816;color:#9ca3af;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh}</style></head>
+<body><div>Restoring session&hellip;</div>
+<script>
+(function(){
+  var loginUrl = '/login.html?redirect=${returnUrl}';
+  var token = null;
+  try { token = localStorage.getItem('index_matrix_token'); } catch (e) {}
+  var params = new URLSearchParams(location.search);
+  // If we already tried with ?st= and still landed here, the token is invalid -> login
+  if (!token || params.has('st')) {
+    try { localStorage.removeItem('index_matrix_token'); localStorage.removeItem('index_matrix_user'); } catch (e) {}
+    location.replace(loginUrl); return;
+  }
+  params.set('st', token);
+  location.replace(location.pathname + '?' + params.toString() + location.hash);
+})();
+</script></body></html>`);
+}
+
 const ALLOWED_PROTECTED_PAGES = new Set([
   '/',
   '/index.html',
@@ -784,6 +824,10 @@ app.use((req, res, next) => {
   const user = getAuthenticatedUser(req);
   if (user) {
     req.user = user;
+    if (req.method === 'GET' && req.query && typeof req.query.st === 'string' && !parseCookies(req)['index_matrix_session']) {
+      const remaining = Math.max(60, Math.floor((user.exp - Date.now()) / 1000));
+      res.setHeader('Set-Cookie', buildSessionCookie(req, req.query.st.trim(), remaining));
+    }
     return next();
   }
 
@@ -801,10 +845,16 @@ app.use((req, res, next) => {
     return res.redirect(`/login.html?redirect=${dest}`);
   }
 
-  // 5. Allowed protected application pages: redirect unauthenticated user to login
+  // 5. Allowed protected application pages: try a cookie-less session restore first.
+  //    Browsers embedded in an iframe / strict privacy mode may refuse to store the
+  //    session cookie. In that case the login token saved in localStorage is used as
+  //    a Bearer token to fetch the page, so the app keeps working without cookies.
   if (ALLOWED_PROTECTED_PAGES.has(reqPath)) {
     const returnUrl = encodeURIComponent(req.originalUrl || '/index.html');
-    return res.redirect(`/login.html?redirect=${returnUrl}`);
+    if (req.query.nosession === '1' || req.method !== 'GET') {
+      return res.redirect(`/login.html?redirect=${returnUrl}`);
+    }
+    return sendSessionRestorePage(res, returnUrl);
   }
 
   // 6. Strict Allowlist: Any other path is not an allowed page -> 404 Not Found
@@ -841,7 +891,7 @@ app.put('/api/user/profile', async (req, res) => {
     let newToken = null;
     if (result.usernameChanged) {
       newToken = generateSessionToken(result.username, result.role, 7);
-      res.setHeader('Set-Cookie', `index_matrix_session=${newToken}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}`);
+      res.setHeader('Set-Cookie', buildSessionCookie(req, newToken, 7 * 24 * 60 * 60));
     }
 
     return res.json({
@@ -1735,7 +1785,7 @@ async function broadcastQuickIndex(url, origin) {
     pingomaticSuccess = true;
   } catch (err) {}
 
-  // 8. SpeedyIndex Direct Googlebot Queue Integration (Free 100 Tokens & Paid API v2)
+  // 8. SpeedyIndex third-party discovery task submit (provider acceptance is NOT Google indexing evidence)
   let speedyIndexResult = null;
   const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '6bb27cdf8e969117288080f1c7d504a3';
   if (speedyApiKey) {
@@ -1911,15 +1961,18 @@ app.post('/api/gsc/publish', async (req, res) => {
           status: 'DISPATCHED'
         });
 
-        return res.status(200).json({
-          success: true,
-          status: 200,
-          autoIndexed: true,
-          method: 'QUICKINDEX_AUTO_WEBSUB',
+        // Honest fallback: Google REJECTED the publish (real status passed through).
+        // The unverified broadcast below is NOT indexing evidence.
+        return res.status(gscRes.status).json({
+          success: false,
+          status: gscRes.status,
+          autoIndexed: false,
+          method: 'GOOGLE_REJECTED_WITH_UNVERIFIED_FALLBACK',
           url,
           type,
-          message: 'URL successfully auto-indexed and queued for Googlebot via QuickIndexing WebSub Hub & Fast Crawler Network. No GSC ownership or verification required!',
-          googleWebSubStatus: autoBroadcast.googleWebSubStatus,
+          message: `Google Indexing API rejected this publish (HTTP ${gscRes.status}). An unverified broadcast was also sent, but indexing is NOT confirmed — Submitted != Indexed.`,
+          googleResponse: gscData,
+          fallbackBroadcast: { googleWebSubStatus: autoBroadcast.googleWebSubStatus },
           gscDeepLink,
           logEntry
         });
@@ -1963,21 +2016,24 @@ app.post('/api/gsc/publish', async (req, res) => {
         clientIp,
         status: 'DISPATCHED'
       });
-      return res.status(200).json({
-        success: true,
-        status: 200,
-        autoIndexed: true,
-        method: 'QUICKINDEX_AUTO_WEBSUB',
+      // Honest fallback: Google API unreachable/failed. 502 + fallback details, never fake success.
+      return res.status(502).json({
+        success: false,
+        status: 502,
+        autoIndexed: false,
+        method: 'GOOGLE_UNREACHABLE_WITH_UNVERIFIED_FALLBACK',
         url,
         type,
-        message: 'Auto-indexed via QuickIndexing WebSub Hub & Crawler Network. Dispatched to Googlebot queue.',
+        error: err.message,
+        message: 'Google Indexing API call failed/unreachable. An unverified broadcast was also sent, but indexing is NOT confirmed — Submitted != Indexed.',
         gscDeepLink,
         logEntry
       });
     }
   }
 
-  // Without credentials: Auto-dispatch via QuickIndexing Network without requiring GSC ownership!
+  // Without Google credentials the Indexing API publish CANNOT run. An unverified
+  // broadcast is still sent (legacy behavior preserved) but reported honestly below.
   const autoBroadcast = await broadcastQuickIndex(url, origin);
   const autoEntry = await db.saveUserDispatchLog(username, {
     url,
@@ -1992,14 +2048,17 @@ app.post('/api/gsc/publish', async (req, res) => {
     status: 'DISPATCHED'
   });
 
-  return res.status(200).json({
-    success: true,
-    status: 200,
-    autoIndexed: true,
-    method: 'QUICKINDEX_AUTO_WEBSUB',
+  // Honest no-credentials response: 401 + requiresCredentials. The broadcast WAS sent
+  // (see fields below) but Google publish did not happen — never claim otherwise.
+  return res.status(401).json({
+    success: false,
+    status: 401,
+    requiresCredentials: true,
+    autoIndexed: false,
+    method: 'UNVERIFIED_FALLBACK_ONLY',
     url,
     type,
-    message: 'Auto-indexed via QuickIndexing WebSub Hub & Crawler Network. Dispatched to Googlebot queue without GSC permission.',
+    message: 'Google Indexing API publish requires a service-account key or OAuth token for a Search Console-verified property. An unverified broadcast was sent instead — indexing NOT confirmed.',
     googleWebSubStatus: autoBroadcast.googleWebSubStatus,
     pingomatic: autoBroadcast.pingomaticSuccess,
     speedyIndex: autoBroadcast.speedyIndex,
@@ -2245,8 +2304,20 @@ app.post('/api/indexnow/publish', async (req, res) => {
     return res.status(400).json({ error: 'Invalid URL format' });
   }
 
-  // Automatic IndexNow Key Generation (Zero-configuration for any third-party website)
-  const activeKey = key || crypto.createHash('md5').update(host).digest('hex');
+  // IndexNow REQUIRES target-domain ownership verification. Never fabricate a key:
+  // without a caller-supplied key we refuse honestly (TARGET_VERIFICATION_REQUIRED).
+  if (!key) {
+    return res.status(400).json({
+      success: false,
+      keyRequired: true,
+      status: 400,
+      host,
+      url,
+      indexnow: { state: 'TARGET_VERIFICATION_REQUIRED', reason: 'IndexNow needs a key hosted on the target domain. Supply "key" (+ optional "keyLocation") for a domain you control.' },
+      error: 'IndexNow key required: this endpoint no longer generates keys for third-party domains.'
+    });
+  }
+  const activeKey = key;
   const activeKeyLoc = keyLocation || `https://${host}/${activeKey}.txt`;
 
   try {
@@ -2292,20 +2363,19 @@ app.post('/api/indexnow/publish', async (req, res) => {
 
     const dispatchResults = await Promise.all(dispatchPromises);
 
+    const byEndpoint = {};
+    for (const r of dispatchResults) byEndpoint[r.endpoint] = ('status' in r) ? r.status : `ERROR: ${r.error}`;
+    const anyOk = dispatchResults.some(r => r.status === 200 || r.status === 202);
     return res.status(200).json({
-      success: true,
+      success: anyOk,
       status: 200,
       host,
       url,
-      message: '✅ Real-Time Bot Dispatches active for Bing, DuckDuckGo, Yahoo, Yandex, Seznam & Naver!',
-      engines: {
-        bing: { status: 200, bot: 'Bingbot', protocol: 'IndexNow + Bing Webmaster Ping' },
-        duckduckgo: { status: 200, bot: 'DuckDuckBot / Bingbot', protocol: 'Bing Network Feed' },
-        yahoo: { status: 200, bot: 'Slurp / Bingbot', protocol: 'Bing Network Syndication' },
-        yandex: { status: 200, bot: 'YandexBot', protocol: 'IndexNow + Yandex Ping' },
-        seznam: { status: 200, bot: 'SeznamBot', protocol: 'IndexNow Partner Hub' },
-        naver: { status: 200, bot: 'Yeti (NaverBot)', protocol: 'IndexNow Partner Hub' }
-      },
+      message: anyOk
+        ? 'IndexNow submission transmitted (real endpoint statuses below). Search engines verify the key on YOUR domain — submission is NOT indexing evidence.'
+        : 'IndexNow submission failed on all endpoints (real statuses below). Nothing was confirmed.',
+      endpointStatuses: byEndpoint,
+      note: 'Bing/Yandex/partner crawling is decided by each engine after key verification. Submitted != Indexed.',
       dispatchResults
     });
   } catch (err) {
@@ -2808,6 +2878,85 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
 /* ==========================================================================
    Tool 3.2: Real Googlebot Technical Crawlability Inspector
    ========================================================================== */
+/* ==========================================================================
+   Index Engine API — honest URL/PDF validation + discovery queue + status
+   (see index-engine.js / index-status.js). Core rule:
+   Submitted != Discovered != Crawled != Indexed. Nothing here claims Google
+   crawled or indexed a URL without independent evidence.
+   ========================================================================== */
+
+// Engine health: worker, queue, store, provider config, limits
+app.get('/api/index/health', (req, res) => {
+  try {
+    const s = indexEngine.getStats();
+    return res.json({ ok: true, service: 'index-engine', time: new Date().toISOString(), ...s });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Immediate single-URL technical validation (no queue, no retry, no provider).
+app.post('/api/index/validate', async (req, res) => {
+  try {
+    const url = req.body && req.body.url;
+    if (!url) return res.status(400).json({ ok: false, error: 'Missing "url" in request body.' });
+    const out = await indexEngine.validateOnce(url, req.user ? `user:${req.user.username}` : 'api');
+    if (!out.ok) return res.status(400).json({ ok: false, error: out.reason, url });
+    return res.json({ ok: true, record: out.record });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Bulk enqueue (max 500 URLs per call). Invalid URLs reported, never silently dropped.
+app.post('/api/index/bulk', async (req, res) => {
+  try {
+    const urls = req.body && req.body.urls;
+    if (!Array.isArray(urls)) return res.status(400).json({ ok: false, error: '"urls" must be an array of URL strings.' });
+    if (urls.length > 500) return res.status(400).json({ ok: false, error: 'Batch too large: max 500 URLs per call.' });
+    const result = indexEngine.enqueueUrls(urls, req.user ? `user:${req.user.username}` : 'api');
+    return res.json({ ok: true, ...result, counts: { accepted: result.accepted.length, rejected: result.rejected.length, duplicates: result.duplicates.length } });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Queue monitor: counts + recent jobs
+app.get('/api/index/queue', (req, res) => {
+  try {
+    const limit = Math.max(1, Math.min(200, Number(req.query.limit) || 50));
+    return res.json({ ok: true, ...indexEngine.queueStats(limit) });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Status monitor: per-URL records (Submission/Discovery/Crawl/Index kept separate)
+app.get('/api/index/status', (req, res) => {
+  try {
+    const limit = Math.max(1, Math.min(200, Number(req.query.limit) || 50));
+    const offset = Math.max(0, Number(req.query.offset) || 0);
+    const state = req.query.state ? String(req.query.state) : undefined;
+    return res.json({ ok: true, ...indexStatus.list({ state, limit, offset }), counts: indexStatus.counts() });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Single status lookup by URL
+app.get('/api/index/status/by-url', (req, res) => {
+  try {
+    const raw = req.query.url ? String(req.query.url) : '';
+    const n = indexEngine.normalizeUrl(raw);
+    if (!n.ok) return res.status(400).json({ ok: false, error: n.reason });
+    const record = indexStatus.getByUrl(n.normalized);
+    if (!record) return res.status(404).json({ ok: false, error: 'URL not tracked yet. Validate or enqueue it first.' });
+    return res.json({ ok: true, record });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 app.post('/api/gsc/inspect', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'Target URL is required' });
@@ -3145,6 +3294,8 @@ if ((require.main === module || process.env.NODE_ENV !== 'test') && !process.env
     console.log(`🔐 Master Gatekeeper Security Active`);
     console.log(`🛡️  Brute-Force Rate Limiter: Max ${MAX_LOGIN_ATTEMPTS} attempts / 15m`);
     console.log(`🚀 Google Indexing Dispatcher: Direct Real-Time Delivery Active`);
+    try { indexEngine.start(); console.log(`📥 Index Engine queue worker: ACTIVE`); }
+    catch (e) { console.log(`⚠️  Index Engine worker failed to start: ${e.message}`); }
     console.log(`====================================================`);
   });
 }

@@ -1167,7 +1167,13 @@
           }
 
           setTimeout(() => {
-            window.location.href = data.redirectUrl || redirect;
+            let dest = data.redirectUrl || redirect;
+            if (data.token) {
+              const u = new URL(dest, window.location.origin);
+              u.searchParams.set('st', data.token);
+              dest = u.pathname + u.search + u.hash;
+            }
+            window.location.href = dest;
           }, 400);
 
         } else {

@@ -9,6 +9,74 @@
  * - Session Lock & Auth Integration
  */
 
+// Cookie-less auth fallback: attach the stored session token to every same-origin request.
+// Needed when the browser refuses to persist the session cookie (iframe previews, strict privacy modes).
+(function installAuthFetch() {
+  try {
+    if (window.__imAuthFetchInstalled) return;
+    window.__imAuthFetchInstalled = true;
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = function (input, init) {
+      try {
+        const token = localStorage.getItem('index_matrix_token');
+        const url = typeof input === 'string' ? input : (input && input.url) || '';
+        const sameOrigin = url.startsWith('/') || url.startsWith(location.origin) || !/^[a-z]+:\/\//i.test(url);
+        if (token && sameOrigin) {
+          init = init || {};
+          const headers = new Headers(init.headers || (input instanceof Request ? input.headers : undefined) || {});
+          if (!headers.has('Authorization')) headers.set('Authorization', 'Bearer ' + token);
+          if (!headers.has('X-Auth-Token')) headers.set('X-Auth-Token', token);
+          init.headers = headers;
+        }
+      } catch (e) {}
+      return nativeFetch(input, init);
+    };
+  } catch (e) {}
+})();
+
+
+// Cookie-less navigation: remove the one-time ?st= token from the address bar and
+// keep it available for links to other dashboard pages.
+(function cleanSessionTokenFromUrl() {
+  try {
+    const params = new URLSearchParams(location.search);
+    if (params.has('st')) {
+      localStorage.setItem('index_matrix_token', params.get('st'));
+      params.delete('st');
+      const qs = params.toString();
+      history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+    }
+  } catch (e) {}
+})();
+
+
+// Cookie-less navigation helper: if the browser did not keep the session cookie,
+// append the session token to internal page navigations so the server can authenticate them.
+(function installCookielessNav() {
+  try {
+    let cookieWorks = true;
+    const nativeFetch = window.fetch.bind(window);
+    nativeFetch('/api/auth/check', { cache: 'no-store', credentials: 'include' })
+      .then(r => r.json())
+      .then(d => { cookieWorks = !!(d && d.authenticated); })
+      .catch(() => { cookieWorks = false; });
+
+    document.addEventListener('click', function (ev) {
+      if (cookieWorks) return;
+      const a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+      if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+      const token = localStorage.getItem('index_matrix_token');
+      if (!token) return;
+      const url = new URL(a.getAttribute('href'), location.href);
+      if (url.origin !== location.origin) return;
+      if (!/\.html$/i.test(url.pathname) && url.pathname !== '/') return;
+      if (/login\.html$/i.test(url.pathname) || url.searchParams.has('st')) return;
+      url.searchParams.set('st', token);
+      a.setAttribute('href', url.pathname + url.search + url.hash);
+    }, true);
+  } catch (e) {}
+})();
+
 // Immediate Purge: Remove all legacy project, audit, history, and credential keys from browser storage
 (function purgeLegacyLocalStorage() {
   try {

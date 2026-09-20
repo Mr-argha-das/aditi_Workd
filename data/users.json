@@ -303,5 +303,287 @@
     "usernameHistory": [],
     "createdAt": "2026-09-16T08:35:50.972Z",
     "lastLogin": "2026-09-16T08:35:51.055Z"
+  },
+  {
+    "id": "usr_1789853725974",
+    "username": "demo_user",
+    "passwordHash": "11b3db13c32ed539a6e24cd834581bc2:aff37f1f90f102d2b8f6b765e63619c128d7debc61130b29ff52d462111ce70f29ab0da63463634a4362b0b96f34ce2ce4fa50a92f346d27e92e45c45a7d8a5d",
+    "displayName": "Demo",
+    "phone": "",
+    "role": "user",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-19T21:35:25.974Z",
+    "lastLogin": "2026-09-20T15:57:30.416Z"
+  },
+  {
+    "id": "usr_1789854289848",
+    "username": "ui_test_9841",
+    "passwordHash": "f84980297d954654e592fc05627f3c9a:9151116e67908de3f5455a29989dd40850ff70843d4cdb73b4e53a4a984c572e2d9ff5405ca2672b2f040b3b1868f6ae2f81ea5de1aea6631b2786f467d3c4a4",
+    "displayName": "UI Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-19T21:44:49.848Z",
+    "lastLogin": "2026-09-19T21:44:49.893Z"
+  },
+  {
+    "id": "usr_1789854600600",
+    "username": "ui_test_0593",
+    "passwordHash": "c462894ab1da54b2e946fabf19579535:a03c35df29a1547e8bfdfc1133bb515dd862f0fa595a3c11658249b7fb3b2875d98006f5fc7fe3d6f34368d9d3227946fd2da72ea7c44e79c31f8197d176eb91",
+    "displayName": "UI Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-19T21:50:00.600Z",
+    "lastLogin": "2026-09-19T21:50:00.635Z"
+  },
+  {
+    "id": "usr_1789919692637",
+    "username": "test_admin_2630",
+    "passwordHash": "b9b6622adb3e607764de238948974fd5:c26eb4b0befe22c81f07749f82e219d0e0b1d27589c691351c81eaae951ab5527ebe0bfd1e989e499bf804ba35adae23323a43e6d671f556f7e8f1a554c5880e",
+    "displayName": "Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:54:52.637Z",
+    "lastLogin": "2026-09-20T15:54:52.650Z"
+  },
+  {
+    "id": "usr_1789919692667",
+    "username": "nexus_2665",
+    "passwordHash": "f837e510901a0710b2ccc300983b195f:24efdf2388833c4aef8ac11dd9e14ceef78eaf9c16c15729d16be14e37a43fdfa2f15e003e2514428fc4d2c35617528aad461c8eff740e9bf8cf3ba4a1618565",
+    "displayName": "Alex Cyber",
+    "phone": "+1 (555) 987-6543",
+    "role": "user",
+    "passwordHistory": [
+      {
+        "passwordHash": "beeeb9a5dec3ea368646afac4874a56e:58a17d4a006525c6bc1e6c41138e0a263cf94e657c139204bfd72877deaa97347cb576fee135a97d850716f1d6db4256367d90939a2504c80d4cac1d061cd3a4",
+        "changedAt": "2026-09-20T15:54:52.678Z"
+      }
+    ],
+    "usernameHistory": [
+      {
+        "oldUsername": "user_2665",
+        "changedAt": "2026-09-20T15:54:52.700Z"
+      }
+    ],
+    "createdAt": "2026-09-20T15:54:52.667Z"
+  },
+  {
+    "id": "usr_1789919697198",
+    "username": "test_admin_7192",
+    "passwordHash": "52760f0906d9cf713afd182e4336618f:e5c202e25390432cdaf022e4cc957ccb1271728f724c53d4699302e7230bdf21da698e78f002df42ab61ef839cac9073319949a3cb3553b71a559a26049a776b",
+    "displayName": "Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:54:57.198Z",
+    "lastLogin": "2026-09-20T15:54:57.209Z"
+  },
+  {
+    "id": "usr_1789919697222",
+    "username": "nexus_7221",
+    "passwordHash": "bd20890a19709dc004e11f4bcd89e3a5:b822034d4c88d5ccbbb7436c0a5c598562893b5c059ab708baeb99e6b12fd64f54f50d23a4196298a717164d2e8ae9b170d6366886d4f771c50ab4f58a228d8e",
+    "displayName": "Alex Cyber",
+    "phone": "+1 (555) 987-6543",
+    "role": "user",
+    "passwordHistory": [
+      {
+        "passwordHash": "82045729a1f6d58b7dabade715cabb7e:819e7af3361e902f3a096f60de6af2498b1f2cace1f3470fad9e781d2912795c9a1d0176dc9d25f39da2ccb8aa834a3fa53e2c03675468b0dc88a5c052a7b2c9",
+        "changedAt": "2026-09-20T15:54:57.231Z"
+      }
+    ],
+    "usernameHistory": [
+      {
+        "oldUsername": "user_7221",
+        "changedAt": "2026-09-20T15:54:57.249Z"
+      }
+    ],
+    "createdAt": "2026-09-20T15:54:57.222Z"
+  },
+  {
+    "id": "usr_1789919724583",
+    "username": "test_admin_4575",
+    "passwordHash": "3796230f2d0d59f0810133f16d6f58b0:e9298468a2261301477a86870a2cc47f40857feecdccf9c2724eb7160c239e85a6271763d8602dc69b566429526e08103b40c765a7a9f152408220f50f6d47fa",
+    "displayName": "Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:55:24.582Z",
+    "lastLogin": "2026-09-20T15:55:24.594Z"
+  },
+  {
+    "id": "usr_1789919724608",
+    "username": "nexus_4606",
+    "passwordHash": "d09af0451e6add69e3b28f0aebe9b071:e4b8779598278069087eb35894a601006e8ca15e2914e15e72c3b18a30fafd6fa21c1af888bfea0c11507350c3cc0c43f8f996d03a0e0fff61ce29bcb72f392e",
+    "displayName": "Alex Cyber",
+    "phone": "+1 (555) 987-6543",
+    "role": "user",
+    "passwordHistory": [
+      {
+        "passwordHash": "5559be8686e5cb163021bcb771c23183:e12dcbfeb468e76d3c8eccab8582306c2e9e74607b6dd1b3c1bdf000409a51070c46dafeab9c12c927bf114a43b85956074e8272eb7088f784ce39e9df694535",
+        "changedAt": "2026-09-20T15:55:24.620Z"
+      }
+    ],
+    "usernameHistory": [
+      {
+        "oldUsername": "user_4606",
+        "changedAt": "2026-09-20T15:55:24.641Z"
+      }
+    ],
+    "createdAt": "2026-09-20T15:55:24.607Z"
+  },
+  {
+    "id": "usr_1789919727757",
+    "username": "test_admin_7749",
+    "passwordHash": "38e7d0a90cb6d395b045543797b27447:a2bab87f5f253cc6ab6fedce739fa26f118cffee165d9ba7053b58b10578381379727d0f4b17292283a881dee4d4647604a4ecb7cb467987292a3933b1493eb0",
+    "displayName": "Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:55:27.757Z",
+    "lastLogin": "2026-09-20T15:55:27.768Z"
+  },
+  {
+    "id": "usr_1789919727782",
+    "username": "nexus_7782",
+    "passwordHash": "9aff787250e8b2c60effa863b4b95d1c:c1e6e5eea2f3ca8464a13d2ee8bc66d3099cb88cd7ffb4e95e580649c6df093454d32e3f96134c79ef85a05d598e67ab7892ca435946a8f71b53c848fec99f22",
+    "displayName": "Alex Cyber",
+    "phone": "+1 (555) 987-6543",
+    "role": "user",
+    "passwordHistory": [
+      {
+        "passwordHash": "ee4d9f3ce102b01371d822b1d33cf3f8:7b0ed175a03c937689e412c4b8c91ef8f63d51995fa93b74c7fc9150ee7319cbfc09e016998fbe99de5b977024e2f91af89f6b6286a0337d421dee29a23998f6",
+        "changedAt": "2026-09-20T15:55:27.792Z"
+      }
+    ],
+    "usernameHistory": [
+      {
+        "oldUsername": "user_7782",
+        "changedAt": "2026-09-20T15:55:27.810Z"
+      }
+    ],
+    "createdAt": "2026-09-20T15:55:27.782Z"
+  },
+  {
+    "id": "usr_1789919778147",
+    "username": "test_admin_8141",
+    "passwordHash": "8db3d05807597994019f3739bef9b1ac:bfb5ce92464807d80fcedfed8d7314c7c7dd2cac640baeac1db575ffdd54ea7799b9f6f399353796c7a086779695aff8c4b771b75a88a7c94f39466c21576843",
+    "displayName": "Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:56:18.147Z",
+    "lastLogin": "2026-09-20T15:56:18.173Z"
+  },
+  {
+    "id": "usr_1789919778190",
+    "username": "nexus_8188",
+    "passwordHash": "02f9764f4a2bebd021c72cfa462581a3:4e945f22b58cd17d1d5e4b7aa1fb61dc1a9d662a204a68d8927ea9644d4a39d5681e22671058c556c9f1e1157aba9689b1fcf66dbfcb9745e3f2cb745d048d18",
+    "displayName": "Alex Cyber",
+    "phone": "+1 (555) 987-6543",
+    "role": "user",
+    "passwordHistory": [
+      {
+        "passwordHash": "1ea4ca4dccfe17bc7b01cf9fc7e3bf42:97c5a923e05da2633c6b3fb918754f9db367cb91b1e8a8c50492f69a82602302df1d0b6dbefd066b0596053625153d733ad5496e5ad196b0b38f0ab38322c0b1",
+        "changedAt": "2026-09-20T15:56:18.201Z"
+      }
+    ],
+    "usernameHistory": [
+      {
+        "oldUsername": "user_8188",
+        "changedAt": "2026-09-20T15:56:18.221Z"
+      }
+    ],
+    "createdAt": "2026-09-20T15:56:18.190Z"
+  },
+  {
+    "id": "usr_1789919781764",
+    "username": "test_admin_1757",
+    "passwordHash": "95cb9538ec51ddbf42ead44d4846c09c:9a1c9f9a20af62ef4aaf92c7cb0667b7ead0a591d258ee36bce3afa83b15a74e75ab15fe826cf9a004ed4e6700e7906a0138d833db17a7fc6334985029beb193",
+    "displayName": "Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:56:21.764Z",
+    "lastLogin": "2026-09-20T15:56:21.775Z"
+  },
+  {
+    "id": "usr_1789919781788",
+    "username": "nexus_1787",
+    "passwordHash": "55e52b6ac5269121d535ee0b295531f2:0ae88511d7ae926adda656edb49b8f7ce42ab13a79278931f5273f282d79980d3c0b60777faa9a0849de2e22e2c44dbf15cb58bda9d8db390315c6f5ba4fbffc",
+    "displayName": "Alex Cyber",
+    "phone": "+1 (555) 987-6543",
+    "role": "user",
+    "passwordHistory": [
+      {
+        "passwordHash": "c68df723063c5ac6d5d4f01fa12493b9:d00b39b182bc3374380ecabab5cc2d138b7df6f3fa4da87166ddbe985c71a466416d8b76cacead593604d8651215ef86bfd4ab29bf7503ce04421d39269fa324",
+        "changedAt": "2026-09-20T15:56:21.797Z"
+      }
+    ],
+    "usernameHistory": [
+      {
+        "oldUsername": "user_1787",
+        "changedAt": "2026-09-20T15:56:21.816Z"
+      }
+    ],
+    "createdAt": "2026-09-20T15:56:21.788Z"
+  },
+  {
+    "id": "usr_1789919806436",
+    "username": "pdf_test_6429",
+    "passwordHash": "61cab35581cad6bbfca91baf7e2d5b07:b121cca40fea430cb18c6fd91f97dbd17bec8d12813d7cc80e5ab58a5d1422f0013863a79c1e8d6102c697d1b4d9ca3cf13a14f010119aede046b1bd1165f71f",
+    "displayName": "PDF Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:56:46.436Z",
+    "lastLogin": "2026-09-20T15:56:46.474Z"
+  },
+  {
+    "id": "usr_1789919806834",
+    "username": "ui_test_6827",
+    "passwordHash": "0879de4957610a92636528a93b5cf149:5c27f84109e02f5a81297d867bcd9401f65ab4e714f84a53fcf85fc71154eafe5388eb681cb6f9b8791dd3557b347981a499cb2010f1608098322f7f15e4cb36",
+    "displayName": "UI Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:56:46.833Z",
+    "lastLogin": "2026-09-20T15:56:46.877Z"
+  },
+  {
+    "id": "usr_1789919849912",
+    "username": "pdf_test_9904",
+    "passwordHash": "008bd5801872896c27a803c0c66e6553:4478184a34a04d9c697d44aa57e07b5d7f9c5f6774f83e6e20ed2a35dcf0a604cd75383771cff01e39bd8400b6e6bb5db0d73ebc26d74f61f710433108d7a87b",
+    "displayName": "PDF Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:57:29.912Z",
+    "lastLogin": "2026-09-20T15:57:29.953Z"
+  },
+  {
+    "id": "usr_1789919850228",
+    "username": "ui_test_0220",
+    "passwordHash": "836afe11caa3052305f2ce421391d694:f6a29ad8cf612be82f2119f03f54be1a1b215935614f32800f535924aadf8974c02da425540f5c1ef260df1224c1bca0f960e7b40a9811e187b6a627e94881b5",
+    "displayName": "UI Test Admin",
+    "phone": "",
+    "role": "admin",
+    "passwordHistory": [],
+    "usernameHistory": [],
+    "createdAt": "2026-09-20T15:57:30.227Z",
+    "lastLogin": "2026-09-20T15:57:30.265Z"
   }
 ]

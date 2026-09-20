@@ -399,7 +399,7 @@
       btn.disabled = false;
       btn.innerHTML = `<i class="ri-check-line"></i> <span>All ${totalIngested} URLs Listed &amp; Broadcasted! Feed More?</span>`;
       setTimeout(() => {
-        btn.innerHTML = `<i class="ri-send-plane-fill"></i> <span>Feed All URLs to Feed Hub &amp; Broadcast to Googlebot, Bingbot &amp; Crawlers</span>`;
+        btn.innerHTML = `<i class="ri-send-plane-fill"></i> <span>Feed All URLs to Feed Hub &amp; Broadcast Discovery Pings</span>`;
       }, 5000);
 
     } catch (err) {
@@ -548,7 +548,7 @@
         const pingData = await pingRes.json().catch(() => ({}));
 
         if (pingRes.ok && pingData.success) {
-          appendLog('BATCH_OK', `✅ [${i + 1}/${urls.length}] Dispatched to Googlebot + Bingbot + DuckDuckGo + Yahoo + Yandex + IndexNow: ${target}`, 'tag-ok', 'text-ok');
+          appendLog('BATCH_OK', `✅ [${i + 1}/${urls.length}] Discovery broadcast sent (unverified) to ping networks: ${target}`, 'tag-ok', 'text-ok');
           if (pingData.speedyIndex && pingData.speedyIndex.success) {
             appendLog('SPEEDY_OK', `⚡ [${i + 1}/${urls.length}] SpeedyIndex Google Crawler Task #${pingData.speedyIndex.task_id} registered!`, 'tag-ok', 'text-ok');
           }
