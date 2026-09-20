@@ -1981,80 +1981,13 @@ app.post('/api/crawler/ping', async (req, res) => {
     });
   }
 
-  // 1. Google WebSub (PubSubHubbub) Official Hub Ping (Direct to Google Frontend)
+  // External search-engine notification endpoints are not treated as generic
+  // third-party indexing APIs. Only configured providers are invoked below.
   let googleWebSubStatus = 0;
   let googleWebSubSuccess = false;
-  try {
-    const sitemapCandidate = origin.replace(/\/$/, '') + '/sitemap.xml';
-    const postBody = `hub.mode=publish&hub.url=${encodeURIComponent(url)}&hub.url=${encodeURIComponent(sitemapCandidate)}`;
-    const googleRes = await fetch('https://pubsubhubbub.appspot.com/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'IndexMatrix-WebSub/2.0 (+https://pubsubhubbub.appspot.com/)'
-      },
-      body: postBody,
-      signal: AbortSignal.timeout(6000)
-    });
-    googleWebSubStatus = googleRes.status;
-    googleWebSubSuccess = googleRes.status === 204 || googleRes.status === 200;
-  } catch (err) {
-    console.warn('Google WebSub ping notice:', err.message);
-  }
-
-  // 2. Secondary Public WebSub Hub (Superfeedr)
   let superfeedrStatus = 0;
-  try {
-    const sfRes = await fetch('https://pubsubhubbub.superfeedr.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `hub.mode=publish&hub.url=${encodeURIComponent(url)}`,
-      signal: AbortSignal.timeout(4000)
-    });
-    superfeedrStatus = sfRes.status;
-  } catch (err) { }
-
-  // 3. Microsoft Bing Webmaster & Bingbot Sitemap Ping (Powers Bing, DuckDuckGo & Yahoo)
-  const sitemapCandidate = origin.replace(/\/$/, '') + '/sitemap.xml';
-  try {
-    fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapCandidate)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)' },
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-    fetch(`https://www.bing.com/webmaster/ping.aspx?siteMap=${encodeURIComponent(sitemapCandidate)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; bingbot/2.0)' },
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-  } catch (err) {}
-
-  // 4. Yandex Search Engine Crawler Ping
-  try {
-    fetch(`https://blogs.yandex.ru/pings/?status=success&url=${encodeURIComponent(url)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; YandexBot/3.0)' },
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-  } catch (err) {}
-
-  // 5. IndexNow Multi-Engine Broadcast (Bing, Yandex, Seznam, Naver)
   let host = '';
   try { host = new URL(url).hostname; } catch (e) {}
-  if (host) {
-    const autoKey = crypto.createHash('md5').update(host).digest('hex');
-    const indexNowPayload = JSON.stringify({
-      host,
-      key: autoKey,
-      keyLocation: `https://${host}/${autoKey}.txt`,
-      urlList: [url]
-    });
-    ['https://api.indexnow.org/indexnow', 'https://www.bing.com/indexnow', 'https://yandex.com/indexnow'].forEach(endpoint => {
-      fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        body: indexNowPayload,
-        signal: AbortSignal.timeout(4000)
-      }).catch(() => {});
-    });
-  }
 
   // 6. SpeedyIndex Google Indexer Task Creation (Direct to Google Crawl Queue)
   let speedyIndexResult = null;
@@ -2097,7 +2030,7 @@ app.post('/api/crawler/ping', async (req, res) => {
     loadTime,
     type: 'WEBSUB_MULTI_SEARCH_PING',
     googlePingStatus: probeStatus || 0,
-    indexNowStatus: 200,
+    indexNowStatus: 0,
     speedyIndexStatus: speedyIndexResult?.success ? 200 : 0,
     clientIp,
     status: (googleWebSubSuccess || speedyIndexResult?.success) ? 'DISPATCHED' : 'BROADCASTED'
@@ -2132,7 +2065,7 @@ app.post('/api/crawler/ping', async (req, res) => {
     },
     url,
     gscDeepLink,
-    message: 'Multi-Search Engine Crawlers notified (Googlebot, SpeedyIndex, Bingbot, YandexBot, IndexNow). Target URL added to crawl queues.',
+    message: 'Technical probe completed. Configured provider tasks, if any, are reported separately; search-engine crawl/indexing remains unverified.',
     logEntry
   });
 });
