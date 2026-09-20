@@ -2626,6 +2626,9 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     } catch (statusErr) { console.warn('Index status tracking warning:', statusErr.message); }
   }
 
+  // Start bounded technical validation/PDF analysis in the background.
+  indexEngine.pump({ status: indexStatus, pdfParse: pdfParseLib }).catch(e => console.warn('Index queue pump warning:', e.message));
+
   // Pillar 1: Googlebot Probe & SpeedyIndex Queue
   let googleWebSubStatus = 204;
   let googleWebSubSuccess = false;
