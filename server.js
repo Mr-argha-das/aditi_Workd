@@ -1657,153 +1657,37 @@ app.post('/api/upload-file', upload.single('file'), async (req, res) => {
    QuickIndexing Engine: Multi-Hub Googlebot & WebSub Broadcaster (No GSC key required)
    ========================================================================== */
 async function broadcastQuickIndex(url, origin) {
-  let googleWebSubStatus = 204;
-  let googleWebSubSuccess = true;
-  const cleanOrigin = origin || new URL(url).origin;
-  const sitemapCandidate = cleanOrigin.replace(/\/$/, '') + '/sitemap.xml';
-
-  // 1. Google WebSub Official Hub
-  try {
-    const postBody = `hub.mode=publish&hub.url=${encodeURIComponent(url)}&hub.url=${encodeURIComponent(sitemapCandidate)}`;
-    const googleRes = await fetch('https://pubsubhubbub.appspot.com/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'QuickIndex-Googlebot/3.0 (+https://pubsubhubbub.appspot.com/)'
-      },
-      body: postBody,
-      signal: AbortSignal.timeout(6000)
-    });
-    googleWebSubStatus = googleRes.status;
-    googleWebSubSuccess = googleRes.status === 204 || googleRes.status === 200;
-  } catch (err) { }
-
-  // 2. Superfeedr Public WebSub Hub
-  let superfeedrStatus = 0;
-  try {
-    const sfRes = await fetch('https://pubsubhubbub.superfeedr.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `hub.mode=publish&hub.url=${encodeURIComponent(url)}`,
-      signal: AbortSignal.timeout(4000)
-    });
-    superfeedrStatus = sfRes.status;
-  } catch (err) { }
-
-  // 3. Google Sitemap Ping
-  try {
-    fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapCandidate)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)' },
-      signal: AbortSignal.timeout(3000)
-    }).catch(() => {});
-  } catch (err) {}
-
-  // 4. Microsoft Bing Webmaster & Bingbot Sitemap Ping (Powers Bing, DuckDuckGo & Yahoo)
-  let bingPingSuccess = false;
-  try {
-    fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapCandidate)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)' },
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-    fetch(`https://www.bing.com/webmaster/ping.aspx?siteMap=${encodeURIComponent(sitemapCandidate)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; bingbot/2.0)' },
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-    bingPingSuccess = true;
-  } catch (err) {}
-
-  // 5. Yandex Crawler Ping
-  let yandexPingSuccess = false;
-  try {
-    fetch(`https://blogs.yandex.ru/pings/?status=success&url=${encodeURIComponent(url)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; YandexBot/3.0)' },
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-    yandexPingSuccess = true;
-  } catch (err) {}
-
-  // 6. IndexNow Multi-Engine Broadcast (Bing, Yandex, Seznam, Naver)
-  let host = '';
-  try { host = new URL(url).hostname; } catch (e) {}
-  if (host) {
-    const autoKey = crypto.createHash('md5').update(host).digest('hex');
-    const indexNowPayload = JSON.stringify({
-      host,
-      key: autoKey,
-      keyLocation: `https://${host}/${autoKey}.txt`,
-      urlList: [url]
-    });
-    ['https://api.indexnow.org/indexnow', 'https://www.bing.com/indexnow', 'https://yandex.com/indexnow'].forEach(endpoint => {
-      fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        body: indexNowPayload,
-        signal: AbortSignal.timeout(4000)
-      }).catch(() => {});
-    });
-  }
-
-  // 7. Ping-O-Matic Multi-Search Hub XML-RPC (Automattic / WordPress Global Network)
-  let pingomaticSuccess = false;
-  try {
-    const xmlBody = `<?xml version="1.0"?>
-<methodCall>
-  <methodName>weblogUpdates.ping</methodName>
-  <params>
-    <param><value>${(host || 'Site').replace(/[<>&]/g, '')}</value></param>
-    <param><value>${url.replace(/[<>&]/g, '')}</value></param>
-  </params>
-</methodCall>`;
-    fetch('http://rpc.pingomatic.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/xml', 'User-Agent': 'WordPress/6.0; IndexMatrix/2.0' },
-      body: xmlBody,
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-    pingomaticSuccess = true;
-  } catch (err) {}
-
-  // 8. SpeedyIndex Direct Googlebot Queue Integration (Free 100 Tokens & Paid API v2)
-  let speedyIndexResult = null;
-  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '';
-  if (speedyApiKey) {
-    try {
-      let hostPart = 'Site';
-      try { hostPart = new URL(url).hostname; } catch (e) { }
-      const spRes = await fetch('https://api.speedyindex.com/v2/task/google/indexer/create', {
-        method: 'POST',
-        headers: {
-          'Authorization': speedyApiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          urls: [url],
-          title: `IndexMatrix - ${hostPart}`,
-          pay_per_indexed: true
-        }),
-        signal: AbortSignal.timeout(7000)
-      });
-      const spData = await spRes.json().catch(() => ({}));
-      if (spData && (spData.code === 0 || spData.task_id)) {
-        speedyIndexResult = { success: true, task_id: spData.task_id || spData.result?.task_id, data: spData };
-      } else {
-        speedyIndexResult = { success: false, error: spData.message || spData.error || 'SpeedyIndex dispatch completed' };
-      }
-    } catch (err) {
-      speedyIndexResult = { success: false, error: err.message };
-    }
-  }
-
-  return {
-    googleWebSubStatus,
-    googleWebSubSuccess,
-    superfeedrStatus,
-    bingPingSuccess,
-    yandexPingSuccess,
-    pingomaticSuccess,
-    speedyIndex: speedyIndexResult,
-    indexNowBroadcast: true
+  const result = {
+    provider: null,
+    providerAccepted: false,
+    notes: [
+      'No generic Google force-index API is used for arbitrary third-party URLs.',
+      'Provider acceptance is recorded separately from crawl/index evidence.'
+    ]
   };
+  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '';
+  if (!speedyApiKey) return result;
+  try {
+    const parsed = new URL(url);
+    const spRes = await fetch('https://api.speedyindex.com/v2/task/google/indexer/create', {
+      method: 'POST',
+      headers: { 'Authorization': speedyApiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ urls: [url], title: `INDEX MATRIX - ${parsed.hostname}`, pay_per_indexed: true }),
+      signal: AbortSignal.timeout(7000)
+    });
+    const spData = await spRes.json().catch(() => ({}));
+    result.provider = 'SpeedyIndex';
+    if (spRes.ok && (spData.code === 0 || spData.task_id)) {
+      result.providerAccepted = true;
+      result.taskId = spData.task_id || spData.result?.task_id || null;
+    } else {
+      result.error = spData.message || spData.error || `Provider HTTP ${spRes.status}`;
+    }
+  } catch (err) {
+    result.provider = 'SpeedyIndex';
+    result.error = err.message;
+  }
+  return result;
 }
 
 /* ==========================================================================
