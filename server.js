@@ -2772,7 +2772,7 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     readableTime: new Date().toLocaleString(),
     loadTime: probeLatency,
     type: 'CRAWL_RELAY_DISPATCH',
-    googlePingStatus: googleWebSubStatus || 204,
+    googlePingStatus: probeStatus || 0,
     indexNowStatus: 0,
     clientIp: getClientIp(req),
     status: 'DISPATCHED'
