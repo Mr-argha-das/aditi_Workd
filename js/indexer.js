@@ -528,8 +528,10 @@
         loadRelayDirectory();
     loadIndexStatusMonitor();
     loadIndexQueueMonitor();
+    refreshOperationsCenter();
     setInterval(loadIndexStatusMonitor, 10000);
     setInterval(loadIndexQueueMonitor, 5000);
+    setInterval(refreshOperationsCenter, 10000);
       }
     } catch (rErr) {
       console.warn('Batch relay ingestion warning:', rErr.message);
@@ -792,6 +794,46 @@
     } catch (e) { el.textContent = 'Queue monitor unavailable'; }
   }
 
+
+  async function analyzePdfFile(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const box = document.getElementById('pdf-analysis-result');
+    if (!box) return;
+    if (file.size > 35 * 1024 * 1024) {
+      box.style.display='block'; box.innerHTML='<div style="padding:1rem;border:1px solid rgba(248,113,113,.35);border-radius:10px;color:#fca5a5;">PDF exceeds the 35 MB processing limit.</div>'; return;
+    }
+    box.style.display='block'; box.innerHTML='<div style="padding:1rem;color:var(--text-dim);">Analyzing PDF…</div>';
+    try {
+      const fd=new FormData(); fd.append('file',file);
+      const res=await fetch('/api/index/pdf-analyze',{method:'POST',body:fd});
+      const data=await res.json();
+      if(!res.ok||!data.success) throw new Error(data.error||'PDF analysis failed');
+      const a=data.analysis||{};
+      box.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.65rem;">
+        <div class="glass-card" style="padding:.8rem;"><small>VALID</small><br><strong>${a.valid?'YES':'NO'}</strong></div>
+        <div class="glass-card" style="padding:.8rem;"><small>PAGES</small><br><strong>${a.pages??'Unknown'}</strong></div>
+        <div class="glass-card" style="padding:.8rem;"><small>TEXT</small><br><strong>${a.textLength??0} chars</strong></div>
+        <div class="glass-card" style="padding:.8rem;"><small>SIZE</small><br><strong>${((a.sizeBytes||0)/1024/1024).toFixed(2)} MB</strong></div>
+        <div class="glass-card" style="padding:.8rem;"><small>CLASS</small><br><strong>${a.contentClass||'Unknown'}</strong></div>
+      </div><div style="margin-top:.7rem;font-size:.7rem;color:var(--text-dim);word-break:break-all;">SHA-256: ${a.sha256||'-'}</div>`;
+    } catch(e) { box.innerHTML=`<div style="padding:1rem;color:#fca5a5;">${e.message}</div>`; }
+  }
+
+  async function refreshOperationsCenter() {
+    try {
+      const [sRes,qRes]=await Promise.all([fetch('/api/index/status?limit=1000'),fetch('/api/index/queue?limit=1000')]);
+      const s=await sRes.json(), q=await qRes.json();
+      const st=s.stats||{}, qs=q.stats||{};
+      const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v??0;};
+      set('op-total',st.total); set('op-validated',st.validated); set('op-discovery',st.discoveryPending);
+      set('op-crawl',st.crawlChecked); set('op-indexed',st.indexed); set('op-unknown',st.unknownIndex);
+      const total=(qs.done||0)+(qs.failed||0)+(qs.pending||0)+(qs.running||0);
+      const pct=total?Math.round(((qs.done||0)+(qs.failed||0))/total*100):0;
+      const bar=document.getElementById('queue-progress-bar'); if(bar)bar.style.width=pct+'%';
+    } catch(e) {}
+  }
+
   // Expose global methods
   window.executeBotDispatch = executeBotDispatch;
   window.updateUrlCounter = updateUrlCounter;
@@ -814,6 +856,8 @@
   window.loadRelayDirectory = loadRelayDirectory;
   window.loadIndexStatusMonitor = loadIndexStatusMonitor;
   window.loadIndexQueueMonitor = loadIndexQueueMonitor;
+  window.analyzePdfFile = analyzePdfFile;
+  window.refreshOperationsCenter = refreshOperationsCenter;
 
   document.addEventListener('DOMContentLoaded', () => {
     loadConfig();
