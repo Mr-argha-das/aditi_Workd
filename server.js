@@ -2038,27 +2038,28 @@ app.post('/api/crawler/ping', async (req, res) => {
 
   return res.json({
     success: true,
-    status: googleWebSubStatus || 204,
+    status: probeStatus || 200,
     googleWebSub: {
       hub: 'https://pubsubhubbub.appspot.com/',
-      status: googleWebSubStatus || 204,
-      accepted: googleWebSubSuccess,
-      server: 'Google Frontend'
+      status: 0,
+      accepted: false,
+      server: 'not-contacted'
     },
     speedyIndex: speedyIndexResult,
     bing: {
-      accepted: true,
+      accepted: false,
       bot: 'Bingbot',
-      network: 'Microsoft Bing + DuckDuckGo + Yahoo'
+      network: 'not-contacted; target ownership not assumed'
     },
     yandex: {
-      accepted: true,
+      accepted: false,
       bot: 'YandexBot',
-      network: 'Yandex Search'
+      network: 'not-contacted'
     },
     indexNow: {
-      accepted: true,
-      engines: ['Bing', 'Yandex', 'Seznam.cz', 'Naver']
+      accepted: false,
+      engines: [],
+      reason: 'Target-domain key verification required'
     },
     superfeedr: {
       status: superfeedrStatus
