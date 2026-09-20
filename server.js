@@ -1934,7 +1934,7 @@ app.post('/api/gsc/publish', async (req, res) => {
           loadTime,
           type: 'QUICKINDEX_AUTO',
           googlePingStatus: autoBroadcast.googleWebSubStatus || 200,
-          indexNowStatus: 200,
+          indexNowStatus: indexNowReport?.accepted ? 200 : 0,
           clientIp,
           status: 'DISPATCHED'
         });
@@ -2212,7 +2212,7 @@ app.post('/api/crawler/ping', async (req, res) => {
     readableTime,
     loadTime,
     type: 'WEBSUB_MULTI_SEARCH_PING',
-    googlePingStatus: googleWebSubStatus || 204,
+    googlePingStatus: probeStatus || 0,
     indexNowStatus: 200,
     speedyIndexStatus: speedyIndexResult?.success ? 200 : 0,
     clientIp,
@@ -2456,11 +2456,11 @@ app.get(['/api/seo/indexing-hub.html', '/indexing-hub.html', '/api/seo/indexing-
     <header class="hub-header">
       <div class="hub-pill">
         <i class="ri-radar-line"></i>
-        <span>Active Search Engine Bot Relay Pipeline</span>
+        <span>Public Discovery Relay Pipeline</span>
       </div>
       <h1 class="hub-title">Public Crawl Relay Directory</h1>
       <p class="hub-subtitle">
-        Verified outbound crawl relay hub. Target URLs published here are immediately broadcasted to Googlebot, Bingbot, YandexBot, and RSS feed crawlers without requiring third-party domain ownership.
+        Public discovery relay. Target URLs are published here as crawlable links; publication is not proof of search-engine crawling or indexing.
       </p>
       <div class="hub-actions">
         <a href="${feedUrl}" target="_blank" class="btn-hub btn-feed">
@@ -2479,7 +2479,7 @@ app.get(['/api/seo/indexing-hub.html', '/indexing-hub.html', '/api/seo/indexing-
       </div>
       <div class="stat-box">
         <div class="stat-num">${stats.totalPings}</div>
-        <div class="stat-lbl">Search Bot Signal Pings</div>
+        <div class="stat-lbl">Relay Events</div>
       </div>
       <div class="stat-box">
         <div class="stat-num">100%</div>
@@ -2487,7 +2487,7 @@ app.get(['/api/seo/indexing-hub.html', '/indexing-hub.html', '/api/seo/indexing-
       </div>
       <div class="stat-box">
         <div class="stat-num">IndexNow</div>
-        <div class="stat-lbl">Verified Gateway Signed</div>
+        <div class="stat-lbl">Target Verification</div>
       </div>
     </div>
 
@@ -2496,7 +2496,7 @@ app.get(['/api/seo/indexing-hub.html', '/indexing-hub.html', '/api/seo/indexing-
     </main>
 
     <footer>
-      <p>&copy; ${new Date().getFullYear()} ${APP_NAME} &bull; Relay Engine Active &bull; <meta name="robots" content="index, follow"> Crawlable by Googlebot, Bingbot, YandexBot &amp; RSS Hubs.</p>
+      <p>&copy; ${new Date().getFullYear()} ${APP_NAME} &bull; Relay Engine Active &bull; <meta name="robots" content="index, follow"> Publicly crawlable relay content; target indexing remains unverified.</p>
     </footer>
   </div>
 </body>
@@ -2526,7 +2526,7 @@ app.get(['/api/seo/indexing-feed.xml', '/indexing-feed.xml', '/api/seo/indexing-
       <link>${item.url}</link>
       <guid isPermaLink="false">${item.id || item.url}</guid>
       <pubDate>${new Date(item.submittedAt || Date.now()).toUTCString()}</pubDate>
-      <description><![CDATA[Real-time search bot crawl relay target: ${item.url} (Bot ping count: ${item.botPingCount || 1})]]></description>
+      <description><![CDATA[Public relay target: ${item.url}]]></description>
     </item>`).join('\n');
 
     const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -2534,7 +2534,7 @@ app.get(['/api/seo/indexing-feed.xml', '/indexing-feed.xml', '/api/seo/indexing-
   <channel>
     <title>INDEX MATRIX — Real-Time Search Engine Crawl Relay Feed</title>
     <link>${hubUrl}</link>
-    <description>Live Search Engine Crawl Relay Feed broadcasting target URLs directly to Googlebot, Bingbot, and RSS feed crawlers.</description>
+    <description>Live public discovery feed containing submitted target URLs.</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
@@ -2566,8 +2566,8 @@ app.get('/api/seo/relay/directory', async (req, res) => {
         ...stats,
         htmlDirectoryUrl: `${baseUrl}/api/seo/indexing-hub.html`,
         rssFeedUrl: `${baseUrl}/api/seo/indexing-feed.xml`,
-        verifiedIndexNowKey: INDEXNOW_RELAY_KEY,
-        keyFileUrl: `${baseUrl}/${INDEXNOW_RELAY_KEY}.txt`
+        relayHostIndexNowKey: INDEXNOW_RELAY_KEY,
+        relayHostKeyFileUrl: `${baseUrl}/${INDEXNOW_RELAY_KEY}.txt`
       },
       links
     });
@@ -2728,7 +2728,7 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     ingestedCount: validUrls.length,
     sitemapExtractedCount,
     robotsDirective: 'index, follow',
-    message: `Target URLs published to public semantic HTML directory with <meta name="robots" content="index, follow"> and RSS 2.0 XML feed.`
+    message: `Target URLs published to a public semantic HTML directory and RSS 2.0 feed. Publication is a discovery signal, not proof of crawler access or indexing.`
   };
 
   // Pillar 3: IndexNow can only be sent for a target host when its key is
@@ -2781,7 +2781,7 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
   return res.status(200).json({
     success: true,
     status: 200,
-    message: `✅ Successfully ingested ${validUrls.length} URL(s) into Public Crawl Relay Hub and broadcasted across all 4 search engine pillars!`,
+    message: `Accepted ${validUrls.length} URL(s) into the public relay + technical validation workflow. Search-engine crawl/indexing remains unverified.`,
     totalSubmitted: validUrls.length,
     urls: validUrls,
     pillars: {
