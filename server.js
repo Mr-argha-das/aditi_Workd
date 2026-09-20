@@ -104,6 +104,32 @@ const globalDdosLimiter = rateLimit({
     retryAfter: 60
   }
 });
+
+// High-volume technical queue ingestion. This validates/queues only; it does not claim indexing.
+app.post('/api/index/bulk', async (req, res) => {
+  const raw = [];
+  if (Array.isArray(req.body?.urls)) raw.push(...req.body.urls);
+  if (typeof req.body?.text === 'string') raw.push(...req.body.text.split(/[\r\n,]+/));
+  const urls = [...new Set(raw.map(x => String(x || '').trim()).filter(Boolean))].slice(0, 1000);
+  if (!urls.length) return res.status(400).json({ success: false, error: 'Provide at least one URL.' });
+
+  const accepted = [];
+  const rejected = [];
+  for (const candidate of urls) {
+    const check = validateSafeUrl(candidate);
+    if (!check.safe) {
+      rejected.push({ url: candidate, error: check.error });
+      continue;
+    }
+    const normalized = check.url;
+    const type = /\.pdf(?:$|[?#])/i.test(normalized) ? 'PDF' : 'URL';
+    indexStatus.markReceived(normalized, { type });
+    accepted.push(indexEngine.enqueue(normalized));
+  }
+  indexEngine.pump({ status: indexStatus, pdfParse: pdfParseLib }).catch(e => console.warn('Bulk index queue pump:', e.message));
+  return res.json({ success: true, requested: urls.length, accepted: accepted.length, rejected, jobs: accepted });
+});
+
 app.use(globalDdosLimiter);
 
 // 2. Strict API Attack Throttler: Max 120 API calls/min per IP
@@ -456,7 +482,7 @@ app.get('/api/config', (req, res) => {
     appName: APP_NAME,
     mongoConnected: db.isMongoConnected(),
     maxLoginAttempts: MAX_LOGIN_ATTEMPTS,
-    speedyIndexActive: true
+    speedyIndexActive: Boolean(process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY)
   });
 });
 
@@ -1176,12 +1202,12 @@ app.post('/api/scan', async (req, res) => {
       },
       extractedKeywords: extractedLiveKeywords,
       gscStatus: {
-        isIndexed: true,
-        indexingState: 'Live Web Scanned (Ready to Feed GSC)',
-        lastCrawl: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
-        crawledAs: 'Googlebot Smartphone',
+        isIndexed: null,
+        indexingState: 'UNKNOWN - technical scan completed; Search indexing not independently verified',
+        lastCrawl: null,
+        crawledAs: 'Server-side Googlebot-like probe only',
         indexingApiSent: false,
-        apiResponseCode: 200,
+        apiResponseCode: null,
         mobileUsability: hasViewport ? 'Passed' : 'Needs Viewport Meta',
         canonicalMatch: true
       }
@@ -1916,11 +1942,11 @@ app.post('/api/gsc/publish', async (req, res) => {
         return res.status(200).json({
           success: true,
           status: 200,
-          autoIndexed: true,
-          method: 'QUICKINDEX_AUTO_WEBSUB',
+          autoIndexed: false,
+          method: 'DISCOVERY_PROVIDER_FALLBACK',
           url,
           type,
-          message: 'URL successfully auto-indexed and queued for Googlebot via QuickIndexing WebSub Hub & Fast Crawler Network. No GSC ownership or verification required!',
+          message: 'URL successfully discovery/provider workflow completed; Google indexing remains unverified.',
           googleWebSubStatus: autoBroadcast.googleWebSubStatus,
           gscDeepLink,
           logEntry
@@ -1968,11 +1994,11 @@ app.post('/api/gsc/publish', async (req, res) => {
       return res.status(200).json({
         success: true,
         status: 200,
-        autoIndexed: true,
-        method: 'QUICKINDEX_AUTO_WEBSUB',
+        autoIndexed: false,
+        method: 'DISCOVERY_PROVIDER_FALLBACK',
         url,
         type,
-        message: 'Auto-indexed via QuickIndexing WebSub Hub & Crawler Network. Dispatched to Googlebot queue.',
+        message: 'Discovery/provider workflow completed; Google crawl/indexing remains unverified.',
         gscDeepLink,
         logEntry
       });
@@ -1997,11 +2023,11 @@ app.post('/api/gsc/publish', async (req, res) => {
   return res.status(200).json({
     success: true,
     status: 200,
-    autoIndexed: true,
-    method: 'QUICKINDEX_AUTO_WEBSUB',
+    autoIndexed: false,
+    method: 'DISCOVERY_PROVIDER_FALLBACK',
     url,
     type,
-    message: 'Auto-indexed via QuickIndexing WebSub Hub & Crawler Network. Dispatched to Googlebot queue without GSC permission.',
+    message: 'Discovery/provider workflow completed; Google crawl/indexing remains unverified.',
     googleWebSubStatus: autoBroadcast.googleWebSubStatus,
     pingomatic: autoBroadcast.pingomaticSuccess,
     speedyIndex: autoBroadcast.speedyIndex,
@@ -2148,7 +2174,7 @@ app.post('/api/crawler/ping', async (req, res) => {
 
   // 6. SpeedyIndex Google Indexer Task Creation (Direct to Google Crawl Queue)
   let speedyIndexResult = null;
-  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '6bb27cdf8e969117288080f1c7d504a3';
+  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '';
   if (speedyApiKey) {
     try {
       const spRes = await fetch('https://api.speedyindex.com/v2/task/google/indexer/create', {
@@ -2247,9 +2273,24 @@ app.post('/api/indexnow/publish', async (req, res) => {
     return res.status(400).json({ error: 'Invalid URL format' });
   }
 
-  // Automatic IndexNow Key Generation (Zero-configuration for any third-party website)
-  const activeKey = key || crypto.createHash('md5').update(host).digest('hex');
-  const activeKeyLoc = keyLocation || `https://${host}/${activeKey}.txt`;
+  // IndexNow requires a key hosted on the target host. Never invent a key for a third-party domain.
+  if (!key || !keyLocation) {
+    return res.status(400).json({
+      success: false,
+      error: 'IndexNow requires a key and keyLocation that are actually hosted on the target domain. Third-party URLs cannot be authorized by INDEX MATRIX alone.',
+      host
+    });
+  }
+  let activeKey = String(key).trim();
+  let activeKeyLoc = String(keyLocation).trim();
+  try {
+    const keyUrl = new URL(activeKeyLoc);
+    if (keyUrl.hostname.toLowerCase() !== host.toLowerCase()) {
+      return res.status(400).json({ success: false, error: 'keyLocation must be hosted on the same target host.', host });
+    }
+  } catch (e) {
+    return res.status(400).json({ success: false, error: 'Invalid keyLocation URL.' });
+  }
 
   try {
     const payload = {
@@ -2591,7 +2632,7 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     if (vCheck.safe && !validUrls.includes(candidate)) {
       validUrls.push(candidate);
     }
-    if (validUrls.length >= 100) break; // Maximum 100 URLs per dispatch batch
+    if (validUrls.length >= 1000) break; // Maximum 1000 URLs per dispatch batch
   }
 
   if (validUrls.length === 0) {
@@ -2629,65 +2670,51 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
   // Start bounded technical validation/PDF analysis in the background.
   indexEngine.pump({ status: indexStatus, pdfParse: pdfParseLib }).catch(e => console.warn('Index queue pump warning:', e.message));
 
-  // Pillar 1: Googlebot Probe & SpeedyIndex Queue
-  let googleWebSubStatus = 204;
-  let googleWebSubSuccess = false;
-  try {
-    const postBody = `hub.mode=publish&hub.url=${encodeURIComponent(hubUrl)}&hub.url=${encodeURIComponent(primaryUrl)}`;
-    const googleRes = await fetch('https://pubsubhubbub.appspot.com/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'IndexMatrix-Relay/2.0 (+https://pubsubhubbub.appspot.com/)'
-      },
-      body: postBody,
-      signal: AbortSignal.timeout(6000)
-    });
-    googleWebSubStatus = googleRes.status;
-    googleWebSubSuccess = googleRes.status === 204 || googleRes.status === 200;
-  } catch (e) {}
-
+  // Pillar 1: Optional external provider task + technical probe.
   let speedyResult = null;
-  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '6bb27cdf8e969117288080f1c7d504a3';
+  const speedyApiKey = process.env.SPEEDYINDEX_API_KEY || process.env.INDEXER_API_KEY || '';
   if (speedyApiKey) {
     try {
       const spRes = await fetch('https://api.speedyindex.com/v2/task/google/indexer/create', {
         method: 'POST',
-        headers: {
-          'Authorization': speedyApiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          urls: validUrls.slice(0, 100),
-          title: `Relay Hub Dispatch (${validUrls.length} URLs)`,
-          pay_per_indexed: true
-        }),
+        headers: { 'Authorization': speedyApiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urls: validUrls.slice(0, 1000), title: `INDEX MATRIX Relay (${validUrls.length} URLs)`, pay_per_indexed: true }),
         signal: AbortSignal.timeout(7000)
       });
       const spData = await spRes.json().catch(() => ({}));
-      if (spData && (spData.code === 0 || spData.task_id)) {
-        speedyResult = { success: true, taskId: spData.task_id || spData.result?.task_id };
+      if (spRes.ok && (spData.code === 0 || spData.task_id)) {
+        speedyResult = { success: true, taskId: spData.task_id || spData.result?.task_id || null, provider: 'SpeedyIndex' };
+      } else {
+        speedyResult = { success: false, provider: 'SpeedyIndex', error: spData.message || spData.error || `HTTP ${spRes.status}` };
       }
-    } catch (e) {}
+    } catch (e) {
+      speedyResult = { success: false, provider: 'SpeedyIndex', error: e.message };
+    }
   }
 
-  // Live Googlebot probe on primary URL
-  let probeStatus = 200;
-  let probeLatency = '1.1s';
+  // A server-side fetch is recorded only as technical evidence, never as Googlebot evidence.
+  let probeStatus = null;
+  let probeLatency = null;
   const probeStart = Date.now();
   try {
     const probeRes = await fetch(primaryUrl, {
       method: 'GET',
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' },
+      headers: { 'User-Agent': 'INDEX-MATRIX-Technical-Probe/2.1' },
       redirect: 'follow',
-      signal: AbortSignal.timeout(5000)
+      signal: AbortSignal.timeout(8000)
     });
     probeStatus = probeRes.status;
     probeLatency = `${Date.now() - probeStart}ms`;
-    try { indexStatus.markCrawlChecked(primaryUrl, { httpStatus: probeRes.status, finalUrl: probeRes.url || primaryUrl, contentType: probeRes.headers.get('content-type') || null, googlebotUserAgent: true }); indexStatus.markUnknownIndex(primaryUrl); } catch (statusErr) { console.warn('Index status crawl tracking warning:', statusErr.message); }
+    indexStatus.markCrawlChecked(primaryUrl, {
+      httpStatus: probeRes.status,
+      finalUrl: probeRes.url || primaryUrl,
+      contentType: probeRes.headers.get('content-type') || null,
+      googlebotUserAgent: false
+    });
+    indexStatus.markUnknownIndex(primaryUrl);
   } catch (e) {
     probeLatency = `${Date.now() - probeStart}ms`;
-    try { indexStatus.markCrawlChecked(primaryUrl, { httpStatus: null, finalUrl: primaryUrl, googlebotUserAgent: true }); indexStatus.markUnknownIndex(primaryUrl, 'Server-side Googlebot-like probe failed; search-engine crawl/index status remains unknown.'); } catch (statusErr) { console.warn('Index status crawl tracking warning:', statusErr.message); }
+    indexStatus.markUnknownIndex(primaryUrl, 'Technical probe failed; search-engine crawl/index status remains unknown.');
   }
 
   // Pillar 2: Relay Crawl Hub (Live Publication Verified)
@@ -2704,89 +2731,36 @@ app.post('/api/seo/relay/dispatch', async (req, res) => {
     message: `Target URLs published to public semantic HTML directory with <meta name="robots" content="index, follow"> and RSS 2.0 XML feed.`
   };
 
-  // Pillar 3: IndexNow Gateway (Verified Signature Broadcast from Our Host)
-  const indexNowKeyLoc = `${baseUrl}/${INDEXNOW_RELAY_KEY}.txt`;
-  const indexNowUrls = [hubUrl, feedUrl, ...validUrls.slice(0, 100)];
-  const indexNowPayload = {
-    host,
-    key: INDEXNOW_RELAY_KEY,
-    keyLocation: indexNowKeyLoc,
-    urlList: indexNowUrls
-  };
-
-  const indexNowEndpoints = [
-    'https://api.indexnow.org/indexnow',
-    'https://www.bing.com/indexnow',
-    'https://yandex.com/indexnow'
-  ];
-
-  await Promise.all(indexNowEndpoints.map(ep =>
-    fetch(ep, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify(indexNowPayload),
-      signal: AbortSignal.timeout(5000)
-    }).catch(() => ({}))
-  ));
-
+  // Pillar 3: IndexNow can only be sent for a target host when its key is
+  // actually hosted on that target host. Our relay's key cannot authorize a third-party domain.
   const indexNowReport = {
     name: 'IndexNow Gateway',
-    status: 'VERIFIED_BROADCAST',
+    status: 'TARGET_VERIFICATION_REQUIRED',
     host,
-    hostedKey: INDEXNOW_RELAY_KEY,
-    keyLocation: indexNowKeyLoc,
-    endpoints: indexNowEndpoints.map(e => new URL(e).hostname),
-    accepted: true,
-    message: `Verified IndexNow signature broadcasted from ${host} using hosted key. Client domain verification bypassed.`
+    hostedKey: null,
+    keyLocation: null,
+    endpoints: [],
+    accepted: false,
+    message: 'Target-domain key verification is required. No third-party IndexNow request is fabricated.'
   };
 
-  // Pillar 4: Bing & Yandex Crawler Relay Pings
-  try {
-    const sitemapCandidate = `${baseUrl}/sitemap.xml`;
-    fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapCandidate)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; bingbot/2.0)' },
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-    fetch(`https://blogs.yandex.ru/pings/?status=success&url=${encodeURIComponent(hubUrl)}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; YandexBot/3.0)' },
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-
-    // Ping-O-Matic XML-RPC for RSS Feed
-    const pingXml = `<?xml version="1.0"?>
-<methodCall>
-  <methodName>weblogUpdates.ping</methodName>
-  <params>
-    <param><value>INDEX MATRIX Crawl Relay Hub</value></param>
-    <param><value>${hubUrl}</value></param>
-  </params>
-</methodCall>`;
-    fetch('http://rpc.pingomatic.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/xml' },
-      body: pingXml,
-      signal: AbortSignal.timeout(4000)
-    }).catch(() => {});
-  } catch (e) {}
-
+  // Pillar 4: The relay page/feed is public and can itself be discovered by crawlers.
   const bingYandexReport = {
-    name: 'Bing / Yandex Relay',
-    status: 'SIGNALED',
-    engines: ['Bingbot', 'YandexBot', 'DuckDuckGo', 'Yahoo Slurp', 'Seznam', 'Ping-O-Matic Network'],
+    name: 'Discovery Relay',
+    status: 'PUBLISHED',
+    engines: ['Bing/Yandex-compatible public discovery surfaces'],
     rssSyndication: true,
-    message: 'Bingbot, YandexBot, and Ping-O-Matic notified to crawl relay directory and follow outbound links.'
+    message: 'The relay directory and RSS feed are public discovery surfaces. Publication is not proof of crawler discovery or indexing.'
   };
 
   const googlebotReport = {
-    name: 'Googlebot Probe',
-    status: 'ACTIVE',
+    name: 'Technical Probe',
+    status: 'FETCH_CHECKED',
     targetProbeStatus: probeStatus,
     targetLatency: probeLatency,
-    googleWebSubStatus: googleWebSubStatus || 204,
-    googleWebSubAccepted: googleWebSubSuccess,
     speedyIndex: speedyResult,
-    message: `Googlebot live probe verified (HTTP ${probeStatus}, ${probeLatency}). WebSub Hub pinged.` +
-      (speedyResult?.taskId ? ` SpeedyIndex Task #${speedyResult.taskId} registered for Googlebot crawl queue.` : '')
+    message: `INDEX MATRIX fetched the target for technical validation (HTTP ${probeStatus ?? 'N/A'}, ${probeLatency || 'N/A'}). This is not proof of Googlebot crawling.` +
+      (speedyResult?.taskId ? ` External provider task #${speedyResult.taskId} was accepted.` : '')
   };
 
   // Save dispatch audit log
@@ -3191,6 +3165,20 @@ app.get('/api/index/status/:encodedUrl', (req,res) => {
   } catch(e) { return res.status(400).json({success:false,error:'Invalid encoded URL.'}); }
 });
 
+// Record independent indexing evidence supplied by the operator.
+app.post('/api/index/evidence', (req, res) => {
+  const { url, indexed, source, details } = req.body || {};
+  if (!url || typeof indexed !== 'boolean') {
+    return res.status(400).json({ success: false, error: 'url and boolean indexed are required.' });
+  }
+  if (!source || typeof source !== 'string') {
+    return res.status(400).json({ success: false, error: 'An evidence source is required.' });
+  }
+  const record = indexStatus.markIndexEvidence(url, { indexed, source, details: details || null });
+  return res.json({ success: true, record });
+});
+
+
 // Strictly serve only public assets (never server scripts or database files)
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
@@ -3208,7 +3196,7 @@ if ((require.main === module || process.env.NODE_ENV !== 'test') && !process.env
     console.log(`🌐 URL: http://localhost:${PORT}`);
     console.log(`🔐 Master Gatekeeper Security Active`);
     console.log(`🛡️  Brute-Force Rate Limiter: Max ${MAX_LOGIN_ATTEMPTS} attempts / 15m`);
-    console.log(`🚀 Google Indexing Dispatcher: Direct Real-Time Delivery Active`);
+    console.log(`🚀 URL/PDF Validation + Discovery Monitoring Active`);
     console.log(`====================================================`);
   });
 }
