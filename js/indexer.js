@@ -527,7 +527,9 @@
         appendLog('INDEXNOW_GATEWAY', `⚡ Discovery relay submitted for batch URLs; IndexNow requires target-domain key ownership.`, 'tag-ok', 'text-cyan');
         loadRelayDirectory();
     loadIndexStatusMonitor();
+    loadIndexQueueMonitor();
     setInterval(loadIndexStatusMonitor, 10000);
+    setInterval(loadIndexQueueMonitor, 5000);
       }
     } catch (rErr) {
       console.warn('Batch relay ingestion warning:', rErr.message);
@@ -777,6 +779,19 @@
     }
   }
 
+
+  async function loadIndexQueueMonitor() {
+    const el = document.getElementById('index-queue-stats');
+    if (!el) return;
+    try {
+      const res = await fetch('/api/index/queue?limit=100');
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Queue unavailable');
+      const s = data.stats || {};
+      el.textContent = \`Queue: \${s.pending || 0} pending • \${s.running || 0} running • \${s.done || 0} completed • \${s.failed || 0} failed\`;
+    } catch (e) { el.textContent = 'Queue monitor unavailable'; }
+  }
+
   // Expose global methods
   window.executeBotDispatch = executeBotDispatch;
   window.updateUrlCounter = updateUrlCounter;
@@ -798,6 +813,7 @@
   window.renderPillarReport = renderPillarReport;
   window.loadRelayDirectory = loadRelayDirectory;
   window.loadIndexStatusMonitor = loadIndexStatusMonitor;
+  window.loadIndexQueueMonitor = loadIndexQueueMonitor;
 
   document.addEventListener('DOMContentLoaded', () => {
     loadConfig();
