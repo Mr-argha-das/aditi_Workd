@@ -203,6 +203,7 @@ async function analyzePdf(buffer, pdfParse) {
   return {
     valid: validMagic,
     textLength: text.trim().length,
+    textPreview: text.trim().slice(0, 900),
     pages,
     sizeBytes: buffer.length,
     sha256,
