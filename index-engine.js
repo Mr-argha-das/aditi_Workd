@@ -7,6 +7,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const referencePages = require('./reference-pages');
 
 const QUEUE_FILE = path.join(__dirname, 'data', 'index-queue.json');
 const MAX_QUEUE = 10000;
@@ -210,6 +211,16 @@ async function analyzePdf(buffer, pdfParse) {
   };
 }
 
+function analyzeHtml(buffer, finalUrl) {
+  const html = buffer.toString('utf8');
+  const title = (html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)?.[1] || '').replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim();
+  const description = (html.match(/<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']*)[\"']/i)?.[1] || '').trim();
+  const robots = (html.match(/<meta[^>]+name=[\"']robots[\"'][^>]+content=[\"']([^\"']*)[\"']/i)?.[1] || '').trim();
+  const canonical = html.match(/<link[^>]+rel=[\"']canonical[\"'][^>]+href=[\"']([^\"']*)[\"']/i)?.[1] || '';
+  const text = html.replace(/<script[\\s\\S]*?<\\/script>/gi,' ').replace(/<style[\\s\\S]*?<\\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim();
+  return { title: title || finalUrl, description, robots, canonical, textPreview: text.slice(0,900), textLength: text.length };
+}
+
 async function processOne(item, deps) {
   const q = read();
   const row = q.find(x => x.id === item.id);
@@ -244,6 +255,35 @@ async function processOne(item, deps) {
       const pdf = await analyzePdf(result.buffer, deps.pdfParse);
       deps.status.markPdfAnalysis(row.url, pdf);
       if (!pdf.valid) throw new Error('URL did not return a valid PDF file.');
+    }
+
+    const isPdf = /application\\/pdf/i.test(result.contentType || '') || /\\.pdf(?:$|[?#])/i.test(result.finalUrl || row.url);
+    if (isPdf) {
+      const pdf = await analyzePdf(result.buffer, deps.pdfParse);
+      deps.status.markPdfAnalysis(row.url, pdf);
+      if (!pdf.valid) throw new Error('URL did not return a valid PDF file.');
+      let sourceDomain = '';
+      try { sourceDomain = new URL(result.finalUrl || row.url).hostname; } catch (_) {}
+      let title = pdf.metadata?.Title || 'PDF document';
+      try {
+        const part = decodeURIComponent(new URL(result.finalUrl || row.url).pathname.split('/').pop() || '');
+        if (!pdf.metadata?.Title && part) title = part.replace(/\\.pdf$/i, '');
+      } catch (_) {}
+      referencePages.upsert(row.url, {
+        type: 'PDF', title,
+        description: 'Validated PDF reference from ' + sourceDomain + '.',
+        excerpt: pdf.textPreview, sourceDomain, finalUrl: result.finalUrl || row.url,
+        contentType: result.contentType, pages: pdf.pages, sha256: pdf.sha256, textLength: pdf.textLength
+      });
+    } else {
+      const html = analyzeHtml(result.buffer, result.finalUrl || row.url);
+      let sourceDomain = '';
+      try { sourceDomain = new URL(result.finalUrl || row.url).hostname; } catch (_) {}
+      referencePages.upsert(row.url, {
+        type: 'WEB', title: html.title, description: html.description || ('Reference page for ' + sourceDomain + '.'),
+        excerpt: html.textPreview, sourceDomain, finalUrl: result.finalUrl || row.url,
+        contentType: result.contentType, canonical: html.canonical, textLength: html.textLength
+      });
     }
 
     deps.status.markDiscoverySubmitted(row.url, ['relay-hub']);
