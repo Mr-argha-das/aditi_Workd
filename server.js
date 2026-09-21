@@ -24,6 +24,7 @@ const rateLimit = require('express-rate-limit');
 const db = require('./db');
 const indexStatus = require('./index-status');
 const indexEngine = require('./index-engine');
+const referencePages = require('./reference-pages');
 
 let pdfParseLib = null;
 try {
@@ -776,6 +777,37 @@ app.get('/api/pixel/config', async (req, res) => {
 });
 
 /* ==========================================================================
+   Public third-party reference/discovery pages
+   ========================================================================== */
+function publicOrigin(req) {
+  const proto = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+  const host = req.headers.host || 'localhost';
+  return proto.split(',')[0].trim() + '://' + host;
+}
+
+app.get('/pdf/:id', (req, res) => {
+  const id = decodeURIComponent(req.params.id || '');
+  const row = referencePages.getById(id);
+  if (!row) return res.status(404).type('text/plain').send('Reference page not found');
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('X-Robots-Tag', 'index, follow');
+  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
+  return res.send(referencePages.render(row, publicOrigin(req)));
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
+  return res.send(referencePages.buildSitemap(publicOrigin(req)));
+});
+
+app.get('/rss.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
+  return res.send(referencePages.buildRss(publicOrigin(req)));
+});
+
+/* ==========================================================================
    Gatekeeper Middleware: Strict Allowlist & Route Protection
    ========================================================================== */
 const ALLOWED_PROTECTED_PAGES = new Set([
@@ -798,6 +830,7 @@ app.use((req, res, next) => {
     reqPath.startsWith('/api/seo/') ||
     reqPath.startsWith('/indexing-hub') ||
     reqPath.startsWith('/indexing-feed') ||
+    reqPath.startsWith('/pdf/') ||
     reqPath.endsWith('.txt') ||
     reqPath.endsWith('.xml') ||
     reqPath === '/robots.txt' ||
