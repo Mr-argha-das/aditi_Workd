@@ -270,7 +270,7 @@ async function processOne(item, deps) {
         const part = decodeURIComponent(new URL(result.finalUrl || row.url).pathname.split('/').pop() || '');
         if (!pdf.metadata?.Title && part) title = part.replace(/\\.pdf$/i, '');
       } catch (_) {}
-      referencePages.upsert(row.url, {
+      const reference = referencePages.upsert(row.url, {
         type: 'PDF', title,
         description: 'Validated PDF reference from ' + sourceDomain + '.',
         excerpt: pdf.textPreview, sourceDomain, finalUrl: result.finalUrl || row.url,
@@ -280,7 +280,7 @@ async function processOne(item, deps) {
       const html = analyzeHtml(result.buffer, result.finalUrl || row.url);
       let sourceDomain = '';
       try { sourceDomain = new URL(result.finalUrl || row.url).hostname; } catch (_) {}
-      referencePages.upsert(row.url, {
+      const reference = referencePages.upsert(row.url, {
         type: 'WEB', title: html.title, description: html.description || ('Reference page for ' + sourceDomain + '.'),
         excerpt: html.textPreview, sourceDomain, finalUrl: result.finalUrl || row.url,
         contentType: result.contentType, canonical: html.canonical, textLength: html.textLength
