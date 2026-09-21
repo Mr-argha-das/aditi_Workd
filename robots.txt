@@ -15,6 +15,9 @@ Allow: /logo*
 Allow: /favicon.ico
 Allow: /*.txt
 Allow: /api/seo/
+Allow: /pdf/
+Allow: /sitemap.xml
+Allow: /rss.xml
 Allow: /indexing-hub.html
 Allow: /indexing-feed.xml
 
@@ -61,4 +64,7 @@ Disallow: /data/
 
 # Host & Sitemap Declaration
 Host: https://www.indexmetrix.com
+Sitemap: https://www.indexmetrix.com/sitemap.xml
+
+# RSS discovery feed
 Sitemap: https://www.indexmetrix.com/sitemap.xml
