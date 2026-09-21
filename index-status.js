@@ -97,6 +97,36 @@ function markValidated(url, meta = {}) {
   });
 }
 
+function markReferencePublished(url, meta = {}) {
+  return upsert(url, {
+    referencePage: {
+      id: meta.id || null,
+      url: meta.url || null,
+      publishedAt: meta.publishedAt || now()
+    },
+    event: {
+      type: 'REFERENCE_PAGE_PUBLISHED',
+      message: 'Public reference page published for discovery.',
+      evidence: { url: meta.url || null }
+    }
+  });
+}
+
+function markWebAnalysis(url, analysis = {}) {
+  return upsert(url, {
+    web: analysis,
+    event: {
+      type: 'WEB_ANALYSIS',
+      message: 'HTML metadata and text signals extracted.',
+      evidence: {
+        title: analysis.title || null,
+        canonical: analysis.canonical || null,
+        robots: analysis.robots || null
+      }
+    }
+  });
+}
+
 function markDiscoverySubmitted(url, channels = []) {
   return upsert(url, {
     submissionStatus: 'DISCOVERY_SUBMITTED',
@@ -198,4 +228,4 @@ function stats() {
     unknownIndex: records.filter(r => r.indexStatus === 'UNKNOWN').length
   };
 }
-module.exports = { markReceived, markValidated, markDiscoverySubmitted, markCrawlChecked, markUnknownIndex, markIndexEvidence, markPdfAnalysis, markDiscoveryEvidence, get, list, stats };
+module.exports = { markReceived, markValidated, markReferencePublished, markWebAnalysis, markDiscoverySubmitted, markCrawlChecked, markUnknownIndex, markIndexEvidence, markPdfAnalysis, markDiscoveryEvidence, get, list, stats };
